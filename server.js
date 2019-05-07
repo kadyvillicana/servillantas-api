@@ -10,16 +10,16 @@ const express = require('express'),
 
 
 
-mongoose.connect(databaseConfig().url, databaseConfig().options);
-const connection = mongoose.connection;
+// mongoose.connect(databaseConfig().url, databaseConfig().options);
+// const connection = mongoose.connection;
 
-connection.on('error', console.error.bind(console, 'connection error:'));
-connection.once('open', function () {
-    console.log("Connected correctly to db");
-});
+// connection.on('error', console.error.bind(console, 'connection error:'));
+// connection.once('open', function () {
+//     console.log("Connected correctly to db");
+// });
 
 //8080
-app.listen(process.env.PORT);
+app.listen(8080);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
