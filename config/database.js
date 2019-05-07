@@ -1,3 +1,4 @@
+require('dotenv').config();
 module.exports = function(){
   return {
     url: process.env.DB_URL, //mongodb://10.16.0.25:27017/db_lgtdev
