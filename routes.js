@@ -1,6 +1,7 @@
-var express = require('express')
+var ComplaintController   = require('./controllers/indicators/complaints')
+    express               = require('express');
 
-module.exports = function(app){
+module.exports = function(app) {
 
     var apiRoutes       = express.Router(),
         indicatorRoutes = express.Router();
@@ -15,6 +16,10 @@ module.exports = function(app){
     indicatorRoutes.get('/', (req, res) => {
         res.send('Indicators')
     })
+
+    // Indicator Routes
+    apiRoutes.use('/indicators', indicatorRoutes);
+    indicatorRoutes.get('/complaints', ComplaintController.getAllComplaints);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
