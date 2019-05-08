@@ -1,4 +1,5 @@
 var express = require('express')
+const indicator_controller = require('./controllers/indicator');
 
 module.exports = function(app){
 
