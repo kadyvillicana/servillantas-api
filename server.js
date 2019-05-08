@@ -18,7 +18,6 @@ connection.once('open', function () {
     console.log("Connected correctly to db");
 });
 
-//8080
 app.listen(process.env.PORT);
 
 app.use(bodyParser.urlencoded({ extended: false }));
