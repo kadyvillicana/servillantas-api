@@ -1,4 +1,4 @@
-var Place          = require('../models/place'),
+const Place        = require('../models/place'),
     mongoose       = require('mongoose'),
     databaseConfig = require('../config/database'),
     placesCons     = require('../constants/places');

@@ -1,5 +1,10 @@
-var places = require('../constants/places');
+const places = require('../constants/places');
 
+/**
+ * The purpose of this object is to search for a given key in the names array
+ * so the object key can be retrieved to later get the reference on Place schema
+ * (if isPlace = true).
+ */
 module.exports = {
   "year": {
     key: "year",
@@ -15,7 +20,7 @@ module.exports = {
     isPlace: true
   },
   [places.AGUASCALIENTES]: {
-    names: ["aguascalientes", "año", "anio", "year"],
+    names: ["aguascalientes"],
     isPlace: true
   },
   [places.BAJA_CALIFORNIA]: {

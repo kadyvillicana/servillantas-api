@@ -1,12 +1,20 @@
-var IndicatorRecord      = require('../models/indicatorRecord'),
+const IndicatorRecord    = require('../models/indicatorRecord'),
     { validationResult } = require('express-validator/check'),
     moment               = require('moment');
 
+/**
+ * Function to get all indicator records that match the type
+ * and date if specified.
+ * 
+ * @returns
+ *  If there are records: array of objects grouped by state and with sum of each property, success = true.
+ *  Else, error message, success = false.
+ */
 exports.get = (req, res, next) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() })
+    return res.status(422).json({ errors: errors.array() });
   }
 
   const { type } = req.params;
@@ -108,6 +116,6 @@ exports.get = (req, res, next) => {
       return res.status(200).send({ message: "There are no records", success: false });
     }
 
-    res.status(200).send(results);
+    res.status(200).send({ data: results, success: true });
   });
 }

@@ -1,10 +1,10 @@
-var IndicatorRecordController       = require('./controllers/indicatorRecord'),
+const IndicatorRecordController     = require('./controllers/indicatorRecord'),
     getIndicatorRecordsRequest      = require('./requests/getIndicatorRecord'),
     express                         = require('express');
 
 module.exports = function(app) {
 
-    var apiRoutes       = express.Router(),
+    const apiRoutes     = express.Router(),
         indicatorRoutes = express.Router();
 
     // Default routes

@@ -1,6 +1,6 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var indicatorRecordSchema = new mongoose.Schema(
+const indicatorRecordSchema = new mongoose.Schema(
   {
     indicatorId: {
       type: String,

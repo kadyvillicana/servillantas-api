@@ -1,12 +1,12 @@
-var IndicatorRecord  = require('../models/indicatorRecord'),
-    Place            = require('../models/place'),
-    mongoose         = require('mongoose'),
-    databaseConfig   = require('../config/database'),
-    complaintMap     = require('../helpers/complaints'),
-    complaintsArray  = require('../constants/complaints'),
-    indicatorIds     = require('../constants/indicatorIds'),
-    moment           = require('moment');
-                       require('moment/locale/es');
+const IndicatorRecord     = require('../models/indicatorRecord'),
+    Place                 = require('../models/place'),
+    mongoose              = require('mongoose'),
+    databaseConfig        = require('../config/database'),
+    complaintMap          = require('../helpers/complaints'),
+    complaintsArray       = require('../constants/complaints'),
+    indicatorIds          = require('../constants/indicatorIds'),
+    moment                = require('moment');
+                            require('moment/locale/es');
 
 // Set es language
 moment.locale('es');
@@ -17,6 +17,7 @@ let complaintMapKeys = [];
 let complaintMapData = {};
 let complaintsToSave = [];
 
+// Delete all records that match the indicatorId before seeding
 IndicatorRecord.deleteMany({ indicatorId: indicatorIds.COMPLAINT }, err => {
   if (err) {
     disconnect();
@@ -34,7 +35,7 @@ IndicatorRecord.deleteMany({ indicatorId: indicatorIds.COMPLAINT }, err => {
     momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).set('date', 1);
   
     // Iterate array of complaints (object with year, month, and each state as key)
-    for (var i = 0; i < complaintsArray.length; i++) {
+    for (let i = 0; i < complaintsArray.length; i++) {
 
       // Object to save in db
       let complaint = { indicatorId: indicatorIds.COMPLAINTS };
