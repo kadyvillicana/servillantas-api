@@ -1,10 +1,4 @@
-var ComplaintRecord  = require('../models/complaintRecord'),
-    Place            = require('../models/place'),
-    mongoose         = require('mongoose'),
-    databaseConfig   = require('../config/database'),
-    complaintMap     = require('../helpers/complaints');
-
-const data = [
+module.exports = [
   {
     "Año": 2017,
     "Mes": "Julio",
@@ -1116,75 +1110,3 @@ const data = [
     "Zacatecas": 348
   }
  ];
-
-mongoose.connect(databaseConfig().url, databaseConfig().options);
-
-let complaintMapKeys = [];
-let complaintMapData = {};
-let complaintsToSave = [];
-
-ComplaintRecord.deleteMany({}, err => {
-  if (err) {
-    disconnect();
-    return;
-  }
-
-  Place.find({}, (err, places) => {
-    if (err) {
-      disconnect();
-      return;
-    }
-  
-    for (var i = 0; i < data.length; i++) {
-      let complaint = {};
-      let states = [];
-      for (let [key, value] of Object.entries(data[i])) {
-        let complaintMapProps = {};
-        if (complaintMapKeys.includes(key) && hash[key] !== undefined) {
-          complaintMapProps.key = key;
-          complaintMapProps.isPlace = hash[key].isPlace;
-        } else {
-          for (let [cKey, cValue] of Object.entries(complaintMap)) {
-            if (cValue.names.includes(key.toLocaleLowerCase())) {
-              complaintMapKeys = [...complaintMapKeys, cKey];
-              complaintMapData = { ...complaintMapData, [cKey]: cValue }
-              complaintMapProps.key = cKey;
-              complaintMapProps.isPlace = cValue.isPlace;
-              break;
-            }
-          }
-        }
-        if (!complaintMapProps.isPlace) {
-          complaint[complaintMapProps.key] = value;
-        } else {
-          const place = places.find(p => p.code === complaintMapProps.key);
-          if (place) {
-            states = [
-              ...states,
-              {
-                state: place,
-                amount: value
-              }
-            ]
-          }
-  
-        }
-      }
-      complaint.states = states;
-      complaintsToSave = [
-        ...complaintsToSave,
-        new ComplaintRecord(complaint)
-      ];
-    }
-  
-    if (complaintsToSave.length) {
-      ComplaintRecord.insertMany(complaintsToSave, () => disconnect());
-    } else {
-      disconnect();
-    }
-  });
-});
-
-const disconnect = () => {
-  mongoose.disconnect();
-}

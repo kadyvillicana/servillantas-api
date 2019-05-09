@@ -1,5 +1,6 @@
-var ComplaintController   = require('./controllers/indicators/complaints')
-    express               = require('express');
+var IndicatorRecordController       = require('./controllers/indicatorRecord'),
+    getIndicatorRecordsRequest      = require('./requests/getIndicatorRecord'),
+    express                         = require('express');
 
 module.exports = function(app) {
 
@@ -8,7 +9,7 @@ module.exports = function(app) {
 
     // Default routes
     apiRoutes.get('/', (req, res) => {
-        res.send('im the home page!')
+        res.send('Im the home page!')
     });
 
     // Indicator rotues
@@ -19,7 +20,7 @@ module.exports = function(app) {
 
     // Indicator Routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/complaints', ComplaintController.getAllComplaints);
+    indicatorRoutes.get('/:type', getIndicatorRecordsRequest(), IndicatorRecordController.get);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
