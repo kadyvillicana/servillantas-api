@@ -6,10 +6,13 @@ exports.getIndicators = (req, res, next) => {
     if (err) {
       return res.send(err);
     }
+    if (!indicators) {
+      return res.status(500).send({ error: 'Something went wrong while retrieving Indicators' });
+    }
     if (indicators.length === 0) {
       return res.status(200).send({ message: "There are no indicators", success: false });
     }
-    return res.status(200).send(indicators);
+    return res.status(200).send({indicators, success:true});
   });
 
 }
