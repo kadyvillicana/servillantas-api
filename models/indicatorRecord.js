@@ -1,19 +1,51 @@
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 
-var indicatorRecordSchema = new mongoose.Schema({
-    date: Date,
-    state: String,
-    complaints: {
-        gender: String,
-        responsibleAuthority: String,
+const indicatorRecordSchema = new mongoose.Schema(
+  {
+    indicatorId: {
+      type: String,
+      required: true
     },
-    folderNumbers: {
-        complaint: Number,
-        judicialHearing: Number,
-        otherReasons: Number,
+    date: {
+      type: Date,
+      required: true
+    },
+    state: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Place'
+    },
+    amount: {
+      type: Number
+    },
+    gender: {
+      type: {
+        male: {
+          type: Number
+        },
+        female: {
+          type: Number
+        }
+      },
+      default: { male: 0, female: 0 }
+    },
+    investigationFolder: {
+      type: {
+        complaint: {
+          type: Number
+        },
+        judicialHearing: {
+          type: Number
+        },
+        otherReasons: {
+          type: Number
+        }
+      },
+      default: { complaint: 0, judicialHearing: 0, otherReasons: 0 }
     }
-},{
-    timestamps:true
-});
+  },
+  {
+    timestamps: true
+  }
+);
 
-module.exports = mongoose.model('indicatorRecord', indicatorRecordSchema);
+module.exports = mongoose.model('IndicatorRecord', indicatorRecordSchema);
