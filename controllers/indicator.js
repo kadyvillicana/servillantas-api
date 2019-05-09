@@ -1,108 +1,147 @@
 var Indicator = require('../models/indicator');
 
 exports.getIndicators = (req, res, next) => {
-    Indicator.find((err, indicators) => {
-      
-        if (err){
-            res.send(err);
-        }
-        if(indicators.length === 0){
-          return res.status(200).send({ message: "There are no indicators", success: false });
-        }
-        return res.status(200).send(indicators);
-    });
+  Indicator.find((err, indicators) => {
+
+    if (err) {
+      res.send(err);
+    }
+    if (indicators.length === 0) {
+      return res.status(200).send({ message: "There are no indicators", success: false });
+    }
+    return res.status(200).send(indicators);
+  });
 
 }
 
 exports.createIndicator = (req, res, next) => {
-    var item = req.body.item;
-    var version = req.body.version;
-    var indicatorName = req.body.indicatorName;
-    var definition = req.body.definition;
-    var calculationMethod = req.body.calculateMethod;
-    var measurementFrequency = req.body.measurementFrequency;
-    var geographicBreakdown = req.body.geographicBreakdown;
-    var specialTreatment = req.body.specialTreatment;
-    var indicatorWeaknesses = req.body.indicatorWeaknesses;
-    if(!indicatorName){
-        return res.status(400).send({error: 'Indicator must have a name'});
+  var item = req.body.item;
+  var version = req.body.version;
+  var indicatorName = req.body.indicatorName;
+  var definition = req.body.definition;
+  var calculationMethod = req.body.calculateMethod;
+  var measurementFrequency = req.body.measurementFrequency;
+  var geographicBreakdown = req.body.geographicBreakdown;
+  var specialTreatment = req.body.specialTreatment;
+  var indicatorWeaknesses = req.body.indicatorWeaknesses;
+  if (!indicatorName) {
+    return res.status(400).send({ error: 'Indicator must have a name' });
+  }
+
+  var indicator = new Indicator({
+    item: item,
+    version: version,
+    indicatorName: indicatorName,
+    definition: definition,
+    calculationMethod: calculationMethod,
+    measurementFrequency: measurementFrequency,
+    geographicBreakdown: geographicBreakdown,
+    specialTreatment: specialTreatment,
+    indicatorWeaknesses: indicatorWeaknesses,
+    indicatorId: toLowerCase(concatenateDash(removeSpecialCharacters(item)))
+  });
+
+  Indicator.findOne({ indicatorId: indicator.indicatorId }, (err, _indicator) => {
+    if (err) {
+      return next(err);
     }
 
-    var indicator = new Indicator({
-      item: item,
-      version: version,
-      indicatorName: indicatorName,
-      definition: definition,
-      calculationMethod: calculationMethod,
-      measurementFrequency: measurementFrequency,
-      geographicBreakdown : geographicBreakdown,
-      specialTreatment: specialTreatment,
-      indicatorWeaknesses: indicatorWeaknesses,
-      indicatorId:toLowerCase(concatenateDash(removeSpecialCharacters(item)))
-   });
+    if (_indicator) {
+      return res.status(409).send({ error: 'That indicator already exists' });
+    }
 
-    Indicator.findOne({indicatorId:indicator.indicatorId}, (err, _indicator) => {
-      if(err){
+    indicator.save((err, indicator) => {
+      if (err) {
         return next(err);
       }
-
-      if(_indicator){
-        return res.status(409).send({error: 'That indicator already exists'});
-      }
-
-      indicator.save((err, indicator) => {
-            if(err){
-                return next(err);
-            }
-            return res.status(200).json({
-              message: "Indicator successfully added!",
-              indicator: indicator
-            });
-        });
+      return res.status(200).json({
+        message: "Indicator successfully added!",
+        indicator: indicator
+      });
     });
+  });
 
 }
 
 exports.getIndicatorByIdentifier = (req, res, next) => {
   var identifier = req.params.identifier;
 
-  if(!identifier){
-      return res.status(400).send({error: 'You must enter an identifier'});
+  if (!identifier) {
+    return res.status(400).send({ error: 'You must enter an identifier' });
   }
 
-  Indicator.findOne({identifier:identifier}, (err, indicator) => {
-      if(err){
-          return next(err);
-      }
+  Indicator.findOne({ identifier: identifier }, (err, indicator) => {
+    if (err) {
+      return next(err);
+    }
 
-      if(!indicator || indicator == null){
-        return res.status(404).json({
-          error: "Indicator not found"
-        });
-      }
-
-      return res.status(200).json({
-        indicator: indicator
+    if (!indicator || indicator == null) {
+      return res.status(404).json({
+        error: "Indicator not found"
       });
+    }
+
+    return res.status(200).json({
+      indicator: indicator
+    });
   });
 }
+
+exports.updateIndicator = (req, res) => {
+  // Validate Request
+  if (!req.body) {
+    return res.status(400).send({
+      message: "Indicator content can not be empty"
+    });
+  }
+
+  Indicator.findByIdAndUpdate(req.params._id, {
+    item: req.body.item,
+    version: req.body.version,
+    indicatorName: req.body.indicatorName,
+    definition: req.body.redefinition,
+    calculationMethod: req.body.calculationMethod,
+    measurementFrequency: req.body.measurementFrequency,
+    geographicBreakdown: req.body.geographicBreakdown,
+    specialTreatment: req.body.specialTreatment,
+    indicatorWeaknesses: req.body.indicatorWeaknesses,
+    indicatorId: toLowerCase(concatenateDash(removeSpecialCharacters(req.body.item)))
+  }, { new: true })
+    .then(indicator => {
+      if (!indicator) {
+        return res.status(404).send({
+          message: "Indicator not found with id " + req.params.productId
+        });
+      }
+      res.send(indicator);
+    }).catch(err => {
+      if (err.kind === 'ObjectId') {
+        return res.status(404).send({
+          message: "Indicator not found with id " + req.params.productId
+        });
+      }
+      return res.status(500).send({
+        message: "Something wrong updating note with id " + req.params.productId
+      });
+    });
+};
 
 exports.deleteIndicator = (req, res, next) => {
   Indicator.remove({
-      _id : req.params._id
-  }, function(err, indicator) {
-      res.json(indicator);
+    _id: req.params._id
+  }, function (err, indicator) {
+    res.json(indicator);
   });
 }
 
-function removeSpecialCharacters(string){
-    return string.replace(/[^\w\s]/gi, '');
-  }
-  
-  function concatenateDash(string){
-    return string.replace(/ /g,'-');
-  }
-  
-  function toLowerCase(string){
-    return string.toLowerCase();
-  }
+function removeSpecialCharacters(string) {
+  return string.replace(/[^\w\s]/gi, '');
+}
+
+function concatenateDash(string) {
+  return string.replace(/ /g, '-');
+}
+
+function toLowerCase(string) {
+  return string.toLowerCase();
+}

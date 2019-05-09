@@ -11,11 +11,15 @@ module.exports = function(app){
         res.send('im the home page!')
     });
 
-    // Indicator rotues
+    // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
     indicatorRoutes.get('/', indicatorController.getIndicators);
+    indicatorRoutes.get('/:_id', indicatorController.getIndicatorByIdentifier);
     indicatorRoutes.post('/', indicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', indicatorController.updateIndicator);
+    indicatorRoutes.patch('/:_id', indicatorController.updateIndicator);
     indicatorRoutes.delete('/:_id', indicatorController.deleteIndicator);
+
     //Not found route
     apiRoutes.use( (req, res, next) => {
         res.status(404).send("Not found");
