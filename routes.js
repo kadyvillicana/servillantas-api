@@ -1,5 +1,5 @@
 var express = require('express')
-const indicator_controller = require('./controllers/indicator');
+const indicatorController = require('./controllers/indicator');
 
 module.exports = function(app){
 
@@ -11,11 +11,14 @@ module.exports = function(app){
         res.send('im the home page!')
     });
 
-    // Indicator rotues
+    // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/', (req, res) => {
-        res.send('Indicators')
-    })
+    indicatorRoutes.get('/', indicatorController.getIndicators);
+    indicatorRoutes.get('/:_id', indicatorController.getIndicatorByIdentifier);
+    indicatorRoutes.post('/', indicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', indicatorController.updateIndicator);
+    indicatorRoutes.patch('/:_id', indicatorController.updateIndicator);
+    indicatorRoutes.delete('/:_id', indicatorController.deleteIndicator);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
