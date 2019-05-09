@@ -1,37 +1,37 @@
-const Indicator = require('../models/indicator');
-
+const Indicator = require('../models/indicator'),
+{ validationResult } = require('express-validator/check');
+      
 //Get all Indicators from DB
 exports.getIndicators = (req, res, next) => {
   Indicator.find((err, indicators) => {
     if (err) {
-      return res.send(err);
+      return next(err);
     }
-    if (!indicators) {
-      return res.status(500).send({ error: 'Something went wrong while retrieving Indicators' });
-    }
-    if (indicators.length === 0) {
+    if (!indicators || !indicators.length) {
       return res.status(200).send({ message: "There are no indicators", success: false });
     }
-    return res.status(200).send({indicators, success:true});
+    return res.status(200).send({data:indicators, success:true});
   });
 
 }
 
 //Create an indicator
 exports.createIndicator = (req, res, next) => {
-  let item = req.body.item;
-  let version = req.body.version;
-  let indicatorName = req.body.indicatorName;
-  let definition = req.body.definition;
-  let calculationMethod = req.body.calculateMethod;
-  let measurementFrequency = req.body.measurementFrequency;
-  let geographicBreakdown = req.body.geographicBreakdown;
-  let specialTreatment = req.body.specialTreatment;
-  let indicatorWeaknesses = req.body.indicatorWeaknesses;
-  if (!indicatorName) {
-    return res.status(400).send({ error: 'Indicator must have a name' });
+
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
 
+  let { item, 
+        version, 
+        indicatorName, 
+        definition, 
+        calculationMethod, 
+        measurementFrequency, 
+        geographicBreakdown, 
+        specialTreatment, 
+        indicatorWeaknesses } = req.body;
   var indicator = new Indicator({
     item: item,
     version: version,
@@ -94,11 +94,9 @@ exports.getIndicatorByIdentifier = (req, res, next) => {
 
 //Update an Indicator by its ID
 exports.updateIndicator = (req, res) => {
-  // Validate Request
-  if (!req.body) {
-    return res.status(400).send({
-      message: "Indicator content can not be empty"
-    });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
 
   Indicator.findByIdAndUpdate(req.params._id, {
