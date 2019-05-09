@@ -8,6 +8,7 @@ const express        = require('express'),
       databaseConfig = require('./config/database'),
       router         = require('./routes');
 
+mongoose.set('useCreateIndex', true);
 mongoose.connect(databaseConfig().url, databaseConfig().options);
 const connection = mongoose.connection;
 
@@ -16,7 +17,6 @@ connection.once('open', function () {
     console.log("Connected correctly to db");
 });
 
-//8080
 app.listen(process.env.PORT);
 
 app.use(bodyParser.urlencoded({ extended: false }));
