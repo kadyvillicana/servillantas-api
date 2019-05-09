@@ -1,12 +1,12 @@
 require('dotenv').config();
-const express = require('express'),
-      app = express(),
-      mongoose = require('mongoose'),
-      logger = require('morgan'),
-      bodyParser = require('body-parser'),
-      cors = require('cors'),
+const express        = require('express'),
+      app            = express(),
+      mongoose       = require('mongoose'),
+      logger         = require('morgan'),
+      bodyParser     = require('body-parser'),
+      cors           = require('cors'),
       databaseConfig = require('./config/database'),
-      router = require('./routes');
+      router         = require('./routes');
 
 mongoose.set('useCreateIndex', true);
 mongoose.connect(databaseConfig().url, databaseConfig().options);

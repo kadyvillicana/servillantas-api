@@ -1,14 +1,16 @@
-var express = require('express')
+const IndicatorRecordController     = require('./controllers/indicatorRecord'),
+    getIndicatorRecordsRequest      = require('./requests/getIndicatorRecord'),
+    express                         = require('express');
 const indicatorController = require('./controllers/indicator');
 
-module.exports = function(app){
+module.exports = function(app) {
 
-    var apiRoutes       = express.Router(),
+    const apiRoutes     = express.Router(),
         indicatorRoutes = express.Router();
 
     // Default routes
     apiRoutes.get('/', (req, res) => {
-        res.send('im the home page!')
+        res.send('Im the home page!')
     });
 
     // Indicator routes
@@ -19,6 +21,10 @@ module.exports = function(app){
     indicatorRoutes.put('/:_id', indicatorController.updateIndicator);
     indicatorRoutes.patch('/:_id', indicatorController.updateIndicator);
     indicatorRoutes.delete('/:_id', indicatorController.deleteIndicator);
+
+    // Indicator Routes
+    apiRoutes.use('/indicators', indicatorRoutes);
+    indicatorRoutes.get('/:type', getIndicatorRecordsRequest(), IndicatorRecordController.get);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
