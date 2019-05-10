@@ -17,6 +17,18 @@ const indicatorRecordSchema = new mongoose.Schema(
     amount: {
       type: Number
     },
+    condemnatory:{
+      type: Number
+    },
+    absolut:{
+      type: Number
+    },
+    condemnedPeople:{
+      type: Number
+    },
+    victimNumber:{
+      type: Number
+    },
     gender: {
       type: {
         male: {
