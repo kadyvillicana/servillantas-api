@@ -6,8 +6,9 @@ const indicatorController = require('./controllers/indicator');
 
 module.exports = function(app) {
 
-    const apiRoutes     = express.Router(),
-        indicatorRoutes = express.Router();
+    const apiRoutes               = express.Router(),
+        indicatorRoutes           = express.Router(),
+        indicatorRecordsRoutes    = express.Router();
 
     // Default routes
     apiRoutes.get('/', (req, res) => {
@@ -18,14 +19,14 @@ module.exports = function(app) {
     apiRoutes.use('/indicators', indicatorRoutes);
     indicatorRoutes.get('/', indicatorController.getIndicators);
     indicatorRoutes.get('/:_id', indicatorController.getIndicatorByIdentifier);
-    indicatorRoutes.post('/', getIndicatorRequest(),indicatorController.createIndicator);
-    indicatorRoutes.put('/:_id', indicatorController.updateIndicator);
+    indicatorRoutes.post('/', getIndicatorRequest(), indicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', getIndicatorRequest(), indicatorController.updateIndicator);
     indicatorRoutes.patch('/:_id', indicatorController.updateIndicator);
     indicatorRoutes.delete('/:_id', indicatorController.deleteIndicator);
 
     // Indicator Record Routes
-    apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/:type', getIndicatorRecordsRequest(), IndicatorRecordController.get);
+    apiRoutes.use('/records', indicatorRecordsRoutes);
+    indicatorRecordsRoutes.get('/:type', getIndicatorRecordsRequest(), IndicatorRecordController.get);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
