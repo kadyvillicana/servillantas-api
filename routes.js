@@ -1,6 +1,8 @@
 const IndicatorRecordController     = require('./controllers/indicatorRecord'),
-    getIndicatorRecordsRequest      = require('./requests/getIndicatorRecord'),
+    getIndicatorRequest             = require('./requests/indicatorRequests/getIndicator');
+    getIndicatorRecordsRequest      = require('./requests/indicatorRecordRequests/getIndicatorRecord'),
     express                         = require('express');
+const indicatorController = require('./controllers/indicator');
 
 module.exports = function(app) {
 
@@ -12,13 +14,16 @@ module.exports = function(app) {
         res.send('Im the home page!')
     });
 
-    // Indicator rotues
+    // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/', (req, res) => {
-        res.send('Indicators')
-    })
+    indicatorRoutes.get('/', indicatorController.getIndicators);
+    indicatorRoutes.get('/:_id', indicatorController.getIndicatorByIdentifier);
+    indicatorRoutes.post('/', getIndicatorRequest(),indicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', indicatorController.updateIndicator);
+    indicatorRoutes.patch('/:_id', indicatorController.updateIndicator);
+    indicatorRoutes.delete('/:_id', indicatorController.deleteIndicator);
 
-    // Indicator Routes
+    // Indicator Record Routes
     apiRoutes.use('/indicators', indicatorRoutes);
     indicatorRoutes.get('/:type', getIndicatorRecordsRequest(), IndicatorRecordController.get);
 
