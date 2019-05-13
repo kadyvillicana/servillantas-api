@@ -220,7 +220,7 @@ exports.updateRecord = (req,res) =>{
   }
 
 exports.deleteRecord = (req, res) => {
-  indicatorRecord.remove({
+  indicatorRecord.deleteOne({
     _id: req.params._id
   }, function (err, record) {
     res.json(record);

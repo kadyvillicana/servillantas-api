@@ -133,7 +133,7 @@ exports.updateIndicator = (req, res) => {
 
 //Delete an Indicator
 exports.deleteIndicator = (req, res, next) => {
-  Indicator.remove({
+  Indicator.deleteOne({
     _id: req.params._id
   }, function (err, indicator) {
     res.json(indicator);
