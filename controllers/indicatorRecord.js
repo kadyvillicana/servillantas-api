@@ -121,7 +121,7 @@ exports.get = (req, res, next) => {
 }
 
 /**
- * Get the date of the first and last records available for the requested indicator.
+ * Function to get the oldest and newest date among all documents that match the specified type.
  * 
  * @returns If there are records matching the request return the oldest and newest date. 
  */
