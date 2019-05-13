@@ -115,18 +115,18 @@ exports.updateIndicator = (req, res) => {
     .then(indicator => {
       if (!indicator) {
         return res.status(404).send({
-          message: "Indicator not found with id " + req.params.productId
+          message: "Indicator not found with id " + req.params._id
         });
       }
       res.send(indicator);
     }).catch(err => {
       if (err.kind === 'ObjectId') {
         return res.status(404).send({
-          message: "Indicator not found with id " + req.params.productId
+          message: "Indicator not found with id " + req.params._id
         });
       }
       return res.status(500).send({
-        message: "Something wrong updating note with id " + req.params.productId
+        message: "Something wrong updating note with id " + req.params._id
       });
     });
 };

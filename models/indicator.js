@@ -32,7 +32,6 @@ var IndicatorSchema = new mongoose.Schema({
     source: String,
     recollectionMethod: String,
     disintegration: String,
-    infoPercentage: Number,
 }, {
         timestamps: true
     });

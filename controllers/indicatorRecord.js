@@ -1,4 +1,4 @@
-const IndicatorRecord    = require('../models/indicatorRecord'),
+const indicatorRecord    = require('../models/indicatorRecord'),
     { validationResult } = require('express-validator/check'),
     moment               = require('moment');
 
@@ -58,7 +58,7 @@ exports.get = (req, res, next) => {
     }
   }
 
-  IndicatorRecord.aggregate([
+  indicatorRecord.aggregate([
     { $match: search },
     {
       $lookup: {
@@ -91,7 +91,7 @@ exports.get = (req, res, next) => {
           $let: {
             vars: {
               stateData: {
-                $arrayElemAt: [ '$state', 0 ]
+                $arrayElemAt: ['$state', 0]
               }
             },
             in: {
@@ -126,5 +126,103 @@ exports.get = (req, res, next) => {
     }
 
     res.status(200).send({ data: results, success: true });
+  });
+}
+
+exports.createRecord = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  let {
+    indicatorId,
+    date,
+    state,
+    amount,
+    condemnatory,
+    absolut,
+    condemnedPeople,
+    victimNumber,
+    gender,
+    investigationFolder,
+  } = req.body;
+
+  var record = new indicatorRecord({
+    indicatorId: indicatorId,
+    date: date,
+    state: state,
+    amount: amount,
+    condemnatory: condemnatory,
+    absolut: absolut,
+    condemnedPeople: condemnedPeople,
+    victimNumber: victimNumber,
+    gender: gender,
+    investigationFolder: investigationFolder,
+  });
+
+  indicatorRecord.findOne({ date: date, state: state, indicatorId: indicatorId }, (err, _record) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (_record) {
+      return res.status(409).send({ error: 'That record already exists' });
+    }
+
+    record.save((err, record) => {
+      if (err) {
+        return next(err);
+      }
+      return res.status(200).json({
+        message: "Record successfully added!",
+        record: record
+      });
+    })
+  })
+}
+
+exports.updateRecord = (req,res) =>{
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  indicatorRecord.findByIdAndUpdate(req.params._id, {
+    indicatorId: req.body.indicatorId,
+    date: req.body.date,
+    state: req.body.state,
+    amount: req.body.amount,
+    condemnatory: req.body.condemnatory,
+    absolut: req.body.absolut,
+    condemnedPeople: req.body.condemnedPeople,
+    victimNumber: req.body.victimNumber,
+    gender: req.body.gender,
+    investigationFolder: req.body.investigationFolder
+  }, { new: true })
+    .then(record => {
+      if (!record) {
+        return res.status(404).send({
+          message: "Record not found with id " + req.params._id
+        });
+      }
+      res.send(record);
+    }).catch(err => {
+      if (err.kind === 'ObjectId') {
+        return res.status(404).send({
+          message: "Indicator not found with id " + req.params._id
+        });
+      }
+      return res.status(500).send({
+        message: "Something wrong updating note with id " + req.params._id
+      });
+    });
+  }
+
+exports.deleteRecord = (req, res) => {
+  indicatorRecord.remove({
+    _id: req.params._id
+  }, function (err, record) {
+    res.json(record);
   });
 }
