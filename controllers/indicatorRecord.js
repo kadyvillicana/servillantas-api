@@ -50,7 +50,7 @@ exports.get = (req, res, next) => {
       search['date']['$gte'] = momentDate.clone().startOf('month');
       search['date']['$lt'] = momentDate.clone().endOf('month');
     }
-  
+
     // Get js Date from moment
     if (search.date) {
       search['date']['$gte'] = search['date']['$gte'].toDate();
@@ -60,11 +60,12 @@ exports.get = (req, res, next) => {
 
   IndicatorRecord.aggregate([
     { $match: search },
-    { $lookup: {
-      from: 'places',
-      localField: 'state',
-      foreignField: '_id',
-      as:'state'
+    {
+      $lookup: {
+        from: 'places',
+        localField: 'state',
+        foreignField: '_id',
+        as: 'state'
       }
     },
     {
@@ -76,7 +77,11 @@ exports.get = (req, res, next) => {
         totalFemale: { $sum: '$$ROOT.gender.female' },
         totalComplaint: { $sum: '$$ROOT.investigationFolder.complaint' },
         totalJudicialHearing: { $sum: '$$ROOT.investigationFolder.judicialHearing' },
-        totalOtherReasons: { $sum: '$$ROOT.investigationFolder.otherReasons' }
+        totalOtherReasons: { $sum: '$$ROOT.investigationFolder.otherReasons' },
+        totalCondemnatory: { $sum: '$$ROOT.condemnatory' },
+        totalAbsolut: { $sum: '$$ROOT.absolut' },
+        totalCondemnedPeople: { $sum: '$$ROOT.condemnedPeople' },
+        totalVictimNumber: { $sum: '$$ROOT.victimNumber' }
       }
     },
     {
@@ -102,6 +107,10 @@ exports.get = (req, res, next) => {
         totalComplaint: 1,
         totalJudicialHearing: 1,
         totalOtherReasons: 1,
+        totalCondemnatory: 1,
+        totalAbsolut: 1,
+        totalCondemnedPeople: 1,
+        totalVictimNumber: 1
       }
     },
     {

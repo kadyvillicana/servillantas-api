@@ -1,6 +1,6 @@
 const Indicator = require('../models/indicator'),
-{ validationResult } = require('express-validator/check');
-      
+  { validationResult } = require('express-validator/check');
+
 //Get all Indicators from DB
 exports.getIndicators = (req, res, next) => {
   Indicator.find((err, indicators) => {
@@ -10,7 +10,7 @@ exports.getIndicators = (req, res, next) => {
     if (!indicators || !indicators.length) {
       return res.status(200).send({ message: "There are no indicators", success: false });
     }
-    return res.status(200).send({data:indicators, success:true});
+    return res.status(200).send({ data: indicators, success: true });
   });
 
 }
@@ -23,15 +23,16 @@ exports.createIndicator = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  let { item, 
-        version, 
-        indicatorName, 
-        definition, 
-        calculationMethod, 
-        measurementFrequency, 
-        geographicBreakdown, 
-        specialTreatment, 
-        indicatorWeaknesses } = req.body;
+  let { item,
+    version,
+    indicatorName,
+    definition,
+    calculationMethod,
+    measurementFrequency,
+    geographicBreakdown,
+    specialTreatment,
+    indicatorWeaknesses } = req.body;
+    
   var indicator = new Indicator({
     item: item,
     version: version,
