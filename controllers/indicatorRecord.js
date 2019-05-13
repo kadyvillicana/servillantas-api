@@ -119,3 +119,47 @@ exports.get = (req, res, next) => {
     res.status(200).send({ data: results, success: true });
   });
 }
+
+/**
+ * Get the date of the first and last records available for the requested indicator.
+ * 
+ * @returns If there are records matching the request return the oldest and newest date. 
+ */
+exports.getDates = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const { type } = req.params;
+
+  IndicatorRecord.aggregate([
+    {
+      $match: { indicatorId: type }
+    },
+    {
+      $group: {
+        _id: null,
+        minDate: { $min: '$$ROOT.date' },
+        maxDate: { $max: '$$ROOT.date' }
+      }
+    },
+    {
+      $project: {
+        _id: 0,
+      }
+    }
+  ]).exec((err, result) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!result.length) {
+      return res.status(200).send({ message: "There are no records", success: false });
+    }
+
+    return res.status(200).send({ data: result[0], success: true });
+  })
+
+}
