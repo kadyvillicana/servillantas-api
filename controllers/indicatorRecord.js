@@ -1,4 +1,4 @@
-const indicatorRecord    = require('../models/indicatorRecord'),
+const IndicatorRecord    = require('../models/indicatorRecord'),
     { validationResult } = require('express-validator/check'),
     moment               = require('moment');
 
@@ -58,7 +58,7 @@ exports.get = (req, res, next) => {
     }
   }
 
-  indicatorRecord.aggregate([
+  IndicatorRecord.aggregate([
     { $match: search },
     {
       $lookup: {
@@ -134,7 +134,8 @@ exports.createRecord = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-
+  
+  
   let {
     indicatorId,
     date,
@@ -148,7 +149,7 @@ exports.createRecord = (req, res, next) => {
     investigationFolder,
   } = req.body;
 
-  var record = new indicatorRecord({
+  var record = new IndicatorRecord({
     indicatorId: indicatorId,
     date: date,
     state: state,
@@ -161,7 +162,31 @@ exports.createRecord = (req, res, next) => {
     investigationFolder: investigationFolder,
   });
 
-  indicatorRecord.findOne({ date: date, state: state, indicatorId: indicatorId }, (err, _record) => {
+  const search = { indicatorId: indicatorId };
+  const momentDate = moment().utcOffset(0);
+  var recordDate = new Date(date);
+  var recordMonth = recordDate.getMonth();
+  var recordYear = recordDate.getFullYear();
+
+  if (recordYear) {
+    momentDate.year(recordYear);
+    search.date = {};
+    search['date']['$gte'] = momentDate.clone().startOf('year');
+    search['date']['$lt'] = momentDate.clone().endOf('year');
+
+    if (recordMonth) {
+      momentDate.month(recordMonth);
+      search['date']['$gte'] = momentDate.clone().startOf('month');
+      search['date']['$lt'] = momentDate.clone().endOf('month');
+    }
+
+    console.log(search)
+  }
+  // Ignore time and set 1st day of the month
+  momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).set('date', 1);
+  IndicatorRecord.findOne({ date: {'$gte': search['date']['$gte'], '$lt': search['date']['$lt']}, state: state, indicatorId: indicatorId }, (err, _record) => {
+   
+
     if (err) {
       return next(err);
     }
@@ -188,7 +213,7 @@ exports.updateRecord = (req,res) =>{
     return res.status(422).json({ errors: errors.array() });
   }
 
-  indicatorRecord.findByIdAndUpdate(req.params._id, {
+  IndicatorRecord.findByIdAndUpdate(req.params._id, {
     indicatorId: req.body.indicatorId,
     date: req.body.date,
     state: req.body.state,
@@ -210,17 +235,17 @@ exports.updateRecord = (req,res) =>{
     }).catch(err => {
       if (err.kind === 'ObjectId') {
         return res.status(404).send({
-          message: "Indicator not found with id " + req.params._id
+          message: "Record not found with id " + req.params._id
         });
       }
       return res.status(500).send({
-        message: "Something wrong updating note with id " + req.params._id
+        message: "Something wrong updating record with id " + req.params._id
       });
     });
   }
 
 exports.deleteRecord = (req, res) => {
-  indicatorRecord.deleteOne({
+  IndicatorRecord.deleteOne({
     _id: req.params._id
   }, function (err, record) {
     res.json(record);
