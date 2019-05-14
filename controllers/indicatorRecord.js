@@ -179,8 +179,6 @@ exports.createRecord = (req, res, next) => {
       search['date']['$gte'] = momentDate.clone().startOf('month');
       search['date']['$lt'] = momentDate.clone().endOf('month');
     }
-
-    console.log(search)
   }
   // Ignore time and set 1st day of the month
   momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).set('date', 1);
