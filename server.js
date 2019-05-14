@@ -9,6 +9,7 @@ const express        = require('express'),
       router         = require('./routes');
 
 mongoose.set('useCreateIndex', true);
+mongoose.set('useFindAndModify', false);
 mongoose.connect(databaseConfig().url, databaseConfig().options);
 const connection = mongoose.connection;
 

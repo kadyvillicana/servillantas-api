@@ -1,6 +1,6 @@
 const Indicator = require('../models/indicator'),
-{ validationResult } = require('express-validator/check');
-      
+  { validationResult } = require('express-validator/check');
+
 //Get all Indicators from DB
 exports.getIndicators = (req, res, next) => {
   Indicator.find((err, indicators) => {
@@ -10,7 +10,7 @@ exports.getIndicators = (req, res, next) => {
     if (!indicators || !indicators.length) {
       return res.status(200).send({ message: "There are no indicators", success: false });
     }
-    return res.status(200).send({data:indicators, success:true});
+    return res.status(200).send({ data: indicators, success: true });
   });
 
 }
@@ -23,15 +23,16 @@ exports.createIndicator = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  let { item, 
-        version, 
-        indicatorName, 
-        definition, 
-        calculationMethod, 
-        measurementFrequency, 
-        geographicBreakdown, 
-        specialTreatment, 
-        indicatorWeaknesses } = req.body;
+  let { item,
+    version,
+    indicatorName,
+    definition,
+    calculationMethod,
+    measurementFrequency,
+    geographicBreakdown,
+    specialTreatment,
+    indicatorWeaknesses } = req.body;
+    
   var indicator = new Indicator({
     item: item,
     version: version,
@@ -114,25 +115,25 @@ exports.updateIndicator = (req, res) => {
     .then(indicator => {
       if (!indicator) {
         return res.status(404).send({
-          message: "Indicator not found with id " + req.params.productId
+          message: "Indicator not found with id " + req.params._id
         });
       }
       res.send(indicator);
     }).catch(err => {
       if (err.kind === 'ObjectId') {
         return res.status(404).send({
-          message: "Indicator not found with id " + req.params.productId
+          message: "Indicator not found with id " + req.params._id
         });
       }
       return res.status(500).send({
-        message: "Something wrong updating note with id " + req.params.productId
+        message: "Something wrong updating indicator with id " + req.params._id
       });
     });
 };
 
 //Delete an Indicator
 exports.deleteIndicator = (req, res, next) => {
-  Indicator.remove({
+  Indicator.deleteOne({
     _id: req.params._id
   }, function (err, indicator) {
     res.json(indicator);
