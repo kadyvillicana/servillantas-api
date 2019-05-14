@@ -30,7 +30,7 @@ module.exports = function(app) {
     indicatorRecordsRoutes.get('/:type', getIndicatorRecordsRequest, IndicatorRecordController.get);
     indicatorRecordsRoutes.get('/:type/dates', getIndicatorDates, IndicatorRecordController.getDates);
     indicatorRecordsRoutes.post('/:type',postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
-    indicatorRecordsRoutes.put('/:type/:_id',postIndicatorRecordsRequest,getIndicatorRecordsRequest,IndicatorRecordController.updateRecord);
+    indicatorRecordsRoutes.put('/:type/:_id',postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
     indicatorRecordsRoutes.delete('/:type/:_id',IndicatorRecordController.deleteRecord);
     //Not found route
     apiRoutes.use( (req, res, next) => {
