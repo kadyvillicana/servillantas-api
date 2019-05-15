@@ -60,8 +60,12 @@ exports.get = (req, res, next) => {
 
   let group = {};
   let project = {};
+  let stages = [];
 
+  // If the data of each state over time should be returned
   if (parseInt(breakdown)) {
+    
+    // Add a new property with the amount and date on the group stage
     group = {
       breakdown: {
         $push: {
@@ -71,9 +75,26 @@ exports.get = (req, res, next) => {
       }
     }
 
+    // Specify this property should be returned
     project = {
       breakdown: 1
     }
+
+    // Add new stages to agreggate
+    stages = [
+      { $unwind: "$breakdown" },
+      {
+        $sort: { 'breakdown.date': 1 } // ASC
+      },
+      {
+        $group: {
+          _id: '$_id',
+          state: { $first: '$$ROOT.state' },
+          breakdown: { $push: '$$ROOT.breakdown' },
+          totalAmount: { $first: '$$ROOT.totalAmount' }
+        }
+      },
+    ]
   }
 
   IndicatorRecord.aggregate([
@@ -103,6 +124,7 @@ exports.get = (req, res, next) => {
         // totalVictimNumber: { $sum: '$$ROOT.victimNumber' },
       }
     },
+    ...stages,
     {
       $project: {
         _id: 0,
