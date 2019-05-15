@@ -24,9 +24,9 @@ const indicatorData = {
   "indicatorId": indicatorId,
   "definition": "Pendiente",
   "calculationMethod": {
-    "formula": "Tt1 + Tt2 + Tt3...",
+    "formula": "TDDT = Tt1 + Tt2 + Tt3...",
     "numerator": "Tt Denuncias de denuncia registradas en el periodo (t) para el área geográfica especificada.",
-    "denominator": "N/A"
+    "denominator": "TDDT = Total de denuncias por el delito de tortura"
   },
   "measurementFrequency": {
     "annual": true,

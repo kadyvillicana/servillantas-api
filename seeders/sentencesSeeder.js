@@ -24,9 +24,9 @@ const indicatorData = {
   "indicatorId": indicatorId,
   "definition": "Pendiente",
   "calculationMethod": {
-    "formula": "Nn1 + Nn2 + Nn3...",
+    "formula": "NDTT = Nn1 + Nn2 + Nn3...",
     "numerator": "Nn Denuncias de denuncia registradas en el periodo (n) para el área geográfica especificada.",
-    "denominator": "N/A"
+    "denominator": "NDTT = Número de denuncias por tortura o TPCID"
   },
   "measurementFrequency": {
     "annual": true,
