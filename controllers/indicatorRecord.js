@@ -3,7 +3,7 @@ const IndicatorRecord    = require('../models/indicatorRecord'),
     moment               = require('moment');
 
 /**
- * Function to get all indicator records that match the type
+ * Function to get all indicator records that match the indicatorId
  * and date if specified.
  * 
  * @returns
@@ -17,9 +17,9 @@ exports.get = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { type } = req.params;
-  const { year, quarter, month } = req.query;
-  const search = { indicatorId: type };
+  const { indicatorId } = req.params;
+  const { year, quarter, month, breakdown } = req.query;
+  const search = { indicatorId: indicatorId };
 
   const momentDate = moment().utcOffset(0);
   // Ignore time and set 1st day of the month
@@ -58,6 +58,24 @@ exports.get = (req, res, next) => {
     }
   }
 
+  let group = {};
+  let project = {};
+
+  if (parseInt(breakdown)) {
+    group = {
+      breakdown: {
+        $push: {
+          amount: '$$ROOT.amount',
+          date: '$$ROOT.date'
+        }
+      }
+    }
+
+    project = {
+      breakdown: 1
+    }
+  }
+
   IndicatorRecord.aggregate([
     { $match: search },
     {
@@ -73,15 +91,16 @@ exports.get = (req, res, next) => {
         _id: '$state._id',
         state: { $first: '$$ROOT.state' },
         totalAmount: { $sum: '$$ROOT.amount' },
-        totalMale: { $sum: '$$ROOT.gender.male' },
-        totalFemale: { $sum: '$$ROOT.gender.female' },
-        totalComplaint: { $sum: '$$ROOT.investigationFolder.complaint' },
-        totalJudicialHearing: { $sum: '$$ROOT.investigationFolder.judicialHearing' },
-        totalOtherReasons: { $sum: '$$ROOT.investigationFolder.otherReasons' },
-        totalCondemnatory: { $sum: '$$ROOT.condemnatory' },
-        totalAbsolut: { $sum: '$$ROOT.absolut' },
-        totalCondemnedPeople: { $sum: '$$ROOT.condemnedPeople' },
-        totalVictimNumber: { $sum: '$$ROOT.victimNumber' }
+        ...group
+        // totalMale: { $sum: '$$ROOT.gender.male' },
+        // totalFemale: { $sum: '$$ROOT.gender.female' },
+        // totalComplaint: { $sum: '$$ROOT.investigationFolder.complaint' },
+        // totalJudicialHearing: { $sum: '$$ROOT.investigationFolder.judicialHearing' },
+        // totalOtherReasons: { $sum: '$$ROOT.investigationFolder.otherReasons' },
+        // totalCondemnatory: { $sum: '$$ROOT.condemnatory' },
+        // totalAbsolut: { $sum: '$$ROOT.absolut' },
+        // totalCondemnedPeople: { $sum: '$$ROOT.condemnedPeople' },
+        // totalVictimNumber: { $sum: '$$ROOT.victimNumber' },
       }
     },
     {
@@ -102,15 +121,16 @@ exports.get = (req, res, next) => {
           },
         },
         totalAmount: 1,
-        totalMale: 1,
-        totalFemale: 1,
-        totalComplaint: 1,
-        totalJudicialHearing: 1,
-        totalOtherReasons: 1,
-        totalCondemnatory: 1,
-        totalAbsolut: 1,
-        totalCondemnedPeople: 1,
-        totalVictimNumber: 1
+        ...project
+        // totalMale: 1,
+        // totalFemale: 1,
+        // totalComplaint: 1,
+        // totalJudicialHearing: 1,
+        // totalOtherReasons: 1,
+        // totalCondemnatory: 1,
+        // totalAbsolut: 1,
+        // totalCondemnedPeople: 1,
+        // totalVictimNumber: 1
       }
     },
     {
@@ -251,7 +271,7 @@ exports.deleteRecord = (req, res) => {
 }
 
 /**
- * Function to get the oldest and newest date among all documents that match the specified type.
+ * Function to get the oldest and newest date among all documents that match the specified indicatorId.
  * 
  * @returns If there are records matching the request return the oldest and newest date. 
  */
@@ -262,11 +282,11 @@ exports.getDates = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { type } = req.params;
+  const { indicatorId } = req.params;
 
   IndicatorRecord.aggregate([
     {
-      $match: { indicatorId: type }
+      $match: { indicatorId: indicatorId }
     },
     {
       $group: {
