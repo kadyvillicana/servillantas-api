@@ -1,3 +1,5 @@
 module.exports = Object.freeze({
-  COMPLAINTS: 'complaints',
+  COMPLAINTS: '1',
+  CONSIGNMENTS: '2',
+  SENTENCES: '3',
 });
