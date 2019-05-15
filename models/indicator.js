@@ -2,8 +2,8 @@ var mongoose = require('mongoose');
 
 var IndicatorSchema = new mongoose.Schema({
     item: {
-        type: Number,
-        unique: true
+        name: String,
+        id: Number,
     },
     version: String,
     indicatorId: String,

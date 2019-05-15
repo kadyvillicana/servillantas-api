@@ -16,9 +16,10 @@ mongoose.connect(databaseConfig().url, databaseConfig().options);
 let complaintMapKeys = [];
 let complaintMapData = {};
 let complaintsToSave = [];
+const indicator = "complaints"
 
 // Delete all records that match the indicatorId before seeding
-IndicatorRecord.deleteMany({ indicatorId: indicatorIds.COMPLAINTS }, err => {
+IndicatorRecord.deleteMany({ indicatorId: indicator }, err => {
   if (err) {
     disconnect();
     return;
@@ -38,7 +39,7 @@ IndicatorRecord.deleteMany({ indicatorId: indicatorIds.COMPLAINTS }, err => {
     for (let i = 0; i < complaintsArray.length; i++) {
 
       // Object to save in db
-      let complaint = { indicatorId: indicatorIds.COMPLAINTS };
+      let complaint = { indicatorId: indicator};
       // Object to save year and month
       let date = {};
 
