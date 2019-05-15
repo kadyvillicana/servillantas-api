@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "seedPlaces": "node ./seeders/placesSeeder.js",
-    "seedComplaints": "node ./seeders/complaintsSeeder.js"
+    "seedComplaints": "node ./seeders/complaintsSeeder.js",
+    "seedSentences": "node ./seeders/sentencesSeeder.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",

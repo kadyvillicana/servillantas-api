@@ -3,7 +3,7 @@ const IndicatorRecord     = require('../models/indicatorRecord'),
     mongoose              = require('mongoose'),
     databaseConfig        = require('../config/database'),
     complaintMap          = require('../helpers/complaints'),
-    complaintsArray       = require('../constants/complaints'),
+    dataArray             = require('../constants/sentences-data'),
     indicatorIds          = require('../constants/indicatorIds'),
     moment                = require('moment');
                             require('moment/locale/es');
@@ -18,7 +18,7 @@ let complaintMapData = {};
 let complaintsToSave = [];
 
 // Delete all records that match the indicatorId before seeding
-IndicatorRecord.deleteMany({ indicatorId: indicatorIds.COMPLAINTS }, err => {
+IndicatorRecord.deleteMany({ indicatorId: indicatorIds.SENTENCES }, err => {
   if (err) {
     disconnect();
     return;
@@ -35,15 +35,15 @@ IndicatorRecord.deleteMany({ indicatorId: indicatorIds.COMPLAINTS }, err => {
     momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).set('date', 1);
   
     // Iterate array of complaints (object with year, month, and each state as key)
-    for (let i = 0; i < complaintsArray.length; i++) {
+    for (let i = 0; i < dataArray.length; i++) {
 
       // Object to save in db
-      let complaint = { indicatorId: indicatorIds.COMPLAINTS };
+      let complaint = { indicatorId: indicatorIds.SENTENCES };
       // Object to save year and month
       let date = {};
 
       // Iterate through each object
-      for (let [key, value] of Object.entries(complaintsArray[i])) {
+      for (let [key, value] of Object.entries(dataArray[i])) {
 
         // Object to save the key (year, month or state code) and property to know if the object is a place
         let complaintMapProps = {};
