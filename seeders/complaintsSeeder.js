@@ -21,11 +21,13 @@ const indicatorData = {
   "item": { id: 1, name: "Denuncia e investigación de la tortura/trato cruel, inhumano o degradante" },
   "version": "1",
   "indicatorName": "Denuncia e investigación de la tortura/trato cruel, inhumano o degradante",
+  "shortName": "Número de denuncias",
   "indicatorId": indicatorId,
   "definition": "Pendiente",
+  "description": "Total de denuncias por el delito de tortura y/o tratos crueles, inhumanos o degradantes. El dato de denuncias de extorsión se obtiene a partir de junio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos. El delito es clasificado como fuero federal, la Ciudad de México como fuero común según Artículo 1° de Ley General.",
   "calculationMethod": {
     "formula": "TDDT = Tt1 + Tt2 + Tt3...",
-    "numerator": "Tt Denuncias de denuncia registradas en el periodo (t) para el área geográfica especificada.",
+    "numerator": "Tt = Número de denuncias registradas en el periodo (t) para el área geográfica especificada.",
     "denominator": "TDDT = Total de denuncias por el delito de tortura"
   },
   "measurementFrequency": {
