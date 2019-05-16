@@ -18,15 +18,17 @@ let complaintMapData = {};
 let complaintsToSave = [];
 const indicatorId = "sentences";
 const indicatorData = {
-  "item": { id: 2, name: "Número de denuncias por tortura o TPCID" },
+  "item": { id: 2, name: "Número de expedientes actualmente en trámite en FEIDT" },
   "version": "1",
-  "indicatorName": "Número de denuncias por tortura o TPCID",
+  "indicatorName": "Número de expedientes actualmente en trámite en FEIDT",
+  "shortName": "Expedientes en Tramite",
   "indicatorId": indicatorId,
   "definition": "Pendiente",
+  "description": "Total de numero de expedientes que se encuentran en tramite en FEIDT. Los datos se obtienen a partir de julio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos ",
   "calculationMethod": {
-    "formula": "NDTT = Nn1 + Nn2 + Nn3...",
-    "numerator": "Nn = Denuncias de denuncia registradas en el periodo (n) para el área geográfica especificada.",
-    "denominator": "NDTT = Número de denuncias por tortura o TPCID"
+    "formula": "NDET = Nn1 + Nn2 + Nn3...",
+    "numerator": "Nn = Expedientes registrados en tramite en el periodo (n) para el área geográfica especificada.",
+    "denominator": "NDET = Número de expedientes actualmente en trámite"
   },
   "measurementFrequency": {
     "annual": true,

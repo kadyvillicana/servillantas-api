@@ -27,11 +27,11 @@ module.exports = function(app) {
 
     // Indicator Record Routes
     apiRoutes.use('/records', indicatorRecordsRoutes);
-    indicatorRecordsRoutes.get('/:type', getIndicatorRecordsRequest, IndicatorRecordController.get);
-    indicatorRecordsRoutes.get('/:type/dates', getIndicatorDates, IndicatorRecordController.getDates);
-    indicatorRecordsRoutes.post('/:type',postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
-    indicatorRecordsRoutes.put('/:type/:_id',postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
-    indicatorRecordsRoutes.delete('/:type/:_id',IndicatorRecordController.deleteRecord);
+    indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
+    indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
+    indicatorRecordsRoutes.post('/:indicatorId', postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
+    indicatorRecordsRoutes.put('/:indicatorId/:_id', postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
+    indicatorRecordsRoutes.delete('/:indicatorId/:_id', IndicatorRecordController.deleteRecord);
     //Not found route
     apiRoutes.use( (req, res, next) => {
         res.status(404).send("Not found");
