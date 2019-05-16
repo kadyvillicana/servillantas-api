@@ -8,7 +8,9 @@ var IndicatorSchema = new mongoose.Schema({
     version: String,
     indicatorId: String,
     indicatorName: String,
+    shortName: String,
     definition: String,
+    description: String,
     calculationMethod: {
         formula: String,
         numerator: String,
