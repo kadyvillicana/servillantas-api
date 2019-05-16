@@ -58,6 +58,35 @@ exports.get = (req, res, next) => {
     }
   }
 
+  // Initial group stage to group by state id and add the state data
+  // and totalAmount for the next stage
+  let groupStage = {
+    _id: '$state._id',
+    state: { $first: '$$ROOT.state' },
+    totalAmount: { $sum: '$$ROOT.amount' },
+  }
+
+  // Don't send the id to the next stage, format the state data
+  // and indicate that totalAmount is needed on the next stage
+  let projectStage = {
+    _id: 0,
+    state: {
+      $let: {
+        vars: {
+          stateData: {
+            $arrayElemAt: ['$state', 0]
+          }
+        },
+        in: {
+          type: '$$stateData.type',
+          name: '$$stateData.name',
+          code: '$$stateData.code'
+        }
+      },
+    },
+    totalAmount: 1,
+  }
+
   let group = {};
   let project = {};
   let stages = [];
@@ -95,6 +124,10 @@ exports.get = (req, res, next) => {
         }
       },
     ]
+
+    // Merge new properties
+    groupStage = Object.assign(groupStage, group);
+    projectStage = Object.assign(projectStage, project);
   }
 
   IndicatorRecord.aggregate([
@@ -108,52 +141,11 @@ exports.get = (req, res, next) => {
       }
     },
     {
-      $group: {
-        _id: '$state._id',
-        state: { $first: '$$ROOT.state' },
-        totalAmount: { $sum: '$$ROOT.amount' },
-        ...group
-        // totalMale: { $sum: '$$ROOT.gender.male' },
-        // totalFemale: { $sum: '$$ROOT.gender.female' },
-        // totalComplaint: { $sum: '$$ROOT.investigationFolder.complaint' },
-        // totalJudicialHearing: { $sum: '$$ROOT.investigationFolder.judicialHearing' },
-        // totalOtherReasons: { $sum: '$$ROOT.investigationFolder.otherReasons' },
-        // totalCondemnatory: { $sum: '$$ROOT.condemnatory' },
-        // totalAbsolut: { $sum: '$$ROOT.absolut' },
-        // totalCondemnedPeople: { $sum: '$$ROOT.condemnedPeople' },
-        // totalVictimNumber: { $sum: '$$ROOT.victimNumber' },
-      }
+      $group: groupStage
     },
     ...stages,
     {
-      $project: {
-        _id: 0,
-        state: {
-          $let: {
-            vars: {
-              stateData: {
-                $arrayElemAt: ['$state', 0]
-              }
-            },
-            in: {
-              type: '$$stateData.type',
-              name: '$$stateData.name',
-              code: '$$stateData.code'
-            }
-          },
-        },
-        totalAmount: 1,
-        ...project
-        // totalMale: 1,
-        // totalFemale: 1,
-        // totalComplaint: 1,
-        // totalJudicialHearing: 1,
-        // totalOtherReasons: 1,
-        // totalCondemnatory: 1,
-        // totalAbsolut: 1,
-        // totalCondemnedPeople: 1,
-        // totalVictimNumber: 1
-      }
+      $project: projectStage
     },
     {
       $sort: { totalAmount: -1 } // DESC
