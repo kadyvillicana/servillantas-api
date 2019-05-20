@@ -5,6 +5,7 @@ const IndicatorRecord       = require('../models/indicatorRecord'),
       databaseConfig        = require('../config/database'),
       complaintMap          = require('../helpers/complaints'),
       dataArray             = require('../constants/sentences-data'),
+      entries               = require('../helpers/entries-polyfill'),
       moment                = require('moment');
                               require('moment/locale/es');
 
@@ -79,7 +80,7 @@ Indicator.deleteOne({ indicatorId: indicatorId }, (err) => {
           let date = {};
 
           // Iterate through each object
-          for (let [key, value] of Object.entries(dataArray[i])) {
+          for (let [key, value] of entries(dataArray[i])) {
 
             // Object to save the key (year, month or state code) and property to know if the object is a place
             let complaintMapProps = {};
@@ -90,10 +91,10 @@ Indicator.deleteOne({ indicatorId: indicatorId }, (err) => {
               complaintMapProps.key = key;
               complaintMapProps.isPlace = hash[key].isPlace;
             } else {
-              for (let [cKey, cValue] of Object.entries(complaintMap)) {
+              for (let [cKey, cValue] of entries(complaintMap)) {
                 if (cValue.names.includes(key.toLocaleLowerCase())) {
                   complaintMapKeys = [...complaintMapKeys, cKey];
-                  complaintMapData = { ...complaintMapData, [cKey]: cValue }
+                  complaintMapData = Object.assign(complaintMapData, { [cKey]: cValue });
                   complaintMapProps.key = cKey;
                   complaintMapProps.isPlace = cValue.isPlace;
                   break;
