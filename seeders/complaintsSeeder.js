@@ -23,8 +23,7 @@ const indicatorData = {
   "indicatorName": "Denuncia e investigación de la tortura/trato cruel, inhumano o degradante",
   "shortName": "Número de denuncias",
   "indicatorId": indicatorId,
-  "definition": "Pendiente",
-  "description": "Total de denuncias por el delito de tortura y/o tratos crueles, inhumanos o degradantes. El dato de denuncias de extorsión se obtiene a partir de junio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos. El delito es clasificado como fuero federal, la Ciudad de México como fuero común según Artículo 1° de Ley General.",
+  "definition": "Total de denuncias por el delito de tortura y/o tratos crueles, inhumanos o degradantes. El dato de denuncias de extorsión se obtiene a partir de junio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos. El delito es clasificado como fuero federal, la Ciudad de México como fuero común según Artículo 1° de Ley General.",
   "calculationMethod": {
     "formula": "TDDT = Tt1 + Tt2 + Tt3...",
     "numerator": "Tt = Número de denuncias registradas en el periodo (t) para el área geográfica especificada.",
@@ -40,7 +39,11 @@ const indicatorData = {
     "state": true,
     "municipal": true,
     "national": true
-  }
+  },
+  "source": ["www.senado.gob.mx","https://www.hchr.org.mx/"],
+  "specialTreatment": "El dato de denuncias de extorsión se obtiene a partir de junio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos. El delito es clasificado como fuero federal, la Ciudad de México como fuero común según Artículo 1° de Ley General.",
+  "indicatorWeaknesses": "El número real de delitos de tortura es mayor a aquellos denunciados"
+  
 }
 
 Indicator.deleteOne({ indicatorId: indicatorId }, (err) => {

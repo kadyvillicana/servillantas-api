@@ -23,8 +23,7 @@ const indicatorData = {
   "indicatorName": "Número de expedientes actualmente en trámite en FEIDT",
   "shortName": "Expedientes en Tramite",
   "indicatorId": indicatorId,
-  "definition": "Pendiente",
-  "description": "Total de numero de expedientes que se encuentran en tramite en FEIDT. Los datos se obtienen a partir de julio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos ",
+  "definition": "Total de numero de expedientes que se encuentran en tramite en FEIDT. Los datos se obtienen a partir de julio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos ",
   "calculationMethod": {
     "formula": "NDET = Nn1 + Nn2 + Nn3...",
     "numerator": "Nn = Expedientes registrados en tramite en el periodo (n) para el área geográfica especificada.",
@@ -40,7 +39,11 @@ const indicatorData = {
     "state": true,
     "municipal": true,
     "national": true
-  }
+  },
+  "source": ["www.senado.gob.mx","https://www.hchr.org.mx/"],
+  "specialTreatment": "Los datos se obtienen a partir de julio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos ",
+  "indicatorWeaknesses": "El número real de delitos de tortura es mayor a aquellos denunciados"
+  
 }
 
 Indicator.deleteOne({ indicatorId: indicatorId }, (err) => {

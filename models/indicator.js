@@ -10,7 +10,6 @@ var IndicatorSchema = new mongoose.Schema({
     indicatorName: String,
     shortName: String,
     definition: String,
-    description: String,
     calculationMethod: {
         formula: String,
         numerator: String,
@@ -31,7 +30,7 @@ var IndicatorSchema = new mongoose.Schema({
     indicatorWeaknesses: String,
 
     processedIndicator: String,
-    source: String,
+    source: [{type: String}],
     recollectionMethod: String,
     disintegration: String,
 }, {
