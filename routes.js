@@ -1,15 +1,17 @@
 const IndicatorRecordController     = require('./controllers/indicatorRecord'),
+      ItemController                = require('./controllers/item'),
+      IndicatorController           = require('./controllers/indicator'),
       getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator'),
       getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord'),
       getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates'),
       postIndicatorRecordsRequest   = require('./requests/indicatorRecordRequests/postIndicatorRecord'),
       express                       = require('express');
-const indicatorController = require('./controllers/indicator');
 
 module.exports = function(app) {
 
     const apiRoutes               = express.Router(),
-        indicatorRoutes           = express.Router(),
+        itemRoutes                = express.Router(),
+        indicatorRoutes           = express.Router({ mergeParams: true }),
         indicatorRecordsRoutes    = express.Router();
 
     // Default routes
@@ -17,13 +19,18 @@ module.exports = function(app) {
         res.send('Im the home page!')
     });
 
+    // Item routes
+    apiRoutes.use('/items', itemRoutes);
+    itemRoutes.get('/', ItemController.getItems);
+    itemRoutes.get('/:id', ItemController.getItem);
+    itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
+    
     // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/', indicatorController.getIndicators);
-    indicatorRoutes.get('/:_id', indicatorController.getIndicatorByIdentifier);
-    indicatorRoutes.post('/', getIndicatorRequest, indicatorController.createIndicator);
-    indicatorRoutes.put('/:_id', getIndicatorRequest, indicatorController.updateIndicator);
-    indicatorRoutes.delete('/:_id', indicatorController.deleteIndicator);
+    indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
+    indicatorRoutes.post('/', getIndicatorRequest, IndicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', getIndicatorRequest, IndicatorController.updateIndicator);
+    indicatorRoutes.delete('/:_id', IndicatorController.deleteIndicator);
 
     // Indicator Record Routes
     apiRoutes.use('/records', indicatorRecordsRoutes);
