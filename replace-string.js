@@ -4,7 +4,8 @@ const map = {
     '%node_port%' : process.env['node_port'],
     '%db_url%' : process.env['db_url'],
     '%db_user%' : process.env['db_user'],
-    '%db_password%' : process.env['db_password']
+    '%db_password%' : process.env['db_password'],
+    '%session%' : process.env['express_session']
 };
 
 validateKeys(map);
