@@ -1,22 +1,7 @@
-var jwt = require('jsonwebtoken');
-var User = require('../models/user');
-var authConfig = require('../config/auth');
+var User       = require('../models/user');
+var passport   = require('passport');
 
-function generateToken(user){
-    return jwt.sign(user, authConfig.secret, {
-        expiresIn: "1d"
-    });
-}
-
-function setUserInfo(request){
-    return {
-        _id: request._id,
-        email: request.email,
-        role: request.role
-    };
-}
-
-exports.register = function(req, res, next){
+exports.register = (req, res, next) => {
     var email = req.body.email;
     var password = req.body.password;
 
@@ -44,17 +29,51 @@ exports.register = function(req, res, next){
         });
         
         user.save(function(err, user){
-    
             if(err){
                 return next(err);
             }
-            var userInfo = setUserInfo(user);
             res.status(201).json({
-                token: 'JWT ' + generateToken(userInfo),
-                user: userInfo
+                user: user
             })
         });
-
     });
-
 }
+
+exports.login = (req, res, next) => {
+    const { email, password  } = req.body;
+    if(!email) {
+        return res.status(422).json({
+          errors: {
+            email: 'is required',
+          },
+        });
+      }
+    
+      if(!password) {
+        return res.status(422).json({
+          errors: {
+            password: 'is required',
+          },
+        });
+      }
+ 
+      return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
+        if(err) {
+          return next(err);
+        }
+
+        if(passportUser) {
+          const user = passportUser;
+          user.token = passportUser.generateJWT();
+    
+          return res.json({ user: user.toAuthJSON() });
+        }
+
+        return res.status(400).json({error: info})
+      })(req, res, next);
+  };
+
+  exports.logout = (req,res,next) =>{
+    req.logout();
+    res.send({message: "sign out"})
+  }

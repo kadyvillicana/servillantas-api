@@ -4,9 +4,13 @@ const express        = require('express'),
       mongoose       = require('mongoose'),
       logger         = require('morgan'),
       bodyParser     = require('body-parser'),
+      cookieParser   = require('cookie-parser'),
+      session        = require('express-session'),
       cors           = require('cors'),
       databaseConfig = require('./config/database'),
-      router         = require('./routes');
+      router         = require('./routes'),
+      passport       = require('passport');
+                       require('./config/passport');
 
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
@@ -22,7 +26,19 @@ app.listen(process.env.PORT);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(cookieParser());
 app.use(logger('dev'));
 app.use(cors());
+
+// Express Session
+app.use(session({
+  secret: 'mV2XtNSl7MetyEJ',
+  saveUninitialized: true,
+  resave: true
+}));
+
+// Passport init
+app.use(passport.initialize());
+app.use(passport.session());
 
 router(app);

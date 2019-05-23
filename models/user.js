@@ -1,5 +1,6 @@
-var mongoose = require('mongoose');
-var bcrypt   = require('bcrypt');
+const mongoose = require('mongoose'),
+      bcrypt   = require('bcrypt'),
+      jwt = require('jsonwebtoken');
 
 
 var UserSchema = new mongoose.Schema({
@@ -17,7 +18,7 @@ var UserSchema = new mongoose.Schema({
 
 UserSchema.pre('save', function (next) {
     var user = this;
-    var SALT_FACTOR = 5;
+    var SALT_FACTOR = 12;
    
     if (!user.isModified('password')) {
         return next();
@@ -28,7 +29,6 @@ UserSchema.pre('save', function (next) {
             return next(err);
         }
         bcrypt.hash(user.password, salt, function (err, hash) {
-            console.log("fdfdd")
             if (err) {
                 return next(err);
             }
@@ -38,15 +38,24 @@ UserSchema.pre('save', function (next) {
     });
 });
 
-
-UserSchema.methods.comparePassword = function (passwordAttempt, cb) {
-    bcrypt.compare(passwordAttempt, this.password, function (err, isMatch) {
-        if (err) {
-            return cb(err);
-        } else {
-            cb(null, isMatch);
-        }
-    });
-}
+UserSchema.methods.generateJWT = function() {
+    const today = new Date();
+    const expirationDate = new Date(today);
+    expirationDate.setDate(today.getDate() + 60);
+  
+    return jwt.sign({
+      email: this.email,
+      id: this._id,
+      exp: parseInt(expirationDate.getTime() / 1000, 10),
+    }, 'secret');
+  }
+  
+  UserSchema.methods.toAuthJSON = function() {
+    return {
+      _id: this._id,
+      email: this.email,
+      token: this.generateJWT(),
+    };
+  };
 
 module.exports = mongoose.model('User', UserSchema);
