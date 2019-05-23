@@ -32,7 +32,7 @@ app.use(cors());
 
 // Express Session
 app.use(session({
-  secret: 'mV2XtNSl7MetyEJ',
+  secret: process.env.SESSION,
   saveUninitialized: true,
   resave: true
 }));
