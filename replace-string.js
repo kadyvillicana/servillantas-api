@@ -5,7 +5,9 @@ const map = {
     '%db_url%' : process.env['db_url'],
     '%db_user%' : process.env['db_user'],
     '%db_password%' : process.env['db_password'],
-    '%session%' : process.env['express_session']
+    '%session%' : process.env['express_session'],
+    '%email%' : process.env['email'],
+    '%email_password%' : process.env['email_password']
 };
 
 validateKeys(map);

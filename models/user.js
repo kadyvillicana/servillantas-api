@@ -10,7 +10,9 @@ var UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: String
+    password: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 }, {
     timestamps: true
 })

@@ -40,6 +40,8 @@ module.exports = function(app) {
     authRoutes.post('/', AuthController.register);
     authRoutes.post('/login', AuthController.login);
     authRoutes.get('/logout', AuthController.logout);
+    authRoutes.post('/forgotPassword', AuthController.forgotPassword);
+    authRoutes.get('/resetPassword', AuthController.resetPassword)
 
 
     //Not found route
