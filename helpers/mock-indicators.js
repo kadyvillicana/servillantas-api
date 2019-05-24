@@ -27,50 +27,60 @@ const indicatorData = Object.freeze({
 module.exports = {
   [items[0].name]: {
     indicators: [
-      Object.assign(Object.assign({}, indicatorData), {
+      {
+        ...indicatorData,
         indicatorName: 'Número de denuncias por tortura o TPCID',
         shortName: '# Denuncias',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Número de expedientes iniciados por tortura',
         shortName: '# Expedientes por tortura',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Número de expedientes actualmente en trámite en FEIDT',
         shortName: '# Expedientes en trámite',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Número de expedientes consignados por FEIDT',
         shortName: '# Expedientes consignados',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Número de expedientes en no ejercicio de acción penal, FEIDT',
         shortName: '# Expedientes en no ejercicio de acción penal',
-      }),
+      },
     ]
   },
   [items[1].name]: {
     indicators: [
-      Object.assign(Object.assign({}, indicatorData), {
+      {
+        ...indicatorData,
         indicatorName: 'Número de sentencias por tortura',
         shortName: '# Sentencias por tortura',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Procesos penales iniciados por delito de tortura (Sistema Tradicional)',
         shortName: 'Procesos penales (Sistemas Tradicional)',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Procesos penales iniciados por delito de tortura (Juzgados de Control)',
         shortName: 'Procesos penales (Juzgados de Control)',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Procesos penales iniciados por delito de tortura (Sistema Penal Acusatorio)',
         shortName: 'Procesos penales (Sistema Penal Acusatorio)',
-      }),
-      Object.assign(Object.assign({}, indicatorData), {
+      },
+      {
+        ...indicatorData,
         indicatorName: 'Sentencias por delito de tortura (total de juzgados)',
         shortName: 'Sentencias por tortura',
-      }),
+      },
     ]
   }  
 }

@@ -7,7 +7,6 @@ const IndicatorRecord              = require('../models/indicatorRecord'),
       items                        = require('../helpers/items-array')(),
       mockIndicators               = require('../helpers/mock-indicators'),
       getDataSet                   = require('../helpers/get-random-dataset'),
-      entries                      = require('../helpers/entries-polyfill'),
       mongoose                     = require('mongoose'),
       moment                       = require('moment');
                                      require('moment/locale/es');
@@ -74,7 +73,7 @@ const findItem = async (item) => {
 const addIndicator = async (_item, indicatorFromItem) => {
 
   // Add the item reference to the indicator before saving
-  const indicatorToSave = Object.assign(indicatorFromItem, { item: _item });
+  const indicatorToSave = { ...indicatorFromItem, item: _item };
   const _indicator = await Indicator.create(indicatorToSave);
 
   const places = await Place.find({}).exec();
@@ -94,7 +93,7 @@ const addIndicator = async (_item, indicatorFromItem) => {
     let date = {};
 
     // Iterate through each object
-    for (let [key, value] of entries(dataSet[i])) {
+    for (let [key, value] of Object.entries(dataSet[i])) {
 
       // Object to save the key (year, month or state code) and property to know if the object is a place
       let complaintMapProps = {};
@@ -105,10 +104,10 @@ const addIndicator = async (_item, indicatorFromItem) => {
         complaintMapProps.key = key;
         complaintMapProps.isPlace = hash[key].isPlace;
       } else {
-        for (let [cKey, cValue] of entries(complaintMap)) {
+        for (let [cKey, cValue] of Object.entries(complaintMap)) {
           if (cValue.names.includes(key.toLocaleLowerCase())) {
             complaintMapKeys = [...complaintMapKeys, cKey];
-            complaintMapData = Object.assign(complaintMapData, { [cKey]: cValue });
+            complaintMapData = { ...complaintMapData, [cKey]: cValue };
             complaintMapProps.key = cKey;
             complaintMapProps.isPlace = cValue.isPlace;
             break;
