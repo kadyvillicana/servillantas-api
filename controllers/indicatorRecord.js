@@ -1,4 +1,5 @@
 const IndicatorRecord    = require('../models/indicatorRecord'),
+    ObjectId             = require('mongoose').Types.ObjectId,
     { validationResult } = require('express-validator/check'),
     moment               = require('moment');
 
@@ -19,7 +20,7 @@ exports.get = (req, res, next) => {
 
   const { indicatorId } = req.params;
   const { year, quarter, month, breakdown } = req.query;
-  const search = { indicatorId: indicatorId };
+  const search = { indicator: ObjectId(indicatorId) };
 
   const momentDate = moment().utcOffset(0);
   // Ignore time and set 1st day of the month
@@ -300,7 +301,7 @@ exports.getDates = (req, res, next) => {
 
   IndicatorRecord.aggregate([
     {
-      $match: { indicatorId: indicatorId }
+      $match: { indicator: ObjectId(indicatorId) }
     },
     {
       $group: {
