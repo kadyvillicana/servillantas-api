@@ -1,7 +1,10 @@
 const User = require('../models/user'),
   passport = require('passport'),
   nodemailer = require('nodemailer'),
-  crypto = require('crypto');
+  crypto = require('crypto'),
+  bcryptjs = require('bcryptjs'),
+  BCRYPT_SALT_ROUNDS = 12;
+
 
 exports.register = (req, res, next) => {
   var email = req.body.email;
@@ -16,7 +19,6 @@ exports.register = (req, res, next) => {
   }
 
   User.findOne({ email: email }, function (err, existingUser) {
-
     if (err) {
       return next(err);
     }
@@ -67,7 +69,6 @@ exports.login = (req, res, next) => {
     if (passportUser) {
       const user = passportUser;
       user.token = passportUser.generateJWT();
-
       return res.json({ user: user.toAuthJSON() });
     }
 
@@ -93,14 +94,16 @@ exports.forgotPassword = (req, res, next) => {
     else {
       const token = crypto.randomBytes(20).toString('hex');
       console.log(token);
-      user.updateOne( {
+      user.updateOne({
         resetPasswordToken: token,
         resetPasswordExpires: Date.now() + 360000,
-      }, (err, res) => {console.log("hola")});
+      }, (err, res) => { console.log("hola") });
       console.log(user)
 
       const transporter = nodemailer.createTransport({
-        service: 'gmail',
+        host: "smtp.office365.com",
+        port: process.env.SMTP_PORT,
+        secure: false, // true for 465, false for other ports
         auth: {
           user: process.env.EMAIL,
           pass: process.env.EMAIL_PASSWORD
@@ -108,8 +111,8 @@ exports.forgotPassword = (req, res, next) => {
       });
 
       const mailOptions = {
-        from: 'sciotestmail@gmail.com',
-        to: 'cmoreno@sciode.com',
+        from: process.env.EMAIL,
+        to: 'cmoreno@sciodev.com',
         subject: 'Link to reset Password',
         text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu password\n\n" +
           "localhost:3000/reset/" + token
@@ -129,16 +132,51 @@ exports.forgotPassword = (req, res, next) => {
 }
 
 exports.resetPassword = (req, res, next) => {
-  console.log(req)
-  User.findOne({ resetPasswordToken: req.query.resetPasswordToken, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
-    if(!user){
+  console.log(req.body)
+  console.log(req.params.token)
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
+    if (!user) {
       console.log('link is invalid or has expired');
       res.json('link is invalid or has expired')
-    } else{
+    } else {
       res.status(200).send({
-        username:user.email,
-        message: 'password reset link ok'
+        username: user.email,
+        token: req.params.token,
+        message: 'password reset is active'
       })
+    }
+  })
+}
+
+exports.updatePasswordByEmail = (req, res, next) => {
+  User.findOne({ email: req.body.email, resetPasswordToken: req.body.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
+    console.log(user)
+    if(user){
+      console.log('user exists')
+      bcryptjs.hash(req.body.password, BCRYPT_SALT_ROUNDS).then(hashedPassword => {
+        user.password = hashedPassword;
+        user.resetPasswordExpires = null;
+        user.resetPasswordToken = null;
+        user.save().then((result) => {
+          res.status(200).send({message: 'pass updated'})
+        })
+
+      //   user.updateOne({
+      //     password: hashedPassword,
+      //     resetPasswordToken: null,
+      //     resetPasswordExpires: null,
+      //   })
+      // }).then((result) =>{
+      //   console.log(user)
+      //   console.log("-----------")
+      //   console.log(result)
+      //   console.log("pass updated")
+      //   res.status(200).send({message: 'pass updated'});
+       });
+    }
+    else{
+      console.log('email not found');
+      res.status(404).json('email not found')
     }
   })
 }

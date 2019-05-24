@@ -1,5 +1,5 @@
 const mongoose = require('mongoose'),
-      bcrypt   = require('bcrypt'),
+      bcryptjs   = require('bcryptjs'),
       jwt = require('jsonwebtoken');
 
 
@@ -26,11 +26,11 @@ UserSchema.pre('save', function (next) {
         return next();
     }
 
-    bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
+    bcryptjs.genSalt(SALT_FACTOR, function (err, salt) {
         if (err) {
             return next(err);
         }
-        bcrypt.hash(user.password, salt, function (err, hash) {
+        bcryptjs.hash(user.password, salt, function (err, hash) {
             if (err) {
                 return next(err);
             }
