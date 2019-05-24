@@ -21,7 +21,7 @@ mongoose.connect(databaseConfig().url, databaseConfig().options);
 let complaintMapKeys = [];
 let complaintMapData = {};
 
-/** TODO: use promise.all */
+/** Main function to seed the indicators and their records. */
 const seed = async () => {
 
   try {
@@ -31,101 +31,118 @@ const seed = async () => {
     // Delete all records
     await IndicatorRecord.deleteMany({}).exec();
 
+    const itemPromises = [];
+
     // Iterate through items
     for (let i = 0; i < items.length; i++) {
-      const item = items[i];
-
-      // Find the item to later add the reference to the indicator
-      const _item = await Item.findOne({ name: item.name }).exec();
-
-      // Find the object with the indicators that belong to this item
-      const itemData = mockIndicators[item.name];
-
-      // If the item has indicators
-      if (itemData && itemData.indicators) {
-
-        // Iterate through the indicators for creation
-        for (let j = 0; j < itemData.indicators.length; j++) {
-
-          // Add the item reference to the indicator before saving
-          const indicatorToSave = Object.assign(itemData.indicators[j], { item: _item });
-          const _indicator = await Indicator.create(indicatorToSave);
-
-          const places = await Place.find({}).exec();
-
-          const momentDate = moment().utcOffset(0);
-          // Ignore time and set 1st day of the month
-          momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).set('date', 1);
-
-          let complaintsToSave = [];
-          let dataSet = getDataSet();
-          // Iterate array of complaints (object with year, month, and each state as key)
-          for (let i = 0; i < dataSet.length; i++) {
-
-            // Object to save in db
-            let complaint = { indicator: _indicator };
-            // Object to save year and month
-            let date = {};
-
-            // Iterate through each object
-            for (let [key, value] of entries(dataSet[i])) {
-
-              // Object to save the key (year, month or state code) and property to know if the object is a place
-              let complaintMapProps = {};
-
-              // If the key has been found on a previous iteration, set complaintMapProps with the data
-              // Else, iterate through the array helper to find the matching key and set complaintMapProps
-              if (complaintMapKeys.includes(key) && hash[key] !== undefined) {
-                complaintMapProps.key = key;
-                complaintMapProps.isPlace = hash[key].isPlace;
-              } else {
-                for (let [cKey, cValue] of entries(complaintMap)) {
-                  if (cValue.names.includes(key.toLocaleLowerCase())) {
-                    complaintMapKeys = [...complaintMapKeys, cKey];
-                    complaintMapData = Object.assign(complaintMapData, { [cKey]: cValue });
-                    complaintMapProps.key = cKey;
-                    complaintMapProps.isPlace = cValue.isPlace;
-                    break;
-                  }
-                }
-              }
-
-              // If the current key is a place, find the reference on Places and create the object to save in the database
-              // If the current key is related to the date, add it to the date object
-              if (complaintMapProps.isPlace) {
-                const place = places.find(p => p.code === complaintMapProps.key);
-                if (place) {
-                  complaint.state = place;
-                  complaint.amount = value;
-                  complaint.date = momentDate.year(date.year).month(date.month || 0).format('YYYY-MM-DD HH:mm:ss');
-                  complaintsToSave = [
-                    ...complaintsToSave,
-                    new IndicatorRecord(complaint)
-                  ];
-                }
-              } else if (complaintMapProps.key === 'year') {
-                date.year = value;
-              } else if (complaintMapProps.key === 'month') {
-                date.month = value;
-              }
-            }
-          }
-
-          // Save the objects in the database
-          if (complaintsToSave.length) {
-            await IndicatorRecord.insertMany(complaintsToSave);
-          }
-
-        }
-
-      }
-
+      itemPromises.push(findItem(items[i]));
     }
+
+    await Promise.all(itemPromises);
 
   } catch (e) {
     disconnect();
   }
   disconnect();
+}
+
+/** For each item, resolve the addIndicator promises. */
+const findItem = async (item) => {
+
+  // Find the item to later add the reference to the indicator
+  const _item = await Item.findOne({ name: item.name }).exec();
+
+  // Find the object with the indicators that belong to this item
+  const itemData = mockIndicators[item.name];
+
+  // If the item has indicators
+  if (itemData && itemData.indicators) {
+
+    const indicatorPromises = [];
+    // Iterate through the indicators for creation
+    for (let j = 0; j < itemData.indicators.length; j++) {
+      indicatorPromises.push(addIndicator(_item, itemData.indicators[j]));
+    }
+
+    await Promise.all(indicatorPromises);
+  }
+
+  return Promise.resolve();
+}
+
+/** Add indicator and its records. */
+const addIndicator = async (_item, indicatorFromItem) => {
+
+  // Add the item reference to the indicator before saving
+  const indicatorToSave = Object.assign(indicatorFromItem, { item: _item });
+  const _indicator = await Indicator.create(indicatorToSave);
+
+  const places = await Place.find({}).exec();
+
+  const momentDate = moment().utcOffset(0);
+  // Ignore time and set 1st day of the month
+  momentDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 }).set('date', 1);
+
+  let complaintsToSave = [];
+  let dataSet = getDataSet();
+  // Iterate array of complaints (object with year, month, and each state as key)
+  for (let i = 0; i < dataSet.length; i++) {
+
+    // Object to save in db
+    let complaint = { indicator: _indicator };
+    // Object to save year and month
+    let date = {};
+
+    // Iterate through each object
+    for (let [key, value] of entries(dataSet[i])) {
+
+      // Object to save the key (year, month or state code) and property to know if the object is a place
+      let complaintMapProps = {};
+
+      // If the key has been found on a previous iteration, set complaintMapProps with the data
+      // Else, iterate through the array helper to find the matching key and set complaintMapProps
+      if (complaintMapKeys.includes(key) && hash[key] !== undefined) {
+        complaintMapProps.key = key;
+        complaintMapProps.isPlace = hash[key].isPlace;
+      } else {
+        for (let [cKey, cValue] of entries(complaintMap)) {
+          if (cValue.names.includes(key.toLocaleLowerCase())) {
+            complaintMapKeys = [...complaintMapKeys, cKey];
+            complaintMapData = Object.assign(complaintMapData, { [cKey]: cValue });
+            complaintMapProps.key = cKey;
+            complaintMapProps.isPlace = cValue.isPlace;
+            break;
+          }
+        }
+      }
+
+      // If the current key is a place, find the reference on Places and create the object to save in the database
+      // If the current key is related to the date, add it to the date object
+      if (complaintMapProps.isPlace) {
+        const place = places.find(p => p.code === complaintMapProps.key);
+        if (place) {
+          complaint.state = place;
+          complaint.amount = value;
+          complaint.date = momentDate.year(date.year).month(date.month || 0).format('YYYY-MM-DD HH:mm:ss');
+          complaintsToSave = [
+            ...complaintsToSave,
+            new IndicatorRecord(complaint)
+          ];
+        }
+      } else if (complaintMapProps.key === 'year') {
+        date.year = value;
+      } else if (complaintMapProps.key === 'month') {
+        date.month = value;
+      }
+    }
+  }
+
+  // Save the objects in the database
+  if (complaintsToSave.length) {
+    await IndicatorRecord.insertMany(complaintsToSave);
+  }
+
+  return Promise.resolve();
 }
 
 seed();
