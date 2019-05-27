@@ -41,8 +41,8 @@ module.exports = function(app) {
     authRoutes.post('/login', AuthController.login);
     authRoutes.get('/logout', AuthController.logout);
     authRoutes.post('/recoverPassword', AuthController.forgotPassword);
-    authRoutes.get('/recoverPassword/:token', AuthController.resetPassword);
-    authRoutes.post('/resetPassword', AuthController.updatePasswordByEmail);
+    authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
+  
 
 
 

@@ -11,6 +11,7 @@ var UserSchema = new mongoose.Schema({
         required: true
     },
     password: String,
+    role: String,
     resetPasswordToken: String,
     resetPasswordExpires: Date
 }, {
