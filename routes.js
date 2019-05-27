@@ -1,4 +1,5 @@
 const IndicatorRecordController     = require('./controllers/indicatorRecord'),
+      ItemController                = require('./controllers/item'),
       IndicatorController           = require('./controllers/indicator'),
       AuthController                = require('./controllers/auth'),
       getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator'),
@@ -7,11 +8,13 @@ const IndicatorRecordController     = require('./controllers/indicatorRecord'),
       postIndicatorRecordsRequest   = require('./requests/indicatorRecordRequests/postIndicatorRecord'),
       express                       = require('express'),
       tokenValidator                = require('./tokenValidator');
+
 module.exports = function(app) {
 
     const apiRoutes               = express.Router(),
-          indicatorRoutes         = express.Router(),
-          indicatorRecordsRoutes  = express.Router(),
+          itemRoutes              = express.Router(),
+          indicatorRoutes         = express.Router({ mergeParams: true }),
+          indicatorRecordsRoutes  = express.Router();
           authRoutes              = express.Router();
 
     // Default routes
@@ -19,9 +22,15 @@ module.exports = function(app) {
         res.send('Im the home page!')
     });
 
+    // Item routes
+    apiRoutes.use('/items', itemRoutes);
+    itemRoutes.get('/', ItemController.getItems);
+    itemRoutes.get('/:id', ItemController.getItem);
+    itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
+    
     // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/',tokenValidator.required, IndicatorController.getIndicators);
+    indicatorRoutes.get('/', IndicatorController.getIndicators);
     indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
     indicatorRoutes.post('/', getIndicatorRequest, IndicatorController.createIndicator);
     indicatorRoutes.put('/:_id', getIndicatorRequest, IndicatorController.updateIndicator);

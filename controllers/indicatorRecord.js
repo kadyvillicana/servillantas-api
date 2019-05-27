@@ -1,4 +1,5 @@
 const IndicatorRecord    = require('../models/indicatorRecord'),
+    ObjectId             = require('mongoose').Types.ObjectId,
     { validationResult } = require('express-validator/check'),
     moment               = require('moment');
 
@@ -19,7 +20,7 @@ exports.get = (req, res, next) => {
 
   const { indicatorId } = req.params;
   const { year, quarter, month, breakdown } = req.query;
-  const search = { indicatorId: indicatorId };
+  const search = { indicator: ObjectId(indicatorId) };
 
   const momentDate = moment().utcOffset(0);
   // Ignore time and set 1st day of the month
@@ -56,35 +57,6 @@ exports.get = (req, res, next) => {
       search['date']['$gte'] = search['date']['$gte'].toDate();
       search['date']['$lt'] = search['date']['$lt'].toDate();
     }
-  }
-
-  // Initial group stage to group by state id and add the state data
-  // and totalAmount for the next stage
-  let groupStage = {
-    _id: '$state._id',
-    state: { $first: '$$ROOT.state' },
-    totalAmount: { $sum: '$$ROOT.amount' },
-  }
-
-  // Don't send the id to the next stage, format the state data
-  // and indicate that totalAmount is needed on the next stage
-  let projectStage = {
-    _id: 0,
-    state: {
-      $let: {
-        vars: {
-          stateData: {
-            $arrayElemAt: ['$state', 0]
-          }
-        },
-        in: {
-          type: '$$stateData.type',
-          name: '$$stateData.name',
-          code: '$$stateData.code'
-        }
-      },
-    },
-    totalAmount: 1,
   }
 
   let group = {};
@@ -124,10 +96,6 @@ exports.get = (req, res, next) => {
         }
       },
     ]
-
-    // Merge new properties
-    groupStage = Object.assign(groupStage, group);
-    projectStage = Object.assign(projectStage, project);
   }
 
   IndicatorRecord.aggregate([
@@ -141,11 +109,34 @@ exports.get = (req, res, next) => {
       }
     },
     {
-      $group: groupStage
+      $group: {
+        _id: '$state._id',
+        state: { $first: '$$ROOT.state' },
+        totalAmount: { $sum: '$$ROOT.amount' },
+        ...group
+      }
     },
     ...stages,
     {
-      $project: projectStage
+      $project: {
+        _id: 0,
+        state: {
+          $let: {
+            vars: {
+              stateData: {
+                $arrayElemAt: ['$state', 0]
+              }
+            },
+            in: {
+              type: '$$stateData.type',
+              name: '$$stateData.name',
+              code: '$$stateData.code'
+            }
+          },
+        },
+        totalAmount: 1,
+        ...project
+      }
     },
     {
       $sort: { totalAmount: -1 } // DESC
@@ -300,7 +291,7 @@ exports.getDates = (req, res, next) => {
 
   IndicatorRecord.aggregate([
     {
-      $match: { indicatorId: indicatorId }
+      $match: { indicator: ObjectId(indicatorId) }
     },
     {
       $group: {
