@@ -1,9 +1,7 @@
 const User = require('../models/user'),
   passport = require('passport'),
   nodemailer = require('nodemailer'),
-  crypto = require('crypto'),
-  bcryptjs = require('bcryptjs'),
-  BCRYPT_SALT_ROUNDS = 12;
+  crypto = require('crypto');
 
 
 exports.register = (req, res, next) => {
