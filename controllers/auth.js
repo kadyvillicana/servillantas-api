@@ -98,7 +98,7 @@ exports.forgotPassword = (req, res, next) => {
       }, (err, res) => {});
 
       const transporter = nodemailer.createTransport({
-        host: "smtp.office365.com",
+        host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT,
         secure: false, // true for 465, false for other ports
         auth: {
@@ -112,7 +112,7 @@ exports.forgotPassword = (req, res, next) => {
         to: user.email,
         subject: 'Link to reset Password',
         text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu password\n\n" +
-          "http://localhost:8080/api/auth/recoverPassword/" + token
+          process.env.MAIN_URL + token
       };
 
       transporter.sendMail(mailOptions, (err, response) => {
@@ -129,7 +129,7 @@ exports.forgotPassword = (req, res, next) => {
 exports.resetPassword = (req, res, next) => {
   User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
     if (!user) {
-      res.json('link is invalid or has expired')
+      res.status(401).send({error: 'link is invalid or has expired'})
     } else {
       res.status(200).send({
         username: user.email,
