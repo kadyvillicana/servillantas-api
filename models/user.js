@@ -1,5 +1,5 @@
 const mongoose = require('mongoose'),
-      bcrypt   = require('bcryptjs'),
+      bcryptjs   = require('bcryptjs'),
       jwt = require('jsonwebtoken');
 
 
@@ -10,7 +10,10 @@ var UserSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password: String
+    password: String,
+    role: String,
+    resetPasswordToken: String,
+    resetPasswordExpires: Date
 }, {
     timestamps: true
 })
@@ -24,11 +27,11 @@ UserSchema.pre('save', function (next) {
         return next();
     }
 
-    bcrypt.genSalt(SALT_FACTOR, function (err, salt) {
+    bcryptjs.genSalt(SALT_FACTOR, function (err, salt) {
         if (err) {
             return next(err);
         }
-        bcrypt.hash(user.password, salt, function (err, hash) {
+        bcryptjs.hash(user.password, salt, function (err, hash) {
             if (err) {
                 return next(err);
             }

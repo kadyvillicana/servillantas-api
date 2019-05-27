@@ -49,6 +49,10 @@ module.exports = function(app) {
     authRoutes.post('/', AuthController.register);
     authRoutes.post('/login', AuthController.login);
     authRoutes.get('/logout', AuthController.logout);
+    authRoutes.post('/recoverPassword', AuthController.forgotPassword);
+    authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
+  
+
 
 
     //Not found route
