@@ -143,14 +143,12 @@ exports.resetPassword = (req, res, next) => {
 exports.updatePasswordByEmail = (req, res, next) => {
   User.findOne({ email: req.body.email, resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
     if(user){
-      bcryptjs.hash(req.body.password, BCRYPT_SALT_ROUNDS).then(hashedPassword => {
-        user.password = hashedPassword;
+        user.password = req.body.password;
         user.resetPasswordExpires = null;
         user.resetPasswordToken = null;
         user.save().then((result) => {
           res.status(200).send({message: 'pass updated'})
         })
-       });
     }
     else{
       res.status(404).json('email not found')
