@@ -30,7 +30,6 @@ module.exports = function(app) {
     
     // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/', IndicatorController.getIndicators);
     indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
     indicatorRoutes.post('/', getIndicatorRequest, IndicatorController.createIndicator);
     indicatorRoutes.put('/:_id', getIndicatorRequest, IndicatorController.updateIndicator);

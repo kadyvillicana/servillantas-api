@@ -30,27 +30,27 @@ module.exports = {
       {
         ...indicatorData,
         indicatorName: 'Número de denuncias por tortura o TPCID',
-        shortName: '# Denuncias',
+        shortName: 'No. Denuncias',
       },
       {
         ...indicatorData,
         indicatorName: 'Número de expedientes iniciados por tortura',
-        shortName: '# Expedientes por tortura',
+        shortName: 'No. Expedientes por tortura',
       },
       {
         ...indicatorData,
         indicatorName: 'Número de expedientes actualmente en trámite en FEIDT',
-        shortName: '# Expedientes en trámite',
+        shortName: 'No. Expedientes en trámite',
       },
       {
         ...indicatorData,
         indicatorName: 'Número de expedientes consignados por FEIDT',
-        shortName: '# Expedientes consignados',
+        shortName: 'No. Expedientes consignados',
       },
       {
         ...indicatorData,
         indicatorName: 'Número de expedientes en no ejercicio de acción penal, FEIDT',
-        shortName: '# Expedientes en no ejercicio de acción penal',
+        shortName: 'No. Expedientes en no ejercicio de acción penal',
       },
     ]
   },
@@ -59,7 +59,7 @@ module.exports = {
       {
         ...indicatorData,
         indicatorName: 'Número de sentencias por tortura',
-        shortName: '# Sentencias por tortura',
+        shortName: 'No. Sentencias por tortura',
       },
       {
         ...indicatorData,
