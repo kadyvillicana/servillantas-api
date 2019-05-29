@@ -2,6 +2,7 @@ const IndicatorRecordController     = require('./controllers/indicatorRecord'),
       ItemController                = require('./controllers/item'),
       IndicatorController           = require('./controllers/indicator'),
       AuthController                = require('./controllers/auth'),
+      ShortURLController            = require('./controllers/shortURL'),
       getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator'),
       getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord'),
       getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates'),
@@ -14,8 +15,9 @@ module.exports = function(app) {
     const apiRoutes               = express.Router(),
           itemRoutes              = express.Router(),
           indicatorRoutes         = express.Router({ mergeParams: true }),
-          indicatorRecordsRoutes  = express.Router();
-          authRoutes              = express.Router();
+          indicatorRecordsRoutes  = express.Router(),
+          authRoutes              = express.Router(),
+          shortURLRoutes          = express.Router();
 
     // Default routes
     apiRoutes.get('/', (req, res) => {
@@ -50,9 +52,11 @@ module.exports = function(app) {
     authRoutes.get('/logout', AuthController.logout);
     authRoutes.post('/recoverPassword', AuthController.forgotPassword);
     authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
-  
 
-
+    // Shorten URL routes
+    apiRoutes.use('/url', shortURLRoutes);
+    shortURLRoutes.post('/', ShortURLController.addURL);
+    shortURLRoutes.get('/:code', ShortURLController.getURL);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
