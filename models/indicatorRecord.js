@@ -2,9 +2,9 @@ const mongoose = require('mongoose');
 
 const indicatorRecordSchema = new mongoose.Schema(
   {
-    indicatorId: {
-      type: String,
-      required: true
+    indicator: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'Indicator'
     },
     date: {
       type: Date,

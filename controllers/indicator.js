@@ -1,9 +1,11 @@
-const Indicator = require('../models/indicator'),
-  { validationResult } = require('express-validator/check');
+const Indicator                   = require('../models/indicator'),
+      ObjectId                    = require('mongoose').Types.ObjectId,
+      { validationResult }        = require('express-validator/check');
 
-//Get all Indicators from DB
+//Get Indicators from DB that belong to item with the given id
 exports.getIndicators = (req, res, next) => {
-  Indicator.find((err, indicators) => {
+  const { itemId } = req.params;
+  Indicator.find({ item: ObjectId(itemId) }, (err, indicators) => {
     if (err) {
       return next(err);
     }
