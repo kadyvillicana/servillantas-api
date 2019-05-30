@@ -86,7 +86,7 @@ exports.forgotPassword = (req, res, next) => {
 
   User.findOne({ email: req.body.email }).then(user => {
     if (!user) {
-      res.json("email not found")
+      res.status(404).json("email not found")
     }
     else {
       const token = crypto.randomBytes(20).toString('hex');
@@ -108,7 +108,7 @@ exports.forgotPassword = (req, res, next) => {
       const mailOptions = {
         from: process.env.EMAIL,
         to: user.email,
-        subject: 'Link to reset Password',
+        subject: 'Link para recuperar tu password',
         text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu password\n\n" +
           process.env.MAIN_URL + token
       };
@@ -117,7 +117,7 @@ exports.forgotPassword = (req, res, next) => {
         if (err) {
           console.log("Error: ", err);
         } else {
-          res.status(200).json('recovery email sent');
+          res.status(200).json('Correo de recuperacion enviado');
         }
       });
     }
