@@ -1,5 +1,10 @@
 const Item = require('../models/item');
 
+/**
+ * Function to get all the items available.
+ * 
+ * @returns {Array} Model Item
+ */
 exports.getItems = (req, res, next) => {
   Item.find((err, items) => {
     if (err) {
@@ -14,6 +19,12 @@ exports.getItems = (req, res, next) => {
   })
 }
 
+/**
+ * Function to get the info of the item
+ * with the given id.
+ * 
+ * @returns {object} Model Item
+ */
 exports.getItem = (req, res, next) => {
   const { id } = req.params;
 
