@@ -10,7 +10,8 @@ const map = {
     '%email_password%' : process.env['email_password'],
     '%smtp_host%' : process.env['smtp_host'],
     '%smtp_port%' : process.env['smtp_port'],
-    '%main_url%' : process.env['main_url']
+    '%main_url%' : process.env['main_url'],
+    '%app_url%' : process.env['app_url']
 };
 
 validateKeys(map);

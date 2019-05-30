@@ -33,17 +33,17 @@ module.exports = function(app) {
     // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
     indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
-    indicatorRoutes.post('/', getIndicatorRequest, IndicatorController.createIndicator);
-    indicatorRoutes.put('/:_id', getIndicatorRequest, IndicatorController.updateIndicator);
-    indicatorRoutes.delete('/:_id', IndicatorController.deleteIndicator);
+    indicatorRoutes.post('/', tokenValidator.required, getIndicatorRequest, IndicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', tokenValidator.required, getIndicatorRequest, IndicatorController.updateIndicator);
+    indicatorRoutes.delete('/:_id', tokenValidator.required, IndicatorController.deleteIndicator);
 
     // Indicator Record Routes
     apiRoutes.use('/records', indicatorRecordsRoutes);
     indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
     indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
-    indicatorRecordsRoutes.post('/:indicatorId', postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
-    indicatorRecordsRoutes.put('/:indicatorId/:_id', postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
-    indicatorRecordsRoutes.delete('/:indicatorId/:_id', IndicatorRecordController.deleteRecord);
+    indicatorRecordsRoutes.post('/:indicatorId', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
+    indicatorRecordsRoutes.put('/:indicatorId/:_id', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
+    indicatorRecordsRoutes.delete('/:indicatorId/:_id', tokenValidator.required, IndicatorRecordController.deleteRecord);
 
     // User Routes
     apiRoutes.use('/auth', authRoutes)
