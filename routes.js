@@ -2,6 +2,7 @@ const IndicatorRecordController     = require('./controllers/indicatorRecord'),
       ItemController                = require('./controllers/item'),
       IndicatorController           = require('./controllers/indicator'),
       AuthController                = require('./controllers/auth'),
+      ShortURLController            = require('./controllers/shortURL'),
       getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator'),
       getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord'),
       getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates'),
@@ -14,8 +15,9 @@ module.exports = function(app) {
     const apiRoutes               = express.Router(),
           itemRoutes              = express.Router(),
           indicatorRoutes         = express.Router({ mergeParams: true }),
-          indicatorRecordsRoutes  = express.Router();
-          authRoutes              = express.Router();
+          indicatorRecordsRoutes  = express.Router(),
+          authRoutes              = express.Router(),
+          shortURLRoutes          = express.Router();
 
     // Default routes
     apiRoutes.get('/', (req, res) => {
@@ -30,19 +32,18 @@ module.exports = function(app) {
     
     // Indicator routes
     apiRoutes.use('/indicators', indicatorRoutes);
-    indicatorRoutes.get('/', IndicatorController.getIndicators);
     indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
-    indicatorRoutes.post('/', getIndicatorRequest, IndicatorController.createIndicator);
-    indicatorRoutes.put('/:_id', getIndicatorRequest, IndicatorController.updateIndicator);
-    indicatorRoutes.delete('/:_id', IndicatorController.deleteIndicator);
+    indicatorRoutes.post('/', tokenValidator.required, getIndicatorRequest, IndicatorController.createIndicator);
+    indicatorRoutes.put('/:_id', tokenValidator.required, getIndicatorRequest, IndicatorController.updateIndicator);
+    indicatorRoutes.delete('/:_id', tokenValidator.required, IndicatorController.deleteIndicator);
 
     // Indicator Record Routes
     apiRoutes.use('/records', indicatorRecordsRoutes);
     indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
     indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
-    indicatorRecordsRoutes.post('/:indicatorId', postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
-    indicatorRecordsRoutes.put('/:indicatorId/:_id', postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
-    indicatorRecordsRoutes.delete('/:indicatorId/:_id', IndicatorRecordController.deleteRecord);
+    indicatorRecordsRoutes.post('/:indicatorId', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
+    indicatorRecordsRoutes.put('/:indicatorId/:_id', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
+    indicatorRecordsRoutes.delete('/:indicatorId/:_id', tokenValidator.required, IndicatorRecordController.deleteRecord);
 
     // User Routes
     apiRoutes.use('/auth', authRoutes)
@@ -51,9 +52,11 @@ module.exports = function(app) {
     authRoutes.get('/logout', AuthController.logout);
     authRoutes.post('/recoverPassword', AuthController.forgotPassword);
     authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
-  
 
-
+    // Shorten URL routes
+    apiRoutes.use('/url', shortURLRoutes);
+    shortURLRoutes.post('/', ShortURLController.addURL);
+    shortURLRoutes.get('/:code', ShortURLController.getURL);
 
     //Not found route
     apiRoutes.use( (req, res, next) => {
