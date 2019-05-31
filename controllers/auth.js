@@ -117,7 +117,7 @@ exports.forgotPassword = (req, res, next) => {
         if (err) {
           console.log("Error: ", err);
         } else {
-          res.status(200).json('Correo de recuperacion enviado');
+          res.status(200).json('Recover Password email has been sent');
         }
       });
     }
