@@ -110,7 +110,7 @@ exports.forgotPassword = (req, res, next) => {
         to: user.email,
         subject: 'Link para recuperar tu password',
         text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu password\n\n" +
-          process.env.MAIN_URL + token
+          process.env.APP_URL+"recoverpassword/"+ token
       };
 
       transporter.sendMail(mailOptions, (err, response) => {
@@ -139,7 +139,7 @@ exports.resetPassword = (req, res, next) => {
 }
 
 exports.updatePasswordByEmail = (req, res, next) => {
-  User.findOne({ email: req.body.email, resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
+  User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
     if(user){
         user.password = req.body.password;
         user.resetPasswordExpires = null;
@@ -149,7 +149,7 @@ exports.updatePasswordByEmail = (req, res, next) => {
         })
     }
     else{
-      res.status(404).json('email not found')
+      res.status(404).json('Change password link has expired')
     }
   })
 }
