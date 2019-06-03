@@ -1,21 +1,19 @@
-const User = require('../models/user'),
-  passport = require('passport'),
-  nodemailer = require('nodemailer'),
-  crypto = require('crypto');
+const User                 = require('../models/user'),
+      passport             = require('passport'),
+      nodemailer           = require('nodemailer'),
+      { validationResult } = require('express-validator/check'),
+      crypto               = require('crypto');
 
 
 exports.register = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   var email = req.body.email;
   var password = req.body.password;
-
-  if (!email) {
-    return res.status(400).send({ error: 'You must enter an email address' });
-  }
-
-  if (!password) {
-    return res.status(400).send({ error: 'You must enter a password' });
-  }
-
+ 
   User.findOne({ email: email }, function (err, existingUser) {
     if (err) {
       return next(err);
@@ -42,23 +40,11 @@ exports.register = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-  const { email, password } = req.body;
-  if (!email) {
-    return res.status(422).json({
-      errors: {
-        email: 'is required',
-      },
-    });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
-
-  if (!password) {
-    return res.status(422).json({
-      errors: {
-        password: 'is required',
-      },
-    });
-  }
-
+  
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
     if (err) {
       return next(err);
@@ -80,8 +66,9 @@ exports.logout = (req, res, next) => {
 }
 
 exports.forgotPassword = (req, res, next) => {
-  if (!req.body.email) {
-    res.json('Email Required')
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
 
   User.findOne({ email: req.body.email }).then(user => {
@@ -126,23 +113,12 @@ exports.forgotPassword = (req, res, next) => {
   });
 }
 
-exports.resetPassword = (req, res, next) => {
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
-    if (!user) {
-      res.status(401).send({error: 'link is invalid or has expired'})
-    } else {
-      res.status(200).send({
-        username: user.email,
-        token: req.params.token,
-        message: 'password reset is active'
-      })
-    }
-  }).catch (err => {
-    res.status(500).send({message: err})
-  })
-}
-
 exports.updatePasswordByEmail = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+  
   User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
     if(user){
         user.password = req.body.password;
