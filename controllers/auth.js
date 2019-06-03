@@ -13,7 +13,7 @@ exports.register = (req, res, next) => {
 
   var email = req.body.email;
   var password = req.body.password;
- 
+
   User.findOne({ email: email }, function (err, existingUser) {
     if (err) {
       return next(err);
@@ -44,7 +44,7 @@ exports.login = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  
+
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
     if (err) {
       return next(err);
@@ -60,7 +60,7 @@ exports.login = (req, res, next) => {
   })(req, res, next);
 };
 
-exports.logout = (req, res, next) => {
+exports.logout = (req, res) => {
   req.logout();
   res.send({ message: "sign out" })
 }
@@ -71,17 +71,23 @@ exports.forgotPassword = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  User.findOne({ email: req.body.email }).then(user => {
-    if (!user) {
-      res.status(404).json("email not found")
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) {
+      return next(err)
     }
-    else {
-      const token = crypto.randomBytes(20).toString('hex');
-      user.updateOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: Date.now() + 360000,
-      }, (err, res) => {});
 
+    if (!user) {
+      return res.status(404).json("email not found")
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    user.updateOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: Date.now() + 360000,
+    }, (err) => {
+      if (err) {
+        return next(err)
+      }
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT,
@@ -95,46 +101,49 @@ exports.forgotPassword = (req, res, next) => {
       const mailOptions = {
         from: process.env.EMAIL,
         to: user.email,
-        subject: 'Link para recuperar tu password',
-        text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu contraseña\n\n" +
-          process.env.APP_URL+"recoverpassword/"+ token
+        subject: 'Cambio de contraseña',
+        text: "Este mensaje ha sido enviado porque solicitaste reestablecer tu contraseña, haz clic en el enlace para continuar con esta operación\n\n" +
+          process.env.APP_URL + "recoverpassword/" + token
       };
 
-      transporter.sendMail(mailOptions, (err, response) => {
+      transporter.sendMail(mailOptions, (err) => {
         if (err) {
-          console.log("Error: ", err);
+          next(err)
         } else {
           res.status(200).json('Recover Password email has been sent');
         }
       });
-    }
-  }).catch (err => {
-    res.status(500).send({message: err})
-  });
+    });
+
+
+  })
 }
 
-exports.updatePasswordByEmail = (req, res, next) => {
+exports.updatePasswordByEmail = (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  
-  User.findOne({resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
-    if(user){
-        user.password = req.body.password;
-        user.resetPasswordExpires = null;
-        user.resetPasswordToken = null;
-        user.save().then((result) => {
-          res.status(200).send({message: 'pass updated'})
-        }).catch (err => {
-          res.status(500).send({message: err})
-        })
+
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
+    if (err) {
+      return next(err)
     }
-    else{
+
+    if (user) {
+      user.password = req.body.password;
+      user.resetPasswordExpires = null;
+      user.resetPasswordToken = null;
+      user.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.status(200).send({ message: 'pass updated' })
+      });
+    }
+    else {
       res.status(404).json('Change password link has expired')
     }
-  }).catch (err => {
-    res.status(500).send({message: err})
   })
 }
 
