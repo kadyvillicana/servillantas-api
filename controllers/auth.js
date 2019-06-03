@@ -109,7 +109,7 @@ exports.forgotPassword = (req, res, next) => {
         from: process.env.EMAIL,
         to: user.email,
         subject: 'Link para recuperar tu password',
-        text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu password\n\n" +
+        text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu contraseña\n\n" +
           process.env.APP_URL+"recoverpassword/"+ token
       };
 
@@ -121,6 +121,8 @@ exports.forgotPassword = (req, res, next) => {
         }
       });
     }
+  }).catch (err => {
+    res.status(500).send({message: err})
   });
 }
 
@@ -135,6 +137,8 @@ exports.resetPassword = (req, res, next) => {
         message: 'password reset is active'
       })
     }
+  }).catch (err => {
+    res.status(500).send({message: err})
   })
 }
 
@@ -146,11 +150,15 @@ exports.updatePasswordByEmail = (req, res, next) => {
         user.resetPasswordToken = null;
         user.save().then((result) => {
           res.status(200).send({message: 'pass updated'})
+        }).catch (err => {
+          res.status(500).send({message: err})
         })
     }
     else{
       res.status(404).json('Change password link has expired')
     }
+  }).catch (err => {
+    res.status(500).send({message: err})
   })
 }
 
