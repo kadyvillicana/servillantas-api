@@ -77,7 +77,7 @@ exports.forgotPassword = (req, res, next) => {
     }
 
     if (!user) {
-      return res.status(404).json("email not found")
+      return res.status(404).json({error: "Email not found"})
     }
 
     const token = crypto.randomBytes(20).toString('hex');
@@ -110,7 +110,7 @@ exports.forgotPassword = (req, res, next) => {
         if (err) {
           next(err)
         } else {
-          res.status(200).json('Recover Password email has been sent');
+          res.status(200).send({message: 'Recover Password email has been sent'});
         }
       });
     });
@@ -138,11 +138,11 @@ exports.updatePasswordByEmail = (req, res) => {
         if (err) {
           return next(err);
         }
-        res.status(200).send({ message: 'pass updated' })
+        res.status(200).send({ message: 'Password updated' })
       });
     }
     else {
-      res.status(404).json('Change password link has expired')
+      res.status(404).json({error: 'Change password link has expired'})
     }
   })
 }
