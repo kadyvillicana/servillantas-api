@@ -1,6 +1,6 @@
-const ShortURL          = require('../models/shortURL'),
-      validURL          = require('valid-url'),
-      shortId           = require('shortid');
+const ShortURL          = require('../models/shortURL');
+const validURL          = require('valid-url');
+const shortId           = require('shortid');
 
 /**
  * Function to create a short url from a long url.

@@ -1,6 +1,6 @@
-const dataset1 = require('../constants/dataset1'),
-      dataset2 = require('../constants/dataset2'),
-      dataset3 = require('../constants/dataset3');
+const dataset1 = require('../constants/dataset1');
+const dataset2 = require('../constants/dataset2');
+const dataset3 = require('../constants/dataset3');
 
 module.exports = () => {
   const index = Math.floor(Math.random() * 3);

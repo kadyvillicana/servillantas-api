@@ -1,26 +1,29 @@
 require('dotenv').config();
-const express        = require('express'),
-      app            = express(),
-      mongoose       = require('mongoose'),
-      logger         = require('morgan'),
-      bodyParser     = require('body-parser'),
-      cookieParser   = require('cookie-parser'),
-      session        = require('express-session'),
-      MongoStore     = require('connect-mongo')(session),
-      cors           = require('cors'),
-      databaseConfig = require('./config/database'),
-      router         = require('./routes'),
-      passport       = require('passport');
-                       require('./config/passport');
+const express        = require('express');
+const app            = express();
+const mongoose       = require('mongoose');
+const logger         = require('morgan');
+const bodyParser     = require('body-parser');
+const cookieParser   = require('cookie-parser');
+const session        = require('express-session');
+const MongoStore     = require('connect-mongo')(session);
+const cors           = require('cors');
+const databaseConfig = require('./config/database');
+const router         = require('./routes');
+const passport       = require('passport');
+require('./config/passport');
 
 mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.connect(databaseConfig().url, databaseConfig().options);
 const connection = mongoose.connection;
 
-connection.on('error', console.error.bind(console, 'connection error:'));
+connection.on('error',
+  /* eslint-disable no-console */
+  console.error.bind(console, 'connection error:'));
 connection.once('open', function () {
-    console.log("Connected correctly to db");
+  console.log("Connected correctly to db");
+  /* eslint-enable no-console */
 });
 
 app.listen(process.env.PORT);

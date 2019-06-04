@@ -1,7 +1,7 @@
-const IndicatorRecord    = require('../models/indicatorRecord'),
-    ObjectId             = require('mongoose').Types.ObjectId,
-    { validationResult } = require('express-validator/check'),
-    moment               = require('moment');
+const IndicatorRecord    = require('../models/indicatorRecord');
+const ObjectId             = require('mongoose').Types.ObjectId;
+const { validationResult } = require('express-validator/check');
+const moment               = require('moment');
 
 /**
  * Function to get all indicator records that match the indicatorId
@@ -265,7 +265,7 @@ exports.updateRecord = (req,res) =>{
         message: "Something wrong updating record with id " + req.params._id
       });
     });
-  }
+}
 
 exports.deleteRecord = (req, res) => {
   IndicatorRecord.deleteOne({
