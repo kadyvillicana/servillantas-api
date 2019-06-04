@@ -6,6 +6,7 @@ const express        = require('express'),
       bodyParser     = require('body-parser'),
       cookieParser   = require('cookie-parser'),
       session        = require('express-session'),
+      MongoStore     = require('connect-mongo')(session),
       cors           = require('cors'),
       databaseConfig = require('./config/database'),
       router         = require('./routes'),
@@ -34,7 +35,8 @@ app.use(cors());
 app.use(session({
   secret: process.env.SESSION,
   saveUninitialized: true,
-  resave: true
+  resave: true,
+  store: new MongoStore({ mongooseConnection: connection })
 }));
 
 // Passport init

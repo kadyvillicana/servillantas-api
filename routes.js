@@ -7,6 +7,8 @@ const IndicatorRecordController     = require('./controllers/indicatorRecord'),
       getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord'),
       getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates'),
       postIndicatorRecordsRequest   = require('./requests/indicatorRecordRequests/postIndicatorRecord'),
+      postUserRequest               = require('./requests/authRequests/postUserRequest'),
+      recoverPassRequest            = require('./requests/authRequests/recoverPassRequest'),
       express                       = require('express'),
       tokenValidator                = require('./tokenValidator');
 
@@ -47,10 +49,10 @@ module.exports = function(app) {
 
     // User Routes
     apiRoutes.use('/auth', authRoutes)
-    authRoutes.post('/', AuthController.register);
-    authRoutes.post('/login', AuthController.login);
+    authRoutes.post('/', postUserRequest, AuthController.register);
+    authRoutes.post('/login',postUserRequest, AuthController.login);
     authRoutes.get('/logout', AuthController.logout);
-    authRoutes.post('/recoverPassword', AuthController.forgotPassword);
+    authRoutes.post('/recoverPassword', recoverPassRequest, AuthController.forgotPassword);
     authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
 
     // Shorten URL routes
