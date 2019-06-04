@@ -1,5 +1,5 @@
-const expect              = require('chai').expect,
-      Item                = require('../../../models/item');
+const expect              = require('chai').expect;
+const Item                = require('../../../models/item');
 
 describe('Item', () => {
   it ('should not save duplicated records', async () => {
