@@ -1,4 +1,4 @@
-const Place        = require('../models/place');
+const Place          = require('../models/place');
 const mongoose       = require('mongoose');
 const databaseConfig = require('../config/database');
 const places         = require('../constants/places-array');

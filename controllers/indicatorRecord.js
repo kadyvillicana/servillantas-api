@@ -1,4 +1,4 @@
-const IndicatorRecord    = require('../models/indicatorRecord');
+const IndicatorRecord      = require('../models/indicatorRecord');
 const ObjectId             = require('mongoose').Types.ObjectId;
 const { validationResult } = require('express-validator/check');
 const moment               = require('moment');

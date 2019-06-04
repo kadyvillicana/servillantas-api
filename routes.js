@@ -1,25 +1,25 @@
-const IndicatorRecordController = require('./controllers/indicatorRecord');
-const ItemController = require('./controllers/item');
-const IndicatorController = require('./controllers/indicator');
-const AuthController = require('./controllers/auth');
-const ShortURLController = require('./controllers/shortURL');
-const getIndicatorRequest = require('./requests/indicatorRequests/getIndicator');
-const getIndicatorRecordsRequest = require('./requests/indicatorRecordRequests/getIndicatorRecord');
-const getIndicatorDates = require('./requests/indicatorRecordRequests/getIndicatorDates');
-const postIndicatorRecordsRequest = require('./requests/indicatorRecordRequests/postIndicatorRecord');
-const postUserRequest = require('./requests/authRequests/postUserRequest');
-const recoverPassRequest = require('./requests/authRequests/recoverPassRequest');
-const express = require('express');
-const tokenValidator = require('./tokenValidator');
+const IndicatorRecordController     = require('./controllers/indicatorRecord');
+const ItemController                = require('./controllers/item');
+const IndicatorController           = require('./controllers/indicator');
+const AuthController                = require('./controllers/auth');
+const ShortURLController            = require('./controllers/shortURL');
+const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
+const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
+const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
+const postIndicatorRecordsRequest   = require('./requests/indicatorRecordRequests/postIndicatorRecord');
+const postUserRequest               = require('./requests/authRequests/postUserRequest');
+const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
+const express                       = require('express');
+const tokenValidator                = require('./tokenValidator');
 
 module.exports = function (app) {
 
-  const apiRoutes = express.Router();
-  const itemRoutes = express.Router();
-  const indicatorRoutes = express.Router({ mergeParams: true });
-  const indicatorRecordsRoutes = express.Router();
-  const authRoutes = express.Router();
-  const shortURLRoutes = express.Router();
+  const apiRoutes                   = express.Router();
+  const itemRoutes                  = express.Router();
+  const indicatorRoutes             = express.Router({ mergeParams: true });
+  const indicatorRecordsRoutes      = express.Router();
+  const authRoutes                  = express.Router();
+  const shortURLRoutes              = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {

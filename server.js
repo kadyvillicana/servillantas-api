@@ -1,16 +1,16 @@
 require('dotenv').config();
-const express        = require('express');
-const app            = express();
-const mongoose       = require('mongoose');
-const logger         = require('morgan');
-const bodyParser     = require('body-parser');
-const cookieParser   = require('cookie-parser');
-const session        = require('express-session');
-const MongoStore     = require('connect-mongo')(session);
-const cors           = require('cors');
-const databaseConfig = require('./config/database');
-const router         = require('./routes');
-const passport       = require('passport');
+const express           = require('express');
+const app               = express();
+const mongoose          = require('mongoose');
+const logger            = require('morgan');
+const bodyParser        = require('body-parser');
+const cookieParser      = require('cookie-parser');
+const session           = require('express-session');
+const MongoStore        = require('connect-mongo')(session);
+const cors              = require('cors');
+const databaseConfig    = require('./config/database');
+const router            = require('./routes');
+const passport          = require('passport');
 require('./config/passport');
 
 mongoose.set('useCreateIndex', true);
