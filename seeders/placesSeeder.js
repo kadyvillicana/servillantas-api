@@ -1,7 +1,7 @@
-const Place        = require('../models/place'),
-    mongoose       = require('mongoose'),
-    databaseConfig = require('../config/database'),
-    places         = require('../constants/places-array');
+const Place          = require('../models/place');
+const mongoose       = require('mongoose');
+const databaseConfig = require('../config/database');
+const places         = require('../constants/places-array');
 
 mongoose.connect(databaseConfig().url, databaseConfig().options);
 

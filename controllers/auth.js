@@ -1,8 +1,8 @@
-const User                 = require('../models/user'),
-      passport             = require('passport'),
-      nodemailer           = require('nodemailer'),
-      { validationResult } = require('express-validator/check'),
-      crypto               = require('crypto');
+const User                 = require('../models/user');
+const passport             = require('passport');
+const nodemailer           = require('nodemailer');
+const { validationResult } = require('express-validator/check');
+const crypto               = require('crypto');
 
 
 exports.register = (req, res, next) => {
@@ -117,7 +117,7 @@ exports.forgotPassword = (req, res, next) => {
   })
 }
 
-exports.updatePasswordByEmail = (req, res) => {
+exports.updatePasswordByEmail = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
@@ -125,7 +125,7 @@ exports.updatePasswordByEmail = (req, res) => {
 
   User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
     if (err) {
-      return next(err)
+      return next(err);
     }
 
     if (user) {
@@ -136,11 +136,11 @@ exports.updatePasswordByEmail = (req, res) => {
         if (err) {
           return next(err);
         }
-        res.status(200).send({ message: 'Password updated' })
+        res.status(200).send({ message: 'Password updated' });
       });
     }
     else {
-      res.status(404).json({error: 'Change password link has expired'})
+      res.status(404).json({ error: 'Change password link has expired' });
     }
   })
 }
