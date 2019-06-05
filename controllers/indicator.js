@@ -1,6 +1,6 @@
-const Indicator                   = require('../models/indicator'),
-      ObjectId                    = require('mongoose').Types.ObjectId,
-      { validationResult }        = require('express-validator/check');
+const Indicator                   = require('../models/indicator');
+const ObjectId                    = require('mongoose').Types.ObjectId;
+const { validationResult }        = require('express-validator/check');
 
 //Get Indicators from DB that belong to item with the given id
 exports.getIndicators = (req, res, next) => {
@@ -134,7 +134,7 @@ exports.updateIndicator = (req, res) => {
 };
 
 //Delete an Indicator
-exports.deleteIndicator = (req, res, next) => {
+exports.deleteIndicator = (req, res) => {
   Indicator.deleteOne({
     _id: req.params._id
   }, function (err, indicator) {

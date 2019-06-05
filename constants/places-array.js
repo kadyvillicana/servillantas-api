@@ -1,5 +1,5 @@
-const Place        = require('../models/place'),
-      placesCons   = require('../constants/places');
+const Place        = require('../models/place');
+const placesCons   = require('../constants/places');
 
 module.exports = [
   new Place({
