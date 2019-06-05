@@ -7,7 +7,7 @@
     "seedPlaces": "node ./seeders/placesSeeder.js",
     "seedItems": "node ./seeders/itemsSeeder.js",
     "seedIndicators": "node ./seeders/indicatorsSeeder.js",
-    "test": "mocha --recursive test",
+    "test": "mocha --timeout 60000 --recursive tests",
     "lint": "eslint **/*.js --ignore-path .gitignore"
   },
   "dependencies": {
@@ -39,6 +39,7 @@
     "eslint": "^5.16.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.3",
-    "mocha": "^6.1.4"
+    "mocha": "^6.1.4",
+    "mongodb-memory-server": "^5.1.2"
   }
 }
