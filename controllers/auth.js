@@ -52,15 +52,15 @@ exports.login = (req, res, next) => {
 
     if (passportUser) {
       const user = passportUser;
-      user.token = passportUser.generateJWT();
-      return res.json({ user: user.toAuthJSON() });
+      const token = passportUser.generateJWT();
+      return res.json({ user: user.toAuthJSON(), token });
     }
 
     return res.status(400).json({ error: info })
   })(req, res, next);
 };
 
-exports.logout = (req, res) => {
+exports.logout = (req, res) => { 
   req.logout();
   res.send({ message: "sign out" })
 }
@@ -103,7 +103,7 @@ exports.forgotPassword = (req, res, next) => {
         to: user.email,
         subject: 'Cambio de contraseña',
         text: "Este mensaje ha sido enviado porque solicitaste reestablecer tu contraseña, haz clic en el enlace para continuar con esta operación\n\n" +
-          process.env.APP_URL + "recoverpassword/" + token
+          process.env.APP_URL + "recover-password/" + token
       };
 
       transporter.sendMail(mailOptions, (err) => {
