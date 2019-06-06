@@ -42,7 +42,7 @@ const ItemSchema = new mongoose.Schema(
 );
 
 function sliderImagesMaxLength (val) {
-  return val.length < 3;
+  return val.length < 4;
 }
 
 ItemSchema.path('name').validate(async (value) => {

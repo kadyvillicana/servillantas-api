@@ -6,7 +6,7 @@ const Item = require('../models/item');
  * @returns {Array} Model Item
  */
 exports.getItems = (req, res, next) => {
-  Item.find((err, items) => {
+  Item.find({}, '_id name shortName hasIndicators', (err, items) => {
     if (err) {
       return next(err);
     }
