@@ -1,7 +1,13 @@
-const LocalStrategy    = require('passport-local').Strategy;
-const bcryptjs         = require('bcryptjs');
-const passport         = require('passport');
-const User             = require('../models/user');
+const LocalStrategy = require('passport-local').Strategy;
+const JWTStrategy = require('passport-jwt').Strategy;
+const ExtractJWT = require('passport-jwt').ExtractJwt;
+const bcryptjs = require('bcryptjs');
+const passport = require('passport');
+const User = require('../models/user');
+const opts = {};
+
+opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = 'secret';
 
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
@@ -23,6 +29,18 @@ passport.use(
     })
   })
 );
+
+passport.use(new JWTStrategy(opts, (jwt_payload, done) => {
+  User.findById(jwt_payload.id)
+    .then(user => {
+      if (user) {
+        return done(null, user);
+      }
+      return done(null, false);
+    })
+    .catch(err => console.error(err));
+}));
+
 
 passport.serializeUser((user, done) => {
   done(null, user.id);

@@ -28,7 +28,7 @@ module.exports = function (app) {
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
-  itemRoutes.get('/', ItemController.getItems);
+  itemRoutes.get('/',tokenValidator.required, ItemController.getItems);
   itemRoutes.get('/:id', ItemController.getItem);
   itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
 
