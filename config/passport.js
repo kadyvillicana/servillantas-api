@@ -1,12 +1,9 @@
 const LocalStrategy = require('passport-local').Strategy;
-const ExtractJWT = require('passport-jwt').ExtractJwt;
 const bcryptjs = require('bcryptjs');
 const passport = require('passport');
 const User = require('../models/user');
-const opts = {};
 
-opts.jwtFromRequest = ExtractJWT.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = 'secret';
+
 
 //Passport middleware to verify if data received is on DB
 passport.use(
