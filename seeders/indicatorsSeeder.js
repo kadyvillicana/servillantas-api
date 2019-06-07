@@ -43,7 +43,6 @@ const seed = async () => {
     /* eslint-disable no-console */
     console.error('Error seeding', e);
     /* eslint-enable no-console */
-    disconnect();
   }
   disconnect();
 }
