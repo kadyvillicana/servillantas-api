@@ -1,8 +1,11 @@
-const LocalStrategy    = require('passport-local').Strategy;
-const bcryptjs         = require('bcryptjs');
-const passport         = require('passport');
-const User             = require('../models/user');
+const LocalStrategy = require('passport-local').Strategy;
+const bcryptjs = require('bcryptjs');
+const passport = require('passport');
+const User = require('../models/user');
 
+
+
+//Passport middleware to verify if data received is on DB
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({

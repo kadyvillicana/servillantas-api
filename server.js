@@ -5,8 +5,6 @@ const mongoose          = require('mongoose');
 const logger            = require('morgan');
 const bodyParser        = require('body-parser');
 const cookieParser      = require('cookie-parser');
-const session           = require('express-session');
-const MongoStore        = require('connect-mongo')(session);
 const cors              = require('cors');
 const databaseConfig    = require('./config/database');
 const router            = require('./routes');
@@ -33,14 +31,6 @@ app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(logger('dev'));
 app.use(cors());
-
-// Express Session
-app.use(session({
-  secret: process.env.SESSION,
-  saveUninitialized: true,
-  resave: true,
-  store: new MongoStore({ mongooseConnection: connection })
-}));
 
 // Passport init
 app.use(passport.initialize());
