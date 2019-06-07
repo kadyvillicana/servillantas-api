@@ -26,7 +26,7 @@ const createItemObject = (index) => {
         'https://www.nacion321.com/files/uploads/article_images_repository/NThlNTYwYWY5.jpg',
         'https://newsweekespanol.com/wp-content/uploads/2018/05/MAPA-HOMICIDIOS-2018.jpg',
       ]
-      : [];
+      : undefined
   }
 
   return item;

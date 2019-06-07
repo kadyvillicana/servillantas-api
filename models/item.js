@@ -33,7 +33,8 @@ const ItemSchema = new mongoose.Schema(
     },
     sliderImages: {
       type: [String],
-      validate: [sliderImagesMaxLength, '{PATH} exceeds the limit of 3']
+      validate: [sliderImagesMaxLength, '{PATH} exceeds the limit of 3'],
+      default: undefined
     },
   },
   {
