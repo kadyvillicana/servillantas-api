@@ -101,9 +101,12 @@ exports.forgotPassword = (req, res, next) => {
       const mailOptions = {
         from: process.env.EMAIL,
         to: user.email,
-        subject: 'Cambio de contraseña',
-        text: "Este mensaje ha sido enviado porque solicitaste reestablecer tu contraseña, haz clic en el enlace para continuar con esta operación\n\n" +
-          process.env.APP_URL + "recover-password/" + token
+        subject: 'Recuperación de contraseña de Portal de Administración LGT',
+        text: "Hola\n\n" + 
+              "Se ha solicitado una nueva contraseña.\n"+ 
+              "Para realizar el cambio de la contraseña haz clic en el siguiente enlace.\n\n"+
+                process.env.APP_URL + "recover-password/" + token + "\n\n"+ 
+               "Si no solicitaste restablecer la contraseña, haz caso omiso de este correo electrónico."
       };
 
       transporter.sendMail(mailOptions, (err) => {
