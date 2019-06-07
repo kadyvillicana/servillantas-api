@@ -8,11 +8,22 @@ mongoose.connect(databaseConfig().url, databaseConfig().options);
 // Insert the places array after deleteMany has finished
 Place.deleteMany({}, err => {
   if (err) {
+    /* eslint-disable no-console */
+    console.error(err);
+    /* eslint-enable no-console */
     disconnect();
     return;
   }
 
-  Place.insertMany(places, () => disconnect());
+  Place.insertMany(places, (err) => {
+    if (err) {
+      /* eslint-disable no-console */
+      console.error(err);
+      /* eslint-enable no-console */
+    }
+
+    disconnect()
+  });
 });
 
 const disconnect = () => mongoose.disconnect();
