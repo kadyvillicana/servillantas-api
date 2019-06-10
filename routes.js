@@ -3,6 +3,7 @@ const ItemController                = require('./controllers/item');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
 const ShortURLController            = require('./controllers/shortURL');
+const addItemRequest                = require('./requests/itemRequests/addItem');
 const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
@@ -31,6 +32,7 @@ module.exports = function (app) {
   itemRoutes.get('/', ItemController.getItems);
   itemRoutes.get('/:id', ItemController.getItem);
   itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
+  itemRoutes.post('/', addItemRequest, ItemController.addItem);
 
   // Indicator routes
   apiRoutes.use('/indicators', indicatorRoutes);

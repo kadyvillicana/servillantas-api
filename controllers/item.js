@@ -1,4 +1,5 @@
-const Item = require('../models/item');
+const Item                 = require('../models/item');
+const { validationResult } = require('express-validator/check');
 
 /**
  * Function to get all the items available.
@@ -39,4 +40,19 @@ exports.getItem = (req, res, next) => {
 
     return res.status(200).send({ data: item, success: true });
   });
+}
+
+/**
+ * Function to add a new item.
+ * 
+ * @returns {Object} Model Item
+ */
+exports.addItem = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  return res.status(200).send({ message: 'all good' });
 }
