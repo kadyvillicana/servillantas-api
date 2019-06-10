@@ -7,7 +7,8 @@
     "seedPlaces": "node ./seeders/placesSeeder.js",
     "seedItems": "node ./seeders/itemsSeeder.js",
     "seedIndicators": "node ./seeders/indicatorsSeeder.js",
-    "test": "mocha --recursive test"
+    "test": "mocha --timeout 60000 --recursive tests",
+    "lint": "eslint **/*.js --ignore-path .gitignore"
   },
   "dependencies": {
     "bcryptjs": "2.4.3",
@@ -18,7 +19,6 @@
     "dotenv": "8.0.0",
     "express": "~4.16.1",
     "express-jwt": "5.3.1",
-    "express-session": "1.16.1",
     "express-validator": "5.3.1",
     "http-errors": "~1.6.3",
     "jsonwebtoken": "8.5.1",
@@ -31,5 +31,13 @@
     "passport-local": "^1.0.0",
     "shortid": "2.2.14",
     "valid-url": "1.0.9"
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-plugin-import": "^2.17.3",
+    "mocha": "^6.1.4",
+    "mongodb-memory-server": "^5.1.2"
   }
 }

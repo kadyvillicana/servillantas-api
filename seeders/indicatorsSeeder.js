@@ -1,15 +1,15 @@
-const IndicatorRecord              = require('../models/indicatorRecord'),
-      Item                         = require('../models/item'),
-      Indicator                    = require('../models/indicator'),
-      Place                        = require('../models/place'),
-      databaseConfig               = require('../config/database'),
-      complaintMap                 = require('../helpers/complaints'),
-      items                        = require('../helpers/items-array')(),
-      mockIndicators               = require('../helpers/mock-indicators'),
-      getDataSet                   = require('../helpers/get-random-dataset'),
-      mongoose                     = require('mongoose'),
-      moment                       = require('moment');
-                                     require('moment/locale/es');
+const IndicatorRecord              = require('../models/indicatorRecord');
+const Item                         = require('../models/item');
+const Indicator                    = require('../models/indicator');
+const Place                        = require('../models/place');
+const databaseConfig               = require('../config/database');
+const complaintMap                 = require('../helpers/complaints');
+const items                        = require('../helpers/items-array')();
+const mockIndicators               = require('../helpers/mock-indicators');
+const getDataSet                   = require('../helpers/get-random-dataset');
+const mongoose                     = require('mongoose');
+const moment                       = require('moment');
+require('moment/locale/es');
 
 // Set es language
 moment.locale('es');
@@ -40,7 +40,9 @@ const seed = async () => {
     await Promise.all(itemPromises);
 
   } catch (e) {
-    disconnect();
+    /* eslint-disable no-console */
+    console.error('Error seeding', e);
+    /* eslint-enable no-console */
   }
   disconnect();
 }
@@ -100,9 +102,9 @@ const addIndicator = async (_item, indicatorFromItem) => {
 
       // If the key has been found on a previous iteration, set complaintMapProps with the data
       // Else, iterate through the array helper to find the matching key and set complaintMapProps
-      if (complaintMapKeys.includes(key) && hash[key] !== undefined) {
+      if (complaintMapKeys.includes(key) && complaintMapData[key] !== undefined) {
         complaintMapProps.key = key;
-        complaintMapProps.isPlace = hash[key].isPlace;
+        complaintMapProps.isPlace = complaintMapData[key].isPlace;
       } else {
         for (let [cKey, cValue] of Object.entries(complaintMap)) {
           if (cValue.names.includes(key.toLocaleLowerCase())) {

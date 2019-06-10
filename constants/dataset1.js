@@ -1109,4 +1109,4 @@ module.exports = [
     "Yucatán": 243,
     "Zacatecas": 129
   },
- ];
+];

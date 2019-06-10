@@ -1,20 +1,18 @@
-const User = require('../models/user'),
-  passport = require('passport'),
-  nodemailer = require('nodemailer'),
-  crypto = require('crypto');
+const User                 = require('../models/user');
+const passport             = require('passport');
+const nodemailer           = require('nodemailer');
+const { validationResult } = require('express-validator/check');
+const crypto               = require('crypto');
 
 
 exports.register = (req, res, next) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
   var email = req.body.email;
   var password = req.body.password;
-
-  if (!email) {
-    return res.status(400).send({ error: 'You must enter an email address' });
-  }
-
-  if (!password) {
-    return res.status(400).send({ error: 'You must enter a password' });
-  }
 
   User.findOne({ email: email }, function (err, existingUser) {
     if (err) {
@@ -42,21 +40,9 @@ exports.register = (req, res, next) => {
 }
 
 exports.login = (req, res, next) => {
-  const { email, password } = req.body;
-  if (!email) {
-    return res.status(422).json({
-      errors: {
-        email: 'is required',
-      },
-    });
-  }
-
-  if (!password) {
-    return res.status(422).json({
-      errors: {
-        password: 'is required',
-      },
-    });
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
 
   return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
@@ -66,35 +52,42 @@ exports.login = (req, res, next) => {
 
     if (passportUser) {
       const user = passportUser;
-      user.token = passportUser.generateJWT();
-      return res.json({ user: user.toAuthJSON() });
+      const token = passportUser.generateJWT();
+      return res.json({ user: user.toAuthJSON(), token });
     }
 
     return res.status(400).json({ error: info })
   })(req, res, next);
 };
 
-exports.logout = (req, res, next) => {
+exports.logout = (req, res) => { 
   req.logout();
   res.send({ message: "sign out" })
 }
 
 exports.forgotPassword = (req, res, next) => {
-  if (!req.body.email) {
-    res.json('Email Required')
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
   }
 
-  User.findOne({ email: req.body.email }).then(user => {
-    if (!user) {
-      res.json("email not found")
+  User.findOne({ email: req.body.email }, (err, user) => {
+    if (err) {
+      return next(err)
     }
-    else {
-      const token = crypto.randomBytes(20).toString('hex');
-      user.updateOne({
-        resetPasswordToken: token,
-        resetPasswordExpires: Date.now() + 360000,
-      }, (err, res) => {});
 
+    if (!user) {
+      return res.status(404).json({error: "Email not found"})
+    }
+
+    const token = crypto.randomBytes(20).toString('hex');
+    user.updateOne({
+      resetPasswordToken: token,
+      resetPasswordExpires: Date.now() + 360000,
+    }, (err) => {
+      if (err) {
+        return next(err)
+      }
       const transporter = nodemailer.createTransport({
         host: process.env.SMTP_HOST,
         port: process.env.SMTP_PORT,
@@ -108,48 +101,49 @@ exports.forgotPassword = (req, res, next) => {
       const mailOptions = {
         from: process.env.EMAIL,
         to: user.email,
-        subject: 'Link to reset Password',
-        text: "Este es un mensaje de prueba accede a la siguiente pagina para cambiar tu password\n\n" +
-          process.env.MAIN_URL + token
+        subject: 'Recuperación de contraseña de Portal de Administración LGT',
+        text: "Hola\n\n" + 
+              "Se ha solicitado una nueva contraseña.\n"+ 
+              "Para realizar el cambio de la contraseña haz clic en el siguiente enlace.\n\n"+
+                process.env.APP_URL + "recover-password/" + token + "\n\n"+ 
+               "Si no solicitaste restablecer la contraseña, haz caso omiso de este correo electrónico."
       };
 
-      transporter.sendMail(mailOptions, (err, response) => {
+      transporter.sendMail(mailOptions, (err) => {
         if (err) {
-          console.log("Error: ", err);
+          next(err)
         } else {
-          res.status(200).json('recovery email sent');
+          res.status(200).send({message: 'Recover Password email has been sent'});
         }
       });
-    }
-  });
-}
-
-exports.resetPassword = (req, res, next) => {
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
-    if (!user) {
-      res.status(401).send({error: 'link is invalid or has expired'})
-    } else {
-      res.status(200).send({
-        username: user.email,
-        token: req.params.token,
-        message: 'password reset is active'
-      })
-    }
+    });
   })
 }
 
 exports.updatePasswordByEmail = (req, res, next) => {
-  User.findOne({ email: req.body.email, resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }).then(user => {
-    if(user){
-        user.password = req.body.password;
-        user.resetPasswordExpires = null;
-        user.resetPasswordToken = null;
-        user.save().then((result) => {
-          res.status(200).send({message: 'pass updated'})
-        })
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
+    if (err) {
+      return next(err);
     }
-    else{
-      res.status(404).json('email not found')
+
+    if (user) {
+      user.password = req.body.password;
+      user.resetPasswordExpires = null;
+      user.resetPasswordToken = null;
+      user.save((err) => {
+        if (err) {
+          return next(err);
+        }
+        res.status(200).send({ message: 'Password updated' });
+      });
+    }
+    else {
+      res.status(404).json({ error: 'Change password link has expired' });
     }
   })
 }
