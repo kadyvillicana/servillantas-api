@@ -2,7 +2,8 @@ const createItemObject = (index) => {
   const item = {
     name: `Rubro ${index}`,
     shortName: `Rubro ${index}`,
-    hasIndicators: index !== 6 && index !== 9
+    hasIndicators: index !== 6 && index !== 9,
+    position: index * 10,
   }
 
   // If the item is one of those that have no indicators, set the required data

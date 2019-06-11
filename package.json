@@ -11,6 +11,7 @@
     "lint": "eslint **/*.js --ignore-path .gitignore"
   },
   "dependencies": {
+    "aws-sdk": "2.473.0",
     "bcryptjs": "2.4.3",
     "body-parser": "1.19.0",
     "cookie-parser": "~1.4.4",
@@ -22,6 +23,7 @@
     "express-validator": "5.3.1",
     "http-errors": "~1.6.3",
     "is-base64": "^0.1.0",
+    "is-image": "3.0.0",
     "jsonwebtoken": "8.5.1",
     "moment": "2.24.0",
     "mongodb": "3.2.3",

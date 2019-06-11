@@ -1,5 +1,6 @@
 const expect              = require('chai').expect;
 const Item                = require('../../../models/item');
+const DUPLICATE_NAME      = require('../../../constants/errors').DUPLICATE_NAME;
 
 describe('Item', () => {
   it ('should not save duplicated records', async () => {
@@ -12,7 +13,7 @@ describe('Item', () => {
     try {
       await Item.create({ name, shortName, hasIndicators });
     } catch (err) {
-      return expect(err.errors.name.message).to.be.equal("Name already exists");
+      return expect(err.errors.name.message).to.be.equal(DUPLICATE_NAME);
     }
   });
 });
