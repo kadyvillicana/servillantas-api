@@ -33,10 +33,10 @@ module.exports = function (app) {
   itemRoutes.get('/', ItemController.getItems);
   itemRoutes.get('/:id', ItemController.getItem);
   itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
-  itemRoutes.post('/', addItemRequest, ItemController.addItem);
-  itemRoutes.put('/reorder', reorderItemsRequest, ItemController.reorderItems);
-  itemRoutes.put('/:id', addItemRequest, ItemController.editItem);
-  itemRoutes.delete('/:id', ItemController.deleteItem);
+  itemRoutes.post('/', tokenValidator.required, addItemRequest, ItemController.addItem);
+  itemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, ItemController.reorderItems);
+  itemRoutes.put('/:id', tokenValidator.required, addItemRequest, ItemController.editItem);
+  itemRoutes.delete('/:id', tokenValidator.required, ItemController.deleteItem);
 
   // Indicator routes
   apiRoutes.use('/indicators', indicatorRoutes);
