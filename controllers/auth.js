@@ -10,9 +10,13 @@ exports.register = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-
+ 
   var email = req.body.email;
   var password = req.body.password;
+  var name = req.body.name;
+  var lastName = req.body.lastName;
+  var role = req.body.role;
+
 
   User.findOne({ email: email }, function (err, existingUser) {
     if (err) {
@@ -26,6 +30,9 @@ exports.register = (req, res, next) => {
     var user = new User({
       email: email,
       password: password,
+      name: name,
+      lastName: lastName,
+      role: role
     });
 
     user.save(function (err, user) {
