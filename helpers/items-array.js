@@ -7,7 +7,7 @@ const createItemObject = (index) => {
 
   // If the item is one of those that have no indicators, set the required data
   if (!item.hasIndicators) {
-    item.coverImage = index === 6 ? 'https://farm5.static.flickr.com/4777/26862232238_fb7ac89c62_b.jpg' : '';
+    item.coverImage = index === 6 ? 'https://st4.depositphotos.com/4039939/26093/v/600/depositphotos_260936406-stock-video-kidnapped-tied-woman-chair-criminal.jpg' : '';
     item.title = index === 6
       ? 'Exclusión de pruebas obtenidas por tortura o TPCID'
       : 'Programa Nacional para Prevenir y Sancionar la Tortura';
