@@ -11,7 +11,6 @@ const router            = require('./routes');
 const passport          = require('passport');
 require('./config/passport');
 
-mongoose.set('useCreateIndex', true);
 mongoose.set('useFindAndModify', false);
 mongoose.connect(databaseConfig().url, databaseConfig().options);
 const connection = mongoose.connection;

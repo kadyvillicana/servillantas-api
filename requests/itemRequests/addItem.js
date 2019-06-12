@@ -1,7 +1,5 @@
 const { body }    = require('express-validator/check');
 const isBase64    = require('is-base64');
-const validURL    = require('valid-url');
-const isImage     = require('is-image');
 
 module.exports = [
   body('name')
@@ -61,9 +59,11 @@ module.exports = [
         return true;
       }
 
-      if (!isBase64(value, { mime: true }) && !(validURL.isUri(value) && isImage(value))) {
-        throw new Error('cover must be valid base64 or url image');
+      if (typeof value !== 'object') {
+        throw new Error('cover must be an object');
       }
+
+      validateImageField(value);
 
       return true;
     }),
@@ -79,11 +79,41 @@ module.exports = [
         throw new Error('images must be an array of valid base64');
       }
 
-      value.forEach(i => {
-        if (!isBase64(i, { mime: true }) && !(validURL.isUri(i) && isImage(i))) {
-          throw new Error('images must be an array of valid base64 or url image');
+      let cont = 0;
+      for (let i = 0; i < value.length; i++) {
+        const imageObject = value[i];
+        validateImageField(imageObject);
+
+        // If there is a new image to add or is already stored
+        // and won't be removed, increment cont
+        if (imageObject.data || imageObject._id && !imageObject.removed) {
+          cont++;
         }
-      })
+      }
+
+      if (cont > 3) {
+        throw new Error('no more than 3 images are allowed');
+      }
+
       return true;
     })
 ]
+
+/**
+ * Function to throw error if data or
+ * removed fields don't pass the validations.
+ */
+const validateImageField = (field) => {
+  const { data, removed } = field;
+
+  // Validate that data is base64
+  if (data && !isBase64(data, { mime: true })) {
+    throw new Error('cover.data must be valid base64');  
+  }
+
+  if (removed !== undefined && typeof removed !== "boolean") {
+    throw new Error('cover.removed must be boolean');
+  }
+
+  return;
+}

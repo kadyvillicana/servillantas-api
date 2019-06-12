@@ -27,6 +27,13 @@ module.exports = async (image) => {
   }
 }
 
+/**
+ * Get the extension of the image
+ * 
+ * @param {string} image base64
+ * 
+ * @returns {string} png, svg, jpg, etc
+ */
 const getImageExtension = (image) => {
   const pos = image.indexOf(';');
   const type = image.substr(0, pos).split(':', )[1];
@@ -35,6 +42,15 @@ const getImageExtension = (image) => {
   return extension;
 }
 
+/**
+ * Function to get the text of the image
+ * without the type and extension.
+ * 
+ * @param {string} image base64
+ * 
+ * @returns {string} the code that will be
+ * converted to the image
+ */
 const getImageCode = (image) => {
   return image.replace(/^data:image\/\w+;base64,/, '');
 }

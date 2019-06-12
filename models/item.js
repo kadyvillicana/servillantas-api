@@ -20,7 +20,8 @@ const ItemSchema = new mongoose.Schema(
       required: true
     },
     coverImage: {
-      type: String
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'ItemImage'
     },
     title: {
       type: String,
@@ -37,13 +38,15 @@ const ItemSchema = new mongoose.Schema(
       ]
     },
     sliderImages: {
-      type: [String],
-      validate: [sliderImagesMaxLength, '{PATH} exceeds the limit of 3'],
+      type: [{
+        type: [mongoose.Schema.Types.ObjectId],
+        ref: 'ItemImage'
+      }],
+      validate: [sliderImagesMaxLength, '{PATH exceeds the limit of 3}'],
       default: undefined
     },
     deleted: {
       type: Boolean,
-      required: true,
       default: false
     }
   },
@@ -51,6 +54,11 @@ const ItemSchema = new mongoose.Schema(
     timestamps: true
   }
 );
+
+// Add index to speed search of duplicated names
+// use 'es' collation and strngth 1 to ignore sensitive case and diacritics
+ItemSchema.index({ name: -1}, { collation: { locale: 'es', strength: 1 }});
+
 
 /**
  * Validate there are no items with more than 3 images in the slider.
@@ -79,12 +87,36 @@ ItemSchema.pre('validate', async function (next) {
  * being updated.
  */
 ItemSchema.path('name').validate(async function (value) {
-  const item = await mongoose.model('Item', ItemSchema).findOne({ name: value });
+  const item = await mongoose.model('Item', ItemSchema)
+    .findOne({ name: value })
+    .collation({ locale: 'es', strength: 1 });
   if (item && item._id.toString() !== this._id.toString()) {
     return false;
   }
 
   return true;
 }, DUPLICATE_NAME);
+
+/**
+ * Populate fields and ignore the properties that
+ * the app won't need.
+ */
+ItemSchema.methods.toJsonResponse = async function() {
+  const item = await this
+    .populate('coverImage', 'url')
+    .populate('sliderImages', 'url')
+    .execPopulate();
+
+  return {
+    _id: item._id,
+    name: item.name,
+    shortName: item.shortName,
+    hasIndicators: item.hasIndicators,
+    title: item.title,
+    content: item.content,
+    coverImage: item.coverImage,
+    sliderImages: item.sliderImages
+  }
+};
 
 module.exports = mongoose.model('Item', ItemSchema);
