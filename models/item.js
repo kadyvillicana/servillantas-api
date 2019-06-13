@@ -11,6 +11,10 @@ const ItemSchema = new mongoose.Schema(
       type: String,
       required: true
     },
+    description: {
+      type: String,
+      maxlength: 1024,
+    },
     hasIndicators: {
       type: Boolean,
       required: true

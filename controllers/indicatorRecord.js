@@ -81,7 +81,7 @@ exports.get = (req, res, next) => {
       breakdown: 1
     }
 
-    // Add new stages to agreggate
+    // Add new stages to aggregate
     stages = [
       { $unwind: "$breakdown" },
       {

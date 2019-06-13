@@ -1,5 +1,6 @@
 const IndicatorRecordController     = require('./controllers/indicatorRecord');
 const ItemController                = require('./controllers/item');
+const AdminItemController           = require('./controllers/admin/item');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
 const ShortURLController            = require('./controllers/shortURL');
@@ -22,21 +23,31 @@ module.exports = function (app) {
   const indicatorRecordsRoutes      = express.Router();
   const authRoutes                  = express.Router();
   const shortURLRoutes              = express.Router();
+  const adminRoutes                 = express.Router();
+  const adminItemRoutes             = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {
     res.send('Im the home page!')
   });
 
+  // Admin routes
+  apiRoutes.use('/admin', adminRoutes);
+  
+  // Admin Item routes
+  adminRoutes.use('/items', adminItemRoutes);
+  adminItemRoutes.get('/', tokenValidator.required, AdminItemController.getItems);
+  adminItemRoutes.get('/:id', tokenValidator.required, AdminItemController.getItem);
+  adminItemRoutes.post('/', tokenValidator.required, addItemRequest, AdminItemController.addItem);
+  adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
+  adminItemRoutes.put('/:id', tokenValidator.required, addItemRequest, AdminItemController.editItem);
+  adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
+
   // Item routes
   apiRoutes.use('/items', itemRoutes);
   itemRoutes.get('/', ItemController.getItems);
   itemRoutes.get('/:id', ItemController.getItem);
   itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
-  itemRoutes.post('/', tokenValidator.required, addItemRequest, ItemController.addItem);
-  itemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, ItemController.reorderItems);
-  itemRoutes.put('/:id', tokenValidator.required, addItemRequest, ItemController.editItem);
-  itemRoutes.delete('/:id', tokenValidator.required, ItemController.deleteItem);
 
   // Indicator routes
   apiRoutes.use('/indicators', indicatorRoutes);

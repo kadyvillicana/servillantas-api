@@ -2,6 +2,7 @@ const createItemObject = (index) => {
   const item = {
     name: `Rubro ${index}`,
     shortName: `Rubro ${index}`,
+    description: `Descripción del rubro ${index}`,
     hasIndicators: index !== 6 && index !== 9,
     position: index * 10,
   }
