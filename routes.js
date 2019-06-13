@@ -1,8 +1,11 @@
 const IndicatorRecordController     = require('./controllers/indicatorRecord');
 const ItemController                = require('./controllers/item');
+const AdminItemController           = require('./controllers/admin/item');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
 const ShortURLController            = require('./controllers/shortURL');
+const addItemRequest                = require('./requests/itemRequests/addItem');
+const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
 const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
@@ -20,11 +23,25 @@ module.exports = function (app) {
   const indicatorRecordsRoutes      = express.Router();
   const authRoutes                  = express.Router();
   const shortURLRoutes              = express.Router();
+  const adminRoutes                 = express.Router();
+  const adminItemRoutes             = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {
     res.send('Im the home page!')
   });
+
+  // Admin routes
+  apiRoutes.use('/admin', adminRoutes);
+  
+  // Admin Item routes
+  adminRoutes.use('/items', adminItemRoutes);
+  adminItemRoutes.get('/', tokenValidator.required, AdminItemController.getItems);
+  adminItemRoutes.get('/:id', tokenValidator.required, AdminItemController.getItem);
+  adminItemRoutes.post('/', tokenValidator.required, addItemRequest, AdminItemController.addItem);
+  adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
+  adminItemRoutes.put('/:id', tokenValidator.required, addItemRequest, AdminItemController.editItem);
+  adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
