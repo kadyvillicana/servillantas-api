@@ -13,8 +13,8 @@ var UserSchema = new mongoose.Schema({
     required: true
   },
   password: String,
+  organization: String,
   role: String,
-  avatar: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date
 }, {
