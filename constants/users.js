@@ -28,7 +28,7 @@ module.exports = [
     "role": "Admin"
   },
   {
-    "email":"jmagaña@sciodev.com",
+    "email":"jmagana@sciodev.com",
     "password":"123456",
     "name" : "Jesus",
     "lastName" : "Magaña González",
