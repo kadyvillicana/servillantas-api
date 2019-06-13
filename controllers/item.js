@@ -1,4 +1,4 @@
-const Item = require('../models/item');
+const Item                 = require('../models/item');
 
 /**
  * Function to get all the items available.
@@ -6,7 +6,7 @@ const Item = require('../models/item');
  * @returns {Array} Model Item
  */
 exports.getItems = (req, res, next) => {
-  Item.find({}, '_id name shortName hasIndicators', (err, items) => {
+  Item.find({ deleted: false }, ['_id', 'name', 'shortName', 'hasIndicators'], { sort: { position: 1 } }, (err, items) => {
     if (err) {
       return next(err);
     }
@@ -16,7 +16,7 @@ exports.getItems = (req, res, next) => {
     }
 
     return res.status(200).send({ data: items, success: true });
-  })
+  });
 }
 
 /**
@@ -28,7 +28,7 @@ exports.getItems = (req, res, next) => {
 exports.getItem = (req, res, next) => {
   const { id } = req.params;
 
-  Item.findOne({ _id: id }, (err, item) => {
+  Item.findOne({ _id: id, deleted: false }, async (err, item) => {
     if (err) {
       return next(err);
     }
@@ -37,6 +37,6 @@ exports.getItem = (req, res, next) => {
       return res.status(404).send({ message: "Item not found"});
     }
 
-    return res.status(200).send({ data: item, success: true });
+    return res.status(200).send({ data: await item.toJsonResponse(), success: true });
   });
 }

@@ -1,0 +1,1 @@
+exports.DUPLICATE_NAME = 'Name already exists';

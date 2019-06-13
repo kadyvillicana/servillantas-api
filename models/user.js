@@ -4,6 +4,8 @@ const jwt        = require('jsonwebtoken');
 
 
 var UserSchema = new mongoose.Schema({
+  name: String,
+  lastName: String,
   email: {
     type: String,
     lowercase: true,
@@ -11,6 +13,7 @@ var UserSchema = new mongoose.Schema({
     required: true
   },
   password: String,
+  organization: String,
   role: String,
   resetPasswordToken: String,
   resetPasswordExpires: Date
@@ -57,6 +60,10 @@ UserSchema.methods.toAuthJSON = function () {
   return {
     _id: this._id,
     email: this.email,
+    name: this.name,
+    lastName: this.lastName,
+    role: this.role,
+    avatar: this.avatar
   };
 };
 
