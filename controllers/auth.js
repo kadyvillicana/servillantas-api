@@ -13,9 +13,11 @@ exports.register = (req, res, next) => {
  
   var email = req.body.email;
   var password = req.body.password;
+  var organization = req.body.organization;
   var name = req.body.name;
   var lastName = req.body.lastName;
   var role = req.body.role;
+  var verified = false;
 
 
   User.findOne({ email: email }, function (err, existingUser) {
@@ -26,13 +28,15 @@ exports.register = (req, res, next) => {
     if (existingUser) {
       return res.status(409).send({ error: 'That email address is already in use' });
     }
-
+    //function to create random password
     var user = new User({
       email: email,
-      password: password,
+      //password: value from function randompassword
+      organization: organization,
       name: name,
       lastName: lastName,
-      role: role
+      role: role,
+      verified: verified,
     });
 
     user.save(function (err, user) {

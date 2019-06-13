@@ -25,6 +25,13 @@ module.exports = [
     "password":"123456",
     "name" : "Misael",
     "lastName" : "Cabrera Chávez",
+    "role": "Admin"
+  },
+  {
+    "email":"jmagaña@sciodev.com",
+    "password":"123456",
+    "name" : "Jesus",
+    "lastName" : "Magaña González",
     "role": "Super"
   },
 ]
