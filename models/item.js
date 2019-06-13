@@ -3,6 +3,11 @@ const DUPLICATE_NAME    = require('../constants/errors').DUPLICATE_NAME;
 
 const ItemSchema = new mongoose.Schema(
   {
+    number: {
+      type: Number,
+      required: true,
+      default: 0
+    },
     name: {
       type: String,
       required: true
@@ -21,7 +26,8 @@ const ItemSchema = new mongoose.Schema(
     },
     position: {
       type: Number,
-      required: true
+      required: true,
+      default: 0
     },
     coverImage: {
       type: mongoose.Schema.Types.ObjectId,
@@ -74,13 +80,14 @@ function sliderImagesMaxLength (val) {
 /**
  * Add the position of this item.
  */
-ItemSchema.pre('validate', async function (next) {
-  // If no position is set, calculate it
-  if (this.position) {
-    return next();
+ItemSchema.pre('save', async function(next) {
+  if (this.isNew) {
+    const item = this;
+    const totalItems = await mongoose.model('Item', ItemSchema).countDocuments();
+    const number = totalItems + 1;
+    item.number = number;
+    item.position = number * 10;
   }
-  const totalItems = await mongoose.model('Item', ItemSchema).countDocuments();
-  this.position = (totalItems + 1) * 10;
   next();
 });
 
@@ -113,9 +120,12 @@ ItemSchema.methods.toJsonResponse = async function() {
 
   return {
     _id: item._id,
+    number: item.number,
     name: item.name,
     shortName: item.shortName,
+    description: item.description,
     hasIndicators: item.hasIndicators,
+    position: item.position,
     title: item.title,
     content: item.content,
     coverImage: item.coverImage,

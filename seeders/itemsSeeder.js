@@ -18,12 +18,12 @@ const seed = async () => {
     // delete items
     await Item.deleteMany({});
 
-    const itemsPromises = [];
+    // wait for each item to be added so the position and number
+    // can be set properly
     for (let i = 0; i < items.length; i++) {
-      itemsPromises.push(addItem(items[i], i));
+      await addItem(items[i], i);
     }
-  
-    await Promise.all(itemsPromises);
+
   } catch (err) {
     /* eslint-disable no-console */
     console.error(err);

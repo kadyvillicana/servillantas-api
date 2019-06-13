@@ -13,6 +13,7 @@ module.exports = [
     .isLength({ max: 64 }).withMessage('shortName must not be longer than 64 characters'),
 
   body('description')
+    .optional()
     .isString().withMessage('description must be a string')
     .isLength({ max: 1024 }).withMessage('description must not be longer than 64 characters'),
 

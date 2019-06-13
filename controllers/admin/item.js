@@ -16,6 +16,7 @@ const ObjectId             = require('mongoose').Types.ObjectId;
 const getCommonProjectStage = () => {
   return {
     _id: 1,
+    number: 1,
     name: 1,
     shortName: 1,
     position: 1,
@@ -178,39 +179,41 @@ exports.addItem = (req, res, next) => {
       return next(err);
     }
 
-    try {
-      const { cover, images } = req.body;
-      let addedImages = false;
-
-      // If a cover is set, upload, crete record and save the reference in the item
-      if (cover &&  isBase64(cover.data, { mime: true })) {
-        const coverImage = await uploadImageAndCreateRecord(item._id, cover.data, 'cover');
-        item.coverImage = coverImage;
-        addedImages = true;
-      }
-
-      // If an array of images is set, upload them, create the records and save the reference in the item
-      if (images) {
-        const imagePromises = [];
-        for (let i = 0; i < images.length; i++) {
-          if (images[i].data) {
-            imagePromises.push(uploadImageAndCreateRecord(item._id, images[i].data, 'slider'));
-          }
-        }
-
-        if (imagePromises.length) {
-          const sliderImages = await Promise.all(imagePromises);
-          item.sliderImages = sliderImages;
+    if (!hasIndicators) {
+      try {
+        const { cover, images } = req.body;
+        let addedImages = false;
+  
+        // If a cover is set, upload, crete record and save the reference in the item
+        if (cover &&  isBase64(cover.data, { mime: true })) {
+          const coverImage = await uploadImageAndCreateRecord(item._id, cover.data, 'cover');
+          item.coverImage = coverImage;
           addedImages = true;
         }
+  
+        // If an array of images is set, upload them, create the records and save the reference in the item
+        if (images) {
+          const imagePromises = [];
+          for (let i = 0; i < images.length; i++) {
+            if (images[i].data) {
+              imagePromises.push(uploadImageAndCreateRecord(item._id, images[i].data, 'slider'));
+            }
+          }
+  
+          if (imagePromises.length) {
+            const sliderImages = await Promise.all(imagePromises);
+            item.sliderImages = sliderImages;
+            addedImages = true;
+          }
+        }
+  
+        // If images were added to the item, save again
+        if (addedImages) {
+          await item.save();
+        }
+      } catch (err) {
+        return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images' });
       }
-
-      // If images were added to the item, save again
-      if (addedImages) {
-        await item.save();
-      }
-    } catch (err) {
-      return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images' });
     }
 
     res.status(200).send({ data: await item.toJsonResponse(), success: true });
@@ -245,8 +248,8 @@ exports.editItem = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { name, shortName, hasIndicators } = req.body;
-  let itemObject = { name, shortName, hasIndicators };
+  const { name, shortName, hasIndicators, description } = req.body;
+  let itemObject = { name, shortName, hasIndicators, description };
 
   // If this item has no indicators add the title and content
   if (!hasIndicators) {
