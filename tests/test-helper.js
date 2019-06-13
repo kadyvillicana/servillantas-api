@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const MongoMemoryServer = require('mongodb-memory-server').default;
 
 let mongoServer;
-const options = { useNewUrlParser: true };
+const options = { useCreateIndex: true, useNewUrlParser: true };
 
 before((done) => {
   mongoServer = new MongoMemoryServer();
