@@ -29,27 +29,27 @@ module.exports = {
     indicators: [
       {
         ...indicatorData,
-        indicatorName: 'Número de denuncias por tortura o TPCID',
+        name: 'Número de denuncias por tortura o TPCID',
         shortName: 'No. Denuncias',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes iniciados por tortura',
+        name: 'Número de expedientes iniciados por tortura',
         shortName: 'No. Expedientes por tortura',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes actualmente en trámite en FEIDT',
+        name: 'Número de expedientes actualmente en trámite en FEIDT',
         shortName: 'No. Expedientes en trámite',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes consignados por FEIDT',
+        name: 'Número de expedientes consignados por FEIDT',
         shortName: 'No. Expedientes consignados',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes en no ejercicio de acción penal, FEIDT',
+        name: 'Número de expedientes en no ejercicio de acción penal, FEIDT',
         shortName: 'No. Expedientes en no ejercicio de acción penal',
       },
     ]
@@ -58,27 +58,27 @@ module.exports = {
     indicators: [
       {
         ...indicatorData,
-        indicatorName: 'Número de sentencias por tortura',
+        name: 'Número de sentencias por tortura',
         shortName: 'No. Sentencias por tortura',
       },
       {
         ...indicatorData,
-        indicatorName: 'Procesos penales iniciados por delito de tortura (Sistema Tradicional)',
+        name: 'Procesos penales iniciados por delito de tortura (Sistema Tradicional)',
         shortName: 'Procesos penales (Sistemas Tradicional)',
       },
       {
         ...indicatorData,
-        indicatorName: 'Procesos penales iniciados por delito de tortura (Juzgados de Control)',
+        name: 'Procesos penales iniciados por delito de tortura (Juzgados de Control)',
         shortName: 'Procesos penales (Juzgados de Control)',
       },
       {
         ...indicatorData,
-        indicatorName: 'Procesos penales iniciados por delito de tortura (Sistema Penal Acusatorio)',
+        name: 'Procesos penales iniciados por delito de tortura (Sistema Penal Acusatorio)',
         shortName: 'Procesos penales (Sistema Penal Acusatorio)',
       },
       {
         ...indicatorData,
-        indicatorName: 'Sentencias por delito de tortura (total de juzgados)',
+        name: 'Sentencias por delito de tortura (total de juzgados)',
         shortName: 'Sentencias por tortura',
       },
     ]

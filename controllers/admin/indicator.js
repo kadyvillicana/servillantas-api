@@ -6,7 +6,7 @@ const { validationResult }        = require('express-validator/check');
 exports.getIndicators = (req, res, next) => {
 
   Indicator
-    .find({}, ['_id', 'indicatorName', 'shortName'])
+    .find({}, ['_id', 'name', 'shortName'])
     .populate({ path: 'item', select: '_id name shortName' })
     .exec((err, indicators) => {
       if (err) {
@@ -48,7 +48,7 @@ exports.createIndicator = (req, res, next) => {
 
   let { item,
     version,
-    indicatorName,
+    name,
     definition,
     calculationMethod,
     measurementFrequency,
@@ -59,7 +59,7 @@ exports.createIndicator = (req, res, next) => {
   var indicator = new Indicator({
     item: item,
     version: version,
-    indicatorName: indicatorName,
+    name: name,
     definition: definition,
     calculationMethod: calculationMethod,
     measurementFrequency: measurementFrequency,
@@ -126,7 +126,7 @@ exports.updateIndicator = (req, res) => {
   Indicator.findByIdAndUpdate(req.params._id, {
     item: req.body.item,
     version: req.body.version,
-    indicatorName: req.body.indicatorName,
+    name: req.body.name,
     definition: req.body.redefinition,
     calculationMethod: req.body.calculationMethod,
     measurementFrequency: req.body.measurementFrequency,
