@@ -1,10 +1,18 @@
 const User                 = require('../models/user');
 const passport             = require('passport');
 const nodemailer           = require('nodemailer');
+const characters           = require('./../constants/characters')
 const { validationResult } = require('express-validator/check');
 const crypto               = require('crypto');
 
+var result='';
+const randomPassword = length => {
+  for ( var i = 0; i < length; i++ ) {
+    result += characters.charAt(Math.floor(Math.random() * characters.length));
+  }
 
+  return result;
+}
 exports.register = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -12,7 +20,7 @@ exports.register = (req, res, next) => {
   }
  
   var email = req.body.email;
-  var password = req.body.password;
+  var password = randomPassword(6);
   var organization = req.body.organization;
   var name = req.body.name;
   var lastName = req.body.lastName;
@@ -31,7 +39,7 @@ exports.register = (req, res, next) => {
     //function to create random password
     var user = new User({
       email: email,
-      //password: value from function randompassword
+      password: password,
       organization: organization,
       name: name,
       lastName: lastName,

@@ -16,8 +16,12 @@ passport.use(
       }
 
       bcryptjs.compare(password, user.password, (err, isMatch) => {
+
         if (err) throw err;
         if (isMatch) {
+          /* if (!user.verified) {
+             return done(null, false, { message: 'Change default password' })
+           }*/
           return done(null, user);
         } else {
           return done(null, false, { message: 'Password incorrect' })
