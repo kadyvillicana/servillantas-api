@@ -15,6 +15,7 @@ var UserSchema = new mongoose.Schema({
   password: String,
   organization: String,
   role: String,
+  verified: Boolean,
   resetPasswordToken: String,
   resetPasswordExpires: Date
 }, {
@@ -63,7 +64,8 @@ UserSchema.methods.toAuthJSON = function () {
     name: this.name,
     lastName: this.lastName,
     role: this.role,
-    avatar: this.avatar
+    avatar: this.avatar,
+    verified: this.verified,
   };
 };
 
