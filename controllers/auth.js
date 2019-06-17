@@ -5,9 +5,9 @@ const characters           = require('./../constants/characters')
 const { validationResult } = require('express-validator/check');
 const crypto               = require('crypto');
 
-var result='';
+var result = '';
 const randomPassword = length => {
-  for ( var i = 0; i < length; i++ ) {
+  for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
 
@@ -18,9 +18,9 @@ exports.register = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
- 
+
   var email = req.body.email;
-  var password = randomPassword(6);
+  var password = req.body;
   var organization = req.body.organization;
   var name = req.body.name;
   var lastName = req.body.lastName;
@@ -79,7 +79,7 @@ exports.login = (req, res, next) => {
   })(req, res, next);
 };
 
-exports.logout = (req, res) => { 
+exports.logout = (req, res) => {
   req.logout();
   res.send({ message: "sign out" })
 }
@@ -96,13 +96,13 @@ exports.forgotPassword = (req, res, next) => {
     }
 
     if (!user) {
-      return res.status(404).json({error: "Email not found"})
+      return res.status(404).json({ error: "Email not found" })
     }
 
     const token = crypto.randomBytes(20).toString('hex');
     user.updateOne({
       resetPasswordToken: token,
-      resetPasswordExpires: Date.now() + 360000,
+      resetPasswordExpires: Date.now() + 3600000,
     }, (err) => {
       if (err) {
         return next(err)
@@ -121,18 +121,19 @@ exports.forgotPassword = (req, res, next) => {
         from: process.env.EMAIL,
         to: user.email,
         subject: 'Recuperación de contraseña de Portal de Administración LGT',
-        text: "Hola\n\n" + 
-              "Se ha solicitado una nueva contraseña.\n"+ 
-              "Para realizar el cambio de la contraseña haz clic en el siguiente enlace.\n\n"+
-                process.env.APP_URL + "recover-password/" + token + "\n\n"+ 
-               "Si no solicitaste restablecer la contraseña, haz caso omiso de este correo electrónico."
+        text: "Hola\n\n" +
+          "Se ha solicitado una nueva contraseña. Para realizar el cambio de la contraseña haz clic en el siguiente enlace.\n\n" +
+          process.env.APP_URL + "recover-password/" + token + "\n\n" +
+          "Si no solicitaste restablecer la contraseña, haz caso omiso de este correo electrónico.\n\n" +
+          "Portal de administración\n" +
+          "LGT México"
       };
 
       transporter.sendMail(mailOptions, (err) => {
         if (err) {
           next(err)
         } else {
-          res.status(200).send({message: 'Recover Password email has been sent'});
+          res.status(200).send({ message: 'Recover Password email has been sent' });
         }
       });
     });
