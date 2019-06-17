@@ -20,7 +20,7 @@ exports.register = (req, res, next) => {
   }
 
   var email = req.body.email;
-  var password = req.body;
+  var password = req.body.password;
   var organization = req.body.organization;
   var name = req.body.name;
   var lastName = req.body.lastName;
@@ -36,7 +36,7 @@ exports.register = (req, res, next) => {
     if (existingUser) {
       return res.status(409).send({ error: 'That email address is already in use' });
     }
-    //function to create random password
+  
     var user = new User({
       email: email,
       password: password,
