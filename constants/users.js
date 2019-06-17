@@ -3,7 +3,7 @@ module.exports = [
     "email":"jadalberto@sciodev.com",
     "password":"123456",
     "name" : "Jose Adalberto",
-    "lastName" : "Moreno Ramirez",
+    "lastName" : "Moreno",
     "role": "Admin"
   },
   {
