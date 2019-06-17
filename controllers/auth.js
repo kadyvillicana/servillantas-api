@@ -20,7 +20,7 @@ exports.register = (req, res, next) => {
   }
 
   var email = req.body.email;
-  var password = req.body.password;
+  var password = randomPassword(6);
   var organization = req.body.organization;
   var name = req.body.name;
   var lastName = req.body.lastName;
@@ -51,6 +51,36 @@ exports.register = (req, res, next) => {
       if (err) {
         return next(err);
       }
+      
+      const transporter = nodemailer.createTransport({
+        host: process.env.SMTP_HOST,
+        port: process.env.SMTP_PORT,
+        secure: false, // true for 465, false for other ports
+        auth: {
+          user: process.env.EMAIL,
+          pass: process.env.EMAIL_PASSWORD
+        },
+      });
+
+      const mailOptions = {
+        from: process.env.EMAIL,
+        to: user.email,
+        subject: 'Bienvenido al Portal de Administración LGT',
+        text: "Tu usuario se registro exitosamente, accede con tu correo electrónico y el password generado por defecto al portal de administración LGT.\n\n" +
+        "Tu contraseña es: "+ result + "\n\n" +
+        "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
+        "Portal de administración\n" +
+        "LGT México"
+      };
+
+      transporter.sendMail(mailOptions, (err) => {
+        if (err) {
+          next(err)
+        } else {
+          res.status(200).send({ message: 'Recover Password email has been sent' });
+        }
+      });
+
       res.status(201).json({
         user: user
       })
