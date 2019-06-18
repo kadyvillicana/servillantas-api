@@ -1,7 +1,9 @@
-const LocalStrategy = require('passport-local').Strategy;
-const bcryptjs = require('bcryptjs');
-const passport = require('passport');
-const User = require('../models/user');
+const LocalStrategy       = require('passport-local').Strategy;
+const bcryptjs            = require('bcryptjs');
+const crypto              = require('crypto');
+const passport            = require('passport');
+const User                = require('../models/user');
+
 
 
 
@@ -19,6 +21,17 @@ passport.use(
 
         if (err) throw err;
         if (isMatch) {
+          if (!user.verified) {
+            const token = crypto.randomBytes(20).toString('hex');
+            user.updateOne({
+              resetPasswordToken: token,
+              resetPasswordExpires: Date.now() + 3600000,
+            }, (err) => {
+              if (err) {
+                return done(null, false, { message: 'Something Went Wrong' })
+              }})
+            return done(null, false, { message: 'Change default password', token: token })
+          }
           return done(null, user);
         } else {
           return done(null, false, { message: 'Password incorrect' })
