@@ -5,14 +5,14 @@ const characters           = require('./../constants/characters')
 const { validationResult } = require('express-validator/check');
 const crypto               = require('crypto');
 
-var result = '';
 const randomPassword = length => {
+  let result ='';
   for (var i = 0; i < length; i++) {
     result += characters.charAt(Math.floor(Math.random() * characters.length));
   }
-
   return result;
 }
+
 exports.register = (req, res, next) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
@@ -67,7 +67,7 @@ exports.register = (req, res, next) => {
         to: user.email,
         subject: 'Bienvenido al Portal de Administración LGT',
         text: "Tu usuario se registro exitosamente, accede con tu correo electrónico y el password generado por defecto al portal de administración LGT.\n\n" +
-        "Tu contraseña es: "+ result + "\n\n" +
+        "Tu contraseña es: "+ password + "\n\n" +
         "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
         "Portal de administración\n" +
         "LGT México"
@@ -185,6 +185,7 @@ exports.updatePasswordByEmail = (req, res, next) => {
       user.password = req.body.password;
       user.resetPasswordExpires = null;
       user.resetPasswordToken = null;
+      user.verified = true;
       user.save((err) => {
         if (err) {
           return next(err);
