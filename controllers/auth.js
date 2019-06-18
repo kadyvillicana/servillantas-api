@@ -1,10 +1,9 @@
-const User = require('../models/user');
-const passport = require('passport');
-const nodemailer = require('nodemailer');
-const characters = require('./../constants/characters')
-const { validationResult } = require('express-validator/check');
-const crypto = require('crypto');
-const mail = require('../services/mail');
+const User                    = require('../models/user');
+const passport                = require('passport');
+const characters              = require('./../constants/characters')
+const { validationResult }    = require('express-validator/check');
+const crypto                  = require('crypto');
+const mail                    = require('../services/mail');
 
 const randomPassword = length => {
   let result = '';
@@ -65,7 +64,7 @@ exports.register = (req, res, next) => {
         res.status(200).send({ message: 'User default password email has been sent' });
       }
       catch (err) {
-        next(err)
+        return next(err)
       }
       res.status(201).json({
         user: user
