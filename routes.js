@@ -3,6 +3,7 @@ const ItemController                = require('./controllers/item');
 const AdminItemController           = require('./controllers/admin/item');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
+const UserController                = require('./controllers/user')
 const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
@@ -22,6 +23,7 @@ module.exports = function (app) {
   const indicatorRoutes             = express.Router({ mergeParams: true });
   const indicatorRecordsRoutes      = express.Router();
   const authRoutes                  = express.Router();
+  const userRoutes                  = express.Router();
   const shortURLRoutes              = express.Router();
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
@@ -64,13 +66,17 @@ module.exports = function (app) {
   indicatorRecordsRoutes.put('/:indicatorId/:_id', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
   indicatorRecordsRoutes.delete('/:indicatorId/:_id', tokenValidator.required, IndicatorRecordController.deleteRecord);
 
-  // User Routes
+  // Auth Routes
   apiRoutes.use('/auth', authRoutes)
   authRoutes.post('/', postUserRequest, AuthController.register);
   authRoutes.post('/login', postUserRequest, AuthController.login);
   authRoutes.get('/logout', AuthController.logout);
   authRoutes.post('/recoverPassword', recoverPassRequest, AuthController.forgotPassword);
   authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
+
+  //User Routes
+  apiRoutes.use('/users', userRoutes)
+  userRoutes.get('/', UserController.getUsers)
 
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);
