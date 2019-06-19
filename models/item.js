@@ -1,5 +1,5 @@
 const mongoose          = require('mongoose');
-const DUPLICATE_NAME    = require('../constants/errors').DUPLICATE_NAME;
+const ERRORS    = require('../constants/errors');
 
 const ItemSchema = new mongoose.Schema(
   {
@@ -99,14 +99,31 @@ ItemSchema.pre('save', async function(next) {
  */
 ItemSchema.path('name').validate(async function (value) {
   const item = await mongoose.model('Item', ItemSchema)
-    .findOne({ name: value })
+    .findOne({ name: value, deleted: false })
     .collation({ locale: 'es', strength: 1 });
   if (item && item._id.toString() !== this._id.toString()) {
     return false;
   }
 
   return true;
-}, DUPLICATE_NAME);
+}, ERRORS.DUPLICATE_NAME);
+
+/**
+ * Validate there are no items with duplicated shortName.
+ * 
+ * Ignore the validation if the item found is the one
+ * being updated.
+ */
+ItemSchema.path('shortName').validate(async function (value) {
+  const item = await mongoose.model('Item', ItemSchema)
+    .findOne({ shortName: value, deleted: false })
+    .collation({ locale: 'es', strength: 1 });
+  if (item && item._id.toString() !== this._id.toString()) {
+    return false;
+  }
+
+  return true;
+}, ERRORS.DUPLICATE_SHORTNAME);
 
 /**
  * Populate fields and ignore the properties that
