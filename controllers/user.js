@@ -146,12 +146,6 @@ exports.updateUser = (req, res, next) => {
 }
 
 exports.deleteUser = (req, res,next) => {
-
-  User.deleteOne({
-    _id: req.params._id
-  }, (err, record) => {
-    res.json(record);
-  });
   User.findOneAndUpdate({ _id: req.params._id }, { $set: { deleted: true } }, (err, user) => {
     if (err) {
       return next(err);
