@@ -64,7 +64,7 @@ exports.registerUser = (req, res, next) => {
 }
 
 exports.getUsers = (req, res, next) => {
-  User.find({}, ['_id', 'email', 'name', 'lastName', 'role'], { sort: { createdAt: 1 } }, (err, items) => {
+  User.find({deleted: false}, ['_id', 'email', 'name', 'lastName', 'role'], { sort: { createdAt: 1 } }, (err, items) => {
     if (err) {
       return next(err);
     }
@@ -79,7 +79,7 @@ exports.getUsers = (req, res, next) => {
 exports.getUser = (req, res, next) => {
   const { _id } = req.params;
 
-  User.findOne({ _id: _id }, async (err, item) => {
+  User.findOne({ _id: _id, deleted: false }, async (err, item) => {
     if (err) {
       return next(err);
     }
@@ -144,11 +144,17 @@ exports.updateUser = (req, res, next) => {
   });
 }
 
-exports.deleteUser = (req, res) => {
+exports.deleteUser = (req, res,next) => {
 
   User.deleteOne({
     _id: req.params._id
   }, (err, record) => {
     res.json(record);
+  });
+  User.findOneAndUpdate({ _id: req.params._id }, { $set: { deleted: true } }, (err, user) => {
+    if (err) {
+      return next(err);
+    }
+    return res.status(200).send({ data: user, success: true });
   });
 }

@@ -10,7 +10,7 @@ exports.login = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  return passport.authenticate('local', { session: false }, (err, passportUser, info) => {
+  return passport.authenticate('local', { session: false }, async (err, passportUser, info) => {
     if (err) {
       return next(err);
     }
@@ -18,12 +18,12 @@ exports.login = (req, res, next) => {
     if (passportUser) {
       const user = passportUser;
       const token = passportUser.generateJWT();
-      User.findOneAndUpdate({ email: user.email }, { $set: { lastConnection: Date.now() } }, (err) => {
+      await User.findOneAndUpdate({ email: user.email }, { $set: { lastConnection: Date.now() } }, (err, user) => {
         if (err) {
           return next(err);
         }
+        return res.json({ user: user.toAuthJSON(), token });
       });
-      return res.json({ user: user.toAuthJSON(), token });
     }
 
     return res.status(400).json({ error: info })
