@@ -35,6 +35,7 @@ exports.registerUser = (req, res, next) => {
       lastName: lastName,
       role: role,
       verified: verified,
+      deleted: false,
     });
 
     user.save(async function (err, user) {
