@@ -18,7 +18,7 @@ exports.login = (req, res, next) => {
     if (passportUser) {
       const user = passportUser;
       const token = passportUser.generateJWT();
-      await User.findOneAndUpdate({ email: user.email }, { $set: { lastConnection: Date.now() } }, (err, user) => {
+      const lastConnection = await User.findOneAndUpdate({ email: user.email }, { $set: { lastConnection: Date.now() } }, (err, user) => {
         if (err) {
           return next(err);
         }
