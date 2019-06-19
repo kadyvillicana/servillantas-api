@@ -3,7 +3,7 @@ const Indicator            = require('../../models/indicator');
 const ItemImage            = require('../../models/itemImage');
 const { validationResult } = require('express-validator/check');
 const _async               = require('async');
-const DUPLICATE_NAME       = require('../../constants/errors').DUPLICATE_NAME;
+const ERRORS               = require('../../constants/errors');
 const uploadImage          = require('../../services/uploadImage');
 const isBase64             = require('is-base64');
 const strToObjectId        = require('../../helpers/stringToObjectId');
@@ -170,10 +170,19 @@ exports.addItem = (req, res, next) => {
   // First save the item without the images
   Item.create(itemObject, async (err, item) => {
     if (err) {
-
+      let errors = [];
       // If this item's name is duplicated, return the error
       if (err.errors && err.errors.name) {
-        return res.status(409).json({ error: DUPLICATE_NAME });
+        errors.push({ name: ERRORS.DUPLICATE_NAME })
+      }
+
+      // If this item's shortName is duplicated, return the error
+      if (err.errors && err.errors.shortName) {
+        errors.push({ shortName: ERRORS.DUPLICATE_SHORTNAME })
+      }
+      
+      if (errors.length) {
+        return res.status(409).json({ errors });
       }
 
       return next(err);
@@ -288,8 +297,19 @@ exports.editItem = (req, res, next) => {
     try {
       await item.save();
     } catch (err) {
+      let errors = [];
+      // If this item's name is duplicated, return the error
       if (err.errors && err.errors.name) {
-        return res.status(409).json({ error: DUPLICATE_NAME });
+        errors.push({ name: ERRORS.DUPLICATE_NAME })
+      }
+
+      // If this item's shortName is duplicated, return the error
+      if (err.errors && err.errors.shortName) {
+        errors.push({ shortName: ERRORS.DUPLICATE_SHORTNAME })
+      }
+      
+      if (errors.length) {
+        return res.status(409).json({ errors });
       }
       return next(err);
     }

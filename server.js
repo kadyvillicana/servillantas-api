@@ -26,7 +26,7 @@ connection.once('open', function () {
 app.listen(process.env.PORT);
 
 app.use(bodyParser.urlencoded({ extended: false }));
-app.use(bodyParser.json());
+app.use(bodyParser.json({ limit: '50mb' })); // Limit for requests are 50 MB
 app.use(cookieParser());
 app.use(logger('dev'));
 app.use(cors());

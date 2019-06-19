@@ -1,6 +1,7 @@
 const IndicatorRecordController     = require('./controllers/indicatorRecord');
 const ItemController                = require('./controllers/item');
 const AdminItemController           = require('./controllers/admin/item');
+const AdminIndicatorController      = require('./controllers/admin/indicator');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
 const UserController                = require('./controllers/user')
@@ -27,6 +28,7 @@ module.exports = function (app) {
   const shortURLRoutes              = express.Router();
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
+  const adminIndicatorRoutes        = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {
@@ -45,6 +47,14 @@ module.exports = function (app) {
   adminItemRoutes.put('/:id', tokenValidator.required, addItemRequest, AdminItemController.editItem);
   adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
 
+  // Admin Indicator routes
+  adminRoutes.use('/indicators', adminIndicatorRoutes);
+  adminIndicatorRoutes.get('/', tokenValidator.required, AdminIndicatorController.getIndicators);
+  adminIndicatorRoutes.get('/:id', tokenValidator.required, AdminIndicatorController.getIndicator);
+  adminIndicatorRoutes.post('/', tokenValidator.required, getIndicatorRequest, AdminIndicatorController.createIndicator);
+  adminIndicatorRoutes.put('/:_id', tokenValidator.required, getIndicatorRequest, AdminIndicatorController.updateIndicator);
+  adminIndicatorRoutes.delete('/:_id', tokenValidator.required, AdminIndicatorController.deleteIndicator);
+
   // Item routes
   apiRoutes.use('/items', itemRoutes);
   itemRoutes.get('/', ItemController.getItems);
@@ -54,17 +64,11 @@ module.exports = function (app) {
   // Indicator routes
   apiRoutes.use('/indicators', indicatorRoutes);
   indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
-  indicatorRoutes.post('/', tokenValidator.required, getIndicatorRequest, IndicatorController.createIndicator);
-  indicatorRoutes.put('/:_id', tokenValidator.required, getIndicatorRequest, IndicatorController.updateIndicator);
-  indicatorRoutes.delete('/:_id', tokenValidator.required, IndicatorController.deleteIndicator);
 
   // Indicator Record Routes
   apiRoutes.use('/records', indicatorRecordsRoutes);
   indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
   indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
-  indicatorRecordsRoutes.post('/:indicatorId', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.createRecord);
-  indicatorRecordsRoutes.put('/:indicatorId/:_id', tokenValidator.required, postIndicatorRecordsRequest, IndicatorRecordController.updateRecord);
-  indicatorRecordsRoutes.delete('/:indicatorId/:_id', tokenValidator.required, IndicatorRecordController.deleteRecord);
 
   // Auth Routes
   apiRoutes.use('/auth', authRoutes)
