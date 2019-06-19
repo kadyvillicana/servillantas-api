@@ -4,6 +4,7 @@ const AdminItemController           = require('./controllers/admin/item');
 const AdminIndicatorController      = require('./controllers/admin/indicator');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
+const UserController                = require('./controllers/user')
 const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
@@ -68,13 +69,17 @@ module.exports = function (app) {
   indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
   indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
 
-  // User Routes
+  // Auth Routes
   apiRoutes.use('/auth', authRoutes)
   authRoutes.post('/', postUserRequest, AuthController.register);
   authRoutes.post('/login', postUserRequest, AuthController.login);
   authRoutes.get('/logout', AuthController.logout);
   authRoutes.post('/recoverPassword', recoverPassRequest, AuthController.forgotPassword);
   authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
+
+  //User Routes
+  apiRoutes.use('/users', adminRoutes)
+  adminRoutes.get('/', tokenValidator.required, UserController.getUsers)
 
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);
