@@ -24,7 +24,6 @@ module.exports = function (app) {
   const indicatorRoutes             = express.Router({ mergeParams: true });
   const indicatorRecordsRoutes      = express.Router();
   const authRoutes                  = express.Router();
-  const userRoutes                  = express.Router();
   const shortURLRoutes              = express.Router();
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
@@ -79,8 +78,8 @@ module.exports = function (app) {
   authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
 
   //User Routes
-  apiRoutes.use('/users', userRoutes)
-  userRoutes.get('/', UserController.getUsers)
+  apiRoutes.use('/users', adminRoutes)
+  adminRoutes.get('/', tokenValidator.required, UserController.getUsers)
 
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);
