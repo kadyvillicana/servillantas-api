@@ -11,7 +11,6 @@ const reorderItemsRequest           = require('./requests/itemRequests/reorderIt
 const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
-const postIndicatorRecordsRequest   = require('./requests/indicatorRecordRequests/postIndicatorRecord');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
 const express                       = require('express');
@@ -28,6 +27,7 @@ module.exports = function (app) {
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
   const adminIndicatorRoutes        = express.Router();
+  const adminUserRoutes             = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {
@@ -78,8 +78,9 @@ module.exports = function (app) {
   authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
 
   //User Routes
-  apiRoutes.use('/users', adminRoutes)
-  adminRoutes.get('/', tokenValidator.required, UserController.getUsers)
+  adminRoutes.use('/users', adminUserRoutes)
+  adminUserRoutes.get('/', tokenValidator.required, UserController.getUsers)
+  adminUserRoutes.get('/:_id', tokenValidator.required, UserController.getUser)
 
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);

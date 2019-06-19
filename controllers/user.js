@@ -12,3 +12,19 @@ exports.getUsers = (req, res, next) => {
     return res.status(200).send({ data: items, success: true });
   });
 }
+
+exports.getUser = (req, res, next) => {
+  const { _id } = req.params;
+  
+  User.findOne({ _id: _id }, async (err, item) => {
+    if (err) {
+      return next(err);
+    }
+  
+    if (!item) {
+      return res.status(404).send({ message: "User not found"});
+    }
+  
+    return res.status(200).send({ data: await item, success: true });
+  });
+}
