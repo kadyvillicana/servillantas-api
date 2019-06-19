@@ -1,77 +1,8 @@
 const User                    = require('../models/user');
 const passport                = require('passport');
-const characters              = require('./../constants/characters')
 const { validationResult }    = require('express-validator/check');
 const crypto                  = require('crypto');
 const mail                    = require('../services/mail');
-
-const randomPassword = length => {
-  let result = '';
-  for (var i = 0; i < length; i++) {
-    result += characters.charAt(Math.floor(Math.random() * characters.length));
-  }
-  return result;
-}
-
-exports.register = (req, res, next) => {
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-
-  var email = req.body.email;
-  var password = randomPassword(6);
-  var organization = req.body.organization;
-  var name = req.body.name;
-  var lastName = req.body.lastName;
-  var role = req.body.role;
-  var verified = false;
-
-
-  User.findOne({ email: email }, function (err, existingUser) {
-    if (err) {
-      return next(err);
-    }
-
-    if (existingUser) {
-      return res.status(409).send({ error: 'That email address is already in use' });
-    }
-
-    var user = new User({
-      email: email,
-      password: password,
-      organization: organization,
-      name: name,
-      lastName: lastName,
-      role: role,
-      verified: verified,
-    });
-
-    user.save(async function (err, user) {
-      if (err) {
-        return next(err);
-      }
-      const mailData = {
-        "subject": 'Bienvenido al Portal de Administración LGT',
-        "text": "Tu usuario se registro exitosamente, accede con tu correo electrónico y el password generado por defecto al portal de administración LGT.\n\n" +
-          "Tu contraseña es: " + password + "\n\n" +
-          "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
-          "Portal de administración\n" +
-          "LGT México"
-      };
-      try {
-        var sendMail = await mail(user.email, mailData);
-        res.status(200).send({ message: 'User default password email has been sent' });
-      }
-      catch (err) {
-        return next(err)
-      }
-      res.status(201).json({
-        user: user
-      })
-    });
-  });
-}
 
 exports.login = (req, res, next) => {
   const errors = validationResult(req);
@@ -87,6 +18,11 @@ exports.login = (req, res, next) => {
     if (passportUser) {
       const user = passportUser;
       const token = passportUser.generateJWT();
+      User.findOneAndUpdate({ email: user.email }, { $set: { lastConnection: Date.now() } }, (err) => {
+        if (err) {
+          return next(err);
+        }
+      });
       return res.json({ user: user.toAuthJSON(), token });
     }
 

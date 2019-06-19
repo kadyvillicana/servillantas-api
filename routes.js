@@ -12,6 +12,7 @@ const getIndicatorRequest           = require('./requests/indicatorRequests/getI
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
+const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
 const express                       = require('express');
 const tokenValidator                = require('./tokenValidator');
@@ -71,7 +72,6 @@ module.exports = function (app) {
 
   // Auth Routes
   apiRoutes.use('/auth', authRoutes)
-  authRoutes.post('/', postUserRequest, AuthController.register);
   authRoutes.post('/login', postUserRequest, AuthController.login);
   authRoutes.get('/logout', AuthController.logout);
   authRoutes.post('/recoverPassword', recoverPassRequest, AuthController.forgotPassword);
@@ -79,9 +79,12 @@ module.exports = function (app) {
 
   //User Routes
   adminRoutes.use('/users', adminUserRoutes)
+  adminUserRoutes.post('/', tokenValidator.required, addUserRequest, UserController.registerUser)
   adminUserRoutes.get('/', tokenValidator.required, UserController.getUsers)
   adminUserRoutes.get('/:_id', tokenValidator.required, UserController.getUser)
-
+  adminUserRoutes.put('/:_id', tokenValidator.required, addUserRequest, UserController.updateUser);
+  adminUserRoutes.delete('/:_id', tokenValidator.required, UserController.deleteUser);
+  
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);
   shortURLRoutes.post('/', ShortURLController.addURL);
