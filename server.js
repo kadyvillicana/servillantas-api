@@ -4,7 +4,6 @@ const app               = express();
 const mongoose          = require('mongoose');
 const logger            = require('morgan');
 const bodyParser        = require('body-parser');
-const cookieParser      = require('cookie-parser');
 const cors              = require('cors');
 const databaseConfig    = require('./config/database');
 const router            = require('./routes');
@@ -27,7 +26,6 @@ app.listen(process.env.PORT);
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json({ limit: '50mb' })); // Limit for requests are 50 MB
-app.use(cookieParser());
 app.use(logger('dev'));
 app.use(cors());
 
