@@ -65,15 +65,15 @@ exports.registerUser = (req, res, next) => {
 }
 
 exports.getUsers = (req, res, next) => {
-  User.find({deleted: false}, ['_id', 'email', 'name', 'lastName', 'role'], { sort: { createdAt: 1 } }, (err, items) => {
+  User.find({deleted: false}, ['_id', 'email', 'name', 'lastName', 'role'], { sort: { createdAt: 1 } }, (err, users) => {
     if (err) {
       return next(err);
     }
 
-    if (!items.length) {
+    if (!users.length) {
       return res.status(200).send({ message: "There are no users", success: false });
     }
-    return res.status(200).send({ data: items, success: true });
+    return res.status(200).send({ data: users, success: true });
   });
 }
 
