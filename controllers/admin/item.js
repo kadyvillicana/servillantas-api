@@ -120,7 +120,7 @@ exports.getItem = (req, res, next) => {
     }
 
     if (!item.length) {
-      return res.status(404).send({ message: "Item not found"});
+      return res.status(404).send({ error: "Item not found"});
     }
 
     // If this item has no indicators, populate the image properties
@@ -286,6 +286,9 @@ exports.editItem = (req, res, next) => {
     item.name = itemObject.name;
     item.shortName = itemObject.shortName;
     item.hasIndicators = itemObject.hasIndicators;
+    // Clear the title and content
+    item.title = undefined;
+    item.content = undefined;
 
     if (!itemObject.hasIndicators) {
       item.title = itemObject.title;
@@ -433,9 +436,13 @@ exports.reorderItems = async (req, res, next) => {
 exports.deleteItem = (req, res, next) => {
   const { id } = req.params;
 
-  Item.findOneAndUpdate({ _id: id }, { $set: { deleted: true } }, (err, item) => {
+  Item.findOneAndUpdate({ _id: id, deleted: false }, { $set: { deleted: true } }, (err, item) => {
     if (err) {
       return next(err);
+    }
+
+    if (!item) {
+      return res.status(404).send({ error: 'Item not found' });
     }
 
     Indicator.updateMany({ item: item._id }, {$set: { item: undefined }}, (err) => {
