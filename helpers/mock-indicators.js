@@ -16,8 +16,7 @@ const indicatorData = Object.freeze({
   "geographicBreakdown": {
     "federal": true,
     "state": true,
-    "municipal": true,
-    "national": true
+    "municipal": true
   },
   "source": ["www.senado.gob.mx","https://www.hchr.org.mx/"],
   "specialTreatment": "El dato de denuncias de extorsión se obtiene a partir de junio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos. El delito es clasificado como fuero federal, la Ciudad de México como fuero común según Artículo 1° de Ley General.",

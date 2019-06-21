@@ -55,7 +55,7 @@ const indicatorsLookup = () => {
     $lookup: {
       from: "indicators",
       localField: "_id",
-      foreignField: "item",
+      foreignField: "itemId",
       as: "indicators"
     }
   }
@@ -375,7 +375,7 @@ exports.editItem = (req, res, next) => {
     // update the reference of those indicators
     if (!itemObject.hasIndicators && currentlyHasIndicators) {
       try {
-        await Indicator.updateMany({ item: item._id }, {$set: { item: undefined }});
+        await Indicator.updateMany({ itemId: item._id }, {$set: { itemId: undefined }});
       } catch (err) {
         return res.status(500).json({ error: 'Error updating indicators' });
       }
@@ -502,7 +502,7 @@ exports.deleteItem = (req, res, next) => {
       return res.status(404).send({ error: 'Item not found' });
     }
 
-    Indicator.updateMany({ item: item._id }, {$set: { item: undefined }}, (err) => {
+    Indicator.updateMany({ itemId: item._id }, {$set: { itemId: undefined }}, (err) => {
       if (err) {
         return res.status(200).send({ data: item, success: false, message: "Error updating indicators" });
       }

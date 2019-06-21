@@ -76,7 +76,7 @@ const findItem = async (item) => {
 /** Add indicator and its records. */
 const addIndicator = async (_item, indicatorFromItem) => {
   // Add the item reference to the indicator before saving
-  const indicatorToSave = { ...indicatorFromItem, item: _item };
+  const indicatorToSave = { ...indicatorFromItem, itemId: _item };
   const indicator = await Indicator.create(indicatorToSave);
 
   return indicator;
