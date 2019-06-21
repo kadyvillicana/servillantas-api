@@ -55,6 +55,10 @@ const ItemSchema = new mongoose.Schema(
       validate: [sliderImagesMaxLength, '{PATH exceeds the limit of 3}'],
       default: undefined
     },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
     deleted: {
       type: Boolean,
       default: false
@@ -133,6 +137,7 @@ ItemSchema.methods.toJsonResponse = async function() {
   const item = await this
     .populate('coverImage', 'url')
     .populate('sliderImages', 'url')
+    .populate('updatedBy', '_id, name lastName')
     .execPopulate();
 
   return {
@@ -146,7 +151,9 @@ ItemSchema.methods.toJsonResponse = async function() {
     title: item.title,
     content: item.content,
     coverImage: item.coverImage,
-    sliderImages: item.sliderImages
+    sliderImages: item.sliderImages,
+    updatedBy: item.updatedBy,
+    updatedAt: item.updatedAt,
   }
 };
 

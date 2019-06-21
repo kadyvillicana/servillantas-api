@@ -2,10 +2,25 @@ const LocalStrategy       = require('passport-local').Strategy;
 const bcryptjs            = require('bcryptjs');
 const crypto              = require('crypto');
 const passport            = require('passport');
+const passportJWT         = require('passport-jwt');
+const JWTStrategy         = passportJWT.Strategy;
+const ExtractJTW          = passportJWT.ExtractJwt;
 const User                = require('../models/user');
 
-
-
+/**
+ * JWTStrategy to set user in request
+ * after authorization is valid.
+ */
+passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJTW.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'secret'
+}, function(jwtPayload, cb) {
+  return User.findById(jwtPayload.id)
+    .then((user) => {
+      return cb(null, user);
+    })
+    .catch((err) => cb(err));
+}))
 
 //Passport middleware to verify if data received is on DB
 passport.use(
