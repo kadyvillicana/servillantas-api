@@ -1,5 +1,5 @@
 const mongoose          = require('mongoose');
-const DUPLICATE_NAME    = require('../constants/errors').DUPLICATE_NAME;
+const ERRORS    = require('../constants/errors');
 
 const ItemSchema = new mongoose.Schema(
   {
@@ -55,6 +55,10 @@ const ItemSchema = new mongoose.Schema(
       validate: [sliderImagesMaxLength, '{PATH exceeds the limit of 3}'],
       default: undefined
     },
+    updatedBy: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: 'User'
+    },
     deleted: {
       type: Boolean,
       default: false
@@ -99,14 +103,31 @@ ItemSchema.pre('save', async function(next) {
  */
 ItemSchema.path('name').validate(async function (value) {
   const item = await mongoose.model('Item', ItemSchema)
-    .findOne({ name: value })
+    .findOne({ name: value, deleted: false })
     .collation({ locale: 'es', strength: 1 });
   if (item && item._id.toString() !== this._id.toString()) {
     return false;
   }
 
   return true;
-}, DUPLICATE_NAME);
+}, ERRORS.DUPLICATE_NAME);
+
+/**
+ * Validate there are no items with duplicated shortName.
+ * 
+ * Ignore the validation if the item found is the one
+ * being updated.
+ */
+ItemSchema.path('shortName').validate(async function (value) {
+  const item = await mongoose.model('Item', ItemSchema)
+    .findOne({ shortName: value, deleted: false })
+    .collation({ locale: 'es', strength: 1 });
+  if (item && item._id.toString() !== this._id.toString()) {
+    return false;
+  }
+
+  return true;
+}, ERRORS.DUPLICATE_SHORTNAME);
 
 /**
  * Populate fields and ignore the properties that
@@ -116,6 +137,7 @@ ItemSchema.methods.toJsonResponse = async function() {
   const item = await this
     .populate('coverImage', 'url')
     .populate('sliderImages', 'url')
+    .populate('updatedBy', '_id, name lastName')
     .execPopulate();
 
   return {
@@ -129,7 +151,9 @@ ItemSchema.methods.toJsonResponse = async function() {
     title: item.title,
     content: item.content,
     coverImage: item.coverImage,
-    sliderImages: item.sliderImages
+    sliderImages: item.sliderImages,
+    updatedBy: item.updatedBy,
+    updatedAt: item.updatedAt,
   }
 };
 
