@@ -16,6 +16,7 @@ const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
 const express                       = require('express');
 const tokenValidator                = require('./tokenValidator');
+const passport                      = require('passport');
 
 module.exports = function (app) {
 
@@ -42,9 +43,9 @@ module.exports = function (app) {
   adminRoutes.use('/items', adminItemRoutes);
   adminItemRoutes.get('/', tokenValidator.required, AdminItemController.getItems);
   adminItemRoutes.get('/:id', tokenValidator.required, AdminItemController.getItem);
-  adminItemRoutes.post('/', tokenValidator.required, addItemRequest, AdminItemController.addItem);
+  adminItemRoutes.post('/', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.addItem);
   adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
-  adminItemRoutes.put('/:id', tokenValidator.required, addItemRequest, AdminItemController.editItem);
+  adminItemRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.editItem);
   adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
 
   // Admin Indicator routes

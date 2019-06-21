@@ -22,12 +22,56 @@ const getCommonProjectStage = () => {
     position: 1,
     description: 1,
     hasIndicators: 1,
+    user: {
+      $let: {
+        vars: {
+          u: {
+            $arrayElemAt: ['$updatedByUser', 0]
+          }
+        },
+        in: {
+          _id: '$$u._id',
+          name: '$$u.name',
+          lastName: '$$u.lastName'
+        }
+      },
+    },
+    updatedAt: 1,
     indicators: {
       $reduce: {
         input: '$indicators',
         initialValue: [],
         in: '$indicators._id'
       }
+    }
+  }
+}
+
+/**
+ * Return object to populate the indicators field.
+ */
+const indicatorsLookup = () => {
+  return {
+    $lookup: {
+      from: "indicators",
+      localField: "_id",
+      foreignField: "item",
+      as: "indicators"
+    }
+  }
+}
+
+/**
+ * Return object to populate the
+ * users field.
+ */
+const userLookup = () => {
+  return {
+    $lookup: {
+      from: "users",
+      localField: "updatedBy",
+      foreignField: "_id",
+      as: "updatedByUser"
     }
   }
 }
@@ -46,12 +90,10 @@ exports.getItems = (req, res, next) => {
       }
     },
     {
-      $lookup: {
-        from: "indicators",
-        localField: "_id",
-        foreignField: "item",
-        as: "indicators"
-      },
+      ...indicatorsLookup()
+    },
+    {
+      ...userLookup(),
     },
     {
       $project: {
@@ -93,12 +135,10 @@ exports.getItem = (req, res, next) => {
       }
     },
     {
-      $lookup: {
-        from: "indicators",
-        localField: "_id",
-        foreignField: "item",
-        as: "indicators"
-      },
+      ...indicatorsLookup()
+    },
+    {
+      ...userLookup()
     },
     {
       $project: {
@@ -153,7 +193,13 @@ exports.addItem = (req, res, next) => {
   }
 
   const { name, shortName, hasIndicators, description } = req.body;
-  let itemObject = { name, shortName, hasIndicators, description };
+  let itemObject = {
+    name,
+    shortName,
+    hasIndicators,
+    description,
+    updatedBy: req.user.id,
+  };
 
   // If this item has no indicators
   // add the title, content, coverImage and sliderImages
@@ -221,6 +267,8 @@ exports.addItem = (req, res, next) => {
           await item.save();
         }
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
         return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images' });
       }
     }
@@ -258,7 +306,13 @@ exports.editItem = (req, res, next) => {
   }
 
   const { name, shortName, hasIndicators, description } = req.body;
-  let itemObject = { name, shortName, hasIndicators, description };
+  let itemObject = {
+    name,
+    shortName,
+    hasIndicators,
+    description,
+    updatedBy: req.user.id,
+  };
 
   // If this item has no indicators add the title and content
   if (!hasIndicators) {
@@ -286,6 +340,7 @@ exports.editItem = (req, res, next) => {
     item.name = itemObject.name;
     item.shortName = itemObject.shortName;
     item.hasIndicators = itemObject.hasIndicators;
+    item.updatedBy = itemObject.updatedBy,
     // Clear the title and content
     item.title = undefined;
     item.content = undefined;
@@ -393,6 +448,8 @@ exports.editItem = (req, res, next) => {
           );
         }
       } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error(err);
         return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images' });
       }
     }
