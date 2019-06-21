@@ -4,17 +4,19 @@ const AdminItemController           = require('./controllers/admin/item');
 const AdminIndicatorController      = require('./controllers/admin/indicator');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
+const UserController                = require('./controllers/user')
 const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
 const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
-const postIndicatorRecordsRequest   = require('./requests/indicatorRecordRequests/postIndicatorRecord');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
+const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
 const express                       = require('express');
 const tokenValidator                = require('./tokenValidator');
+const passport                      = require('passport');
 
 module.exports = function (app) {
 
@@ -27,6 +29,7 @@ module.exports = function (app) {
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
   const adminIndicatorRoutes        = express.Router();
+  const adminUserRoutes             = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {
@@ -40,9 +43,9 @@ module.exports = function (app) {
   adminRoutes.use('/items', adminItemRoutes);
   adminItemRoutes.get('/', tokenValidator.required, AdminItemController.getItems);
   adminItemRoutes.get('/:id', tokenValidator.required, AdminItemController.getItem);
-  adminItemRoutes.post('/', tokenValidator.required, addItemRequest, AdminItemController.addItem);
+  adminItemRoutes.post('/', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.addItem);
   adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
-  adminItemRoutes.put('/:id', tokenValidator.required, addItemRequest, AdminItemController.editItem);
+  adminItemRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.editItem);
   adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
 
   // Admin Indicator routes
@@ -68,14 +71,21 @@ module.exports = function (app) {
   indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
   indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
 
-  // User Routes
+  // Auth Routes
   apiRoutes.use('/auth', authRoutes)
-  authRoutes.post('/', postUserRequest, AuthController.register);
   authRoutes.post('/login', postUserRequest, AuthController.login);
   authRoutes.get('/logout', AuthController.logout);
   authRoutes.post('/recoverPassword', recoverPassRequest, AuthController.forgotPassword);
   authRoutes.post('/recoverPassword/:token', AuthController.updatePasswordByEmail);
 
+  //User Routes
+  adminRoutes.use('/users', adminUserRoutes)
+  adminUserRoutes.post('/', tokenValidator.required, addUserRequest, UserController.registerUser)
+  adminUserRoutes.get('/', tokenValidator.required, UserController.getUsers)
+  adminUserRoutes.get('/:_id', tokenValidator.required, UserController.getUser)
+  adminUserRoutes.put('/:_id', tokenValidator.required, addUserRequest, UserController.updateUser);
+  adminUserRoutes.delete('/:_id', tokenValidator.required, UserController.deleteUser);
+  
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);
   shortURLRoutes.post('/', ShortURLController.addURL);
