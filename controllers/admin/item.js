@@ -269,7 +269,7 @@ exports.addItem = (req, res, next) => {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
-        return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images' });
+        return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images', error: err });
       }
     }
 
@@ -450,7 +450,7 @@ exports.editItem = (req, res, next) => {
       } catch (err) {
         // eslint-disable-next-line no-console
         console.error(err);
-        return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images' });
+        return res.status(200).send({ data: await item.toJsonResponse(), success: false, message: 'Error saving images', error: err });
       }
     }
 
