@@ -2,8 +2,6 @@ const AWS         = require('aws-sdk');
 const awsConfig   = require('../config/aws');
 const shortId     = require('shortid');
 
-console.log(awsConfig);
-
 AWS.config.update(awsConfig.keys);
 
 const s3 = new AWS.S3();
