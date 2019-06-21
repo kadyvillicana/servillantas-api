@@ -5,7 +5,8 @@ const ObjectId                    = require('mongoose').Types.ObjectId;
 exports.getIndicators = (req, res, next) => {
 
   Indicator
-    .find({}, ['_id', 'name', 'shortName', 'createdAt', 'updatedBy'])
+    .find({}, ['_id', 'name', 'shortName', 'createdAt', 'updatedBy', 'number'])
+    .sort({ number: 1 })
     .populate({ path: 'itemId', select: '_id name shortName' })
     .populate({ path: 'updatedBy', select: '_id name lastName' })
     .exec((err, indicators) => {
