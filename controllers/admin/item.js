@@ -293,7 +293,6 @@ exports.editItem = (req, res, next) => {
     }
 
     // Before saving the images, validate that the name is not already taken
-    
     try {
       await item.save();
     } catch (err) {
@@ -328,7 +327,7 @@ exports.editItem = (req, res, next) => {
 
       // Save the images in the bucket
       try {
-        const { cover, images } = req.body;
+        const { cover, images, coverRemoved } = req.body;
 
         let idsToSave = [];
         let shouldSaveAgain = false;
@@ -336,11 +335,15 @@ exports.editItem = (req, res, next) => {
         currentImages += item.sliderImages ? item.sliderImages.length : 0;
         if (cover) {
           // If the image is already stored, check that it wasn't removed
-          if (cover._id) {
+          if (cover._id && cover.url && !coverRemoved) {
             idsToSave.push(strToObjectId(cover._id));
-          } else if (cover.removed) {
+          } else if (coverRemoved) { // If it was removed, the item should be saved again
             item.coverImage = undefined;
-          } else if (isBase64(cover.data, { mime: true })) {
+            shouldSaveAgain = true;
+          }
+
+          // If a new cover picture was selected, save it
+          if (isBase64(cover.data, { mime: true })) {
             const coverImage = await uploadImageAndCreateRecord(item, cover.data, 'cover');
             // Indicate this id should not be deleted
             idsToSave.push(strToObjectId(coverImage._id));
@@ -354,7 +357,7 @@ exports.editItem = (req, res, next) => {
           const newImages = [];
           for (let i = 0; i < images.length; i++) {
             // If the image is already stored, check that it wasn't removed
-            if (images[i]._id && !images[i].removed) {
+            if (images[i]._id && images[i].url && !images[i].removed) {
               newImages.push(images[i]._id);
               idsToSave.push(strToObjectId(images[i]._id));
             } else if (images[i].data) { // If there is data to add a new image

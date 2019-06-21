@@ -68,10 +68,17 @@ module.exports = [
         throw new Error('cover must be an object');
       }
 
-      validateImageField(value);
+      // Validate that data is base64
+      if (value.data && !isBase64(value.data, { mime: true })) {
+        throw new Error('cover.data must be valid base64');  
+      }
 
       return true;
     }),
+
+  body('coverRemoved')
+    .optional()
+    .isBoolean().withMessage('coverRemoved must be boolean'),
 
   body('images')
     .custom((value, { req }) => {
