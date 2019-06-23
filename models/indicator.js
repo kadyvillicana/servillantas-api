@@ -36,7 +36,7 @@ const IndicatorSchema = new mongoose.Schema({
   },
   specialTreatment: String,
   indicatorWeaknesses: String,
-  source: [{ type: String }],
+  sources: [{ type: String }],
   updatedBy: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User'

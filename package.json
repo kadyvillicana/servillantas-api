@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node server.js",
+    "start": "nodemon server.js",
     "seedPlaces": "node ./seeders/placesSeeder.js",
     "seedItems": "node ./seeders/itemsSeeder.js",
     "seedIndicators": "node ./seeders/indicatorsSeeder.js",
