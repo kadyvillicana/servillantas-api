@@ -5,17 +5,20 @@ module.exports = [
   body('name')
     .exists().withMessage('name is required')
     .isString().withMessage('name must be a string')
-    .isLength({ max: 255 }).withMessage('name must not be longer than 255 characters'),
+    .trim()
+    .isLength({ min: 1, max: 255 }).withMessage('name must  255 characters'),
 
   body('shortName')
     .exists().withMessage('shortName is required')
     .isString().withMessage('shortName must be a string')
-    .isLength({ max: 64 }).withMessage('shortName must not be longer than 64 characters'),
+    .trim()
+    .isLength({ min: 1, max: 64 }).withMessage('shortName must be between 1 and 64 characters'),
 
   body('description')
     .optional()
     .isString().withMessage('description must be a string')
-    .isLength({ max: 1024 }).withMessage('description must not be longer than 64 characters'),
+    .trim()
+    .isLength({ min: 1, max: 1024 }).withMessage('description must be between 1 and 64 characters'),
 
   body('hasIndicators')
     .exists().withMessage('hasIndicators is required')
@@ -32,8 +35,8 @@ module.exports = [
         throw new Error('title must be a string');
       }
 
-      if (!body('title').isLength({ max: 255 })) {
-        throw new Error('title must not be longer than 255 characters');
+      if (!body('title').trim().isLength({ min: 1,  max: 255 })) {
+        throw new Error('title must be between 1 and 255 characters');
       }
 
       return true;
@@ -50,8 +53,8 @@ module.exports = [
         throw new Error('content must be a string');
       }
 
-      if (!body('content').isLength({ max: 10000 })) {
-        throw new Error('content must not be longer than 10000 characters');
+      if (!body('content').trim().isLength({ min: 1, max: 10000 })) {
+        throw new Error('content must be between 1 and 10000 characters');
       }
 
       return true;

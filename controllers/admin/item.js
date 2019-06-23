@@ -194,10 +194,10 @@ exports.addItem = (req, res, next) => {
 
   const { name, shortName, hasIndicators, description } = req.body;
   let itemObject = {
-    name,
-    shortName,
+    name: name.trim(),
+    shortName: shortName.trim(),
     hasIndicators,
-    description,
+    description: description && description.trim(),
     updatedBy: req.user.id,
   };
 
@@ -208,8 +208,8 @@ exports.addItem = (req, res, next) => {
 
     itemObject = {
       ...itemObject,
-      title,
-      content,
+      title: title.trim(),
+      content: content.trim(),
     }
   }
 
@@ -307,10 +307,10 @@ exports.editItem = (req, res, next) => {
 
   const { name, shortName, hasIndicators, description } = req.body;
   let itemObject = {
-    name,
-    shortName,
+    name: name.trim(),
+    shortName: shortName.trim(),
     hasIndicators,
-    description,
+    description: description ? description.trim() : '',
     updatedBy: req.user.id,
   };
 
@@ -320,8 +320,8 @@ exports.editItem = (req, res, next) => {
 
     itemObject = {
       ...itemObject,
-      title,
-      content
+      title: title.trim(),
+      content: content.trim()
     }
   }
 
@@ -339,6 +339,7 @@ exports.editItem = (req, res, next) => {
 
     item.name = itemObject.name;
     item.shortName = itemObject.shortName;
+    item.description = itemObject.description;
     item.hasIndicators = itemObject.hasIndicators;
     item.updatedBy = itemObject.updatedBy,
     // Clear the title and content
