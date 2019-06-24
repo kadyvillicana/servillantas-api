@@ -2,6 +2,9 @@ const LocalStrategy       = require('passport-local').Strategy;
 const bcryptjs            = require('bcryptjs');
 const crypto              = require('crypto');
 const passport            = require('passport');
+const passportJWT         = require('passport-jwt');
+const JWTStrategy         = passportJWT.Strategy;
+const ExtractJTW          = passportJWT.ExtractJwt;
 const User                = require('../models/user');
 
 /**
@@ -14,8 +17,6 @@ passport.use(new JWTStrategy({
 }, function(jwtPayload, cb) {
   return cb(null, jwtPayload);
 }))
-
-
 
 //Passport middleware to verify if data received is on DB
 passport.use(
