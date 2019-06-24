@@ -40,20 +40,20 @@ module.exports = function (app) {
   
   // Admin Item routes
   adminRoutes.use('/items', adminItemRoutes);
-  adminItemRoutes.get('/', authenticated.autorize, AdminItemController.getItems);
-  adminItemRoutes.get('/:id', authenticated.autorize, AdminItemController.getItem);
+  adminItemRoutes.get('/',authenticated.authorize , AdminItemController.getItems);
+  adminItemRoutes.get('/:id', authenticated.authorize, AdminItemController.getItem);
   adminItemRoutes.post('/', authenticated.authorize, addItemRequest, AdminItemController.addItem);
-  adminItemRoutes.put('/reorder', authenticated.autorize, reorderItemsRequest, AdminItemController.reorderItems);
+  adminItemRoutes.put('/reorder', authenticated.authorize, reorderItemsRequest, AdminItemController.reorderItems);
   adminItemRoutes.put('/:id', authenticated.authorize, addItemRequest, AdminItemController.editItem);
-  adminItemRoutes.delete('/:id', authenticated.autorize, AdminItemController.deleteItem);
+  adminItemRoutes.delete('/:id', authenticated.authorize, AdminItemController.deleteItem);
 
   // Admin Indicator routes
   adminRoutes.use('/indicators', adminIndicatorRoutes);
-  adminIndicatorRoutes.get('/', authenticated.autorize, AdminIndicatorController.getIndicators);
-  adminIndicatorRoutes.get('/:id', authenticated.autorize, AdminIndicatorController.getIndicator);
-  adminIndicatorRoutes.post('/', authenticated.autorize, getIndicatorRequest, AdminIndicatorController.createIndicator);
-  adminIndicatorRoutes.put('/:_id', authenticated.autorize, getIndicatorRequest, AdminIndicatorController.updateIndicator);
-  adminIndicatorRoutes.delete('/:_id', authenticated.autorize, AdminIndicatorController.deleteIndicator);
+  adminIndicatorRoutes.get('/', authenticated.authorize, AdminIndicatorController.getIndicators);
+  adminIndicatorRoutes.get('/:id', authenticated.authorize, AdminIndicatorController.getIndicator);
+  adminIndicatorRoutes.post('/', authenticated.authorize, getIndicatorRequest, AdminIndicatorController.createIndicator);
+  adminIndicatorRoutes.put('/:_id', authenticated.authorize, getIndicatorRequest, AdminIndicatorController.updateIndicator);
+  adminIndicatorRoutes.delete('/:_id', authenticated.authorize, AdminIndicatorController.deleteIndicator);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
@@ -79,11 +79,11 @@ module.exports = function (app) {
 
   //User Routes
   adminRoutes.use('/users', adminUserRoutes)
-  adminUserRoutes.post('/', authenticated.autorize, addUserRequest, UserController.registerUser)
+  adminUserRoutes.post('/', authenticated.authorize, addUserRequest, UserController.registerUser)
   adminUserRoutes.get('/', authenticated.authorize, UserController.getUsers)
-  adminUserRoutes.get('/:_id', authenticated.autorize, UserController.getUser)
-  adminUserRoutes.put('/:_id', authenticated.autorize, addUserRequest, UserController.updateUser);
-  adminUserRoutes.delete('/:_id', authenticated.autorize, UserController.deleteUser);
+  adminUserRoutes.get('/:_id', authenticated.authorize, UserController.getUser)
+  adminUserRoutes.put('/:_id', authenticated.authorize, addUserRequest, UserController.updateUser);
+  adminUserRoutes.delete('/:_id', authenticated.authorize, UserController.deleteUser);
   
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);
