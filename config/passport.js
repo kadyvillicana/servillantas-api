@@ -8,8 +8,7 @@ const ExtractJTW          = passportJWT.ExtractJwt;
 const User                = require('../models/user');
 
 /**
- * JWTStrategy to set user in request
- * after authorization is valid.
+ * JWTStrategy to validate if the request has a valid token
  */
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJTW.fromAuthHeaderAsBearerToken(),
