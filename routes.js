@@ -8,9 +8,8 @@ const UserController                = require('./controllers/user')
 const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
-const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
+const addIndicatorRequest           = require('./requests/indicatorRequests/addIndicator');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
-const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
 const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
@@ -22,7 +21,6 @@ module.exports = function (app) {
 
   const apiRoutes                   = express.Router();
   const itemRoutes                  = express.Router();
-  const indicatorRoutes             = express.Router({ mergeParams: true });
   const indicatorRecordsRoutes      = express.Router();
   const authRoutes                  = express.Router();
   const shortURLRoutes              = express.Router();
@@ -46,15 +44,15 @@ module.exports = function (app) {
   adminItemRoutes.post('/', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.addItem);
   adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
   adminItemRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.editItem);
-  adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
+  adminItemRoutes.delete('/:id', passport.authenticate('jwt', {session: false}), AdminItemController.deleteItem);
 
   // Admin Indicator routes
   adminRoutes.use('/indicators', adminIndicatorRoutes);
   adminIndicatorRoutes.get('/', tokenValidator.required, AdminIndicatorController.getIndicators);
   adminIndicatorRoutes.get('/:id', tokenValidator.required, AdminIndicatorController.getIndicator);
-  adminIndicatorRoutes.post('/', tokenValidator.required, getIndicatorRequest, AdminIndicatorController.createIndicator);
-  adminIndicatorRoutes.put('/:_id', tokenValidator.required, getIndicatorRequest, AdminIndicatorController.updateIndicator);
-  adminIndicatorRoutes.delete('/:_id', tokenValidator.required, AdminIndicatorController.deleteIndicator);
+  adminIndicatorRoutes.post('/', passport.authenticate('jwt', {session: false}), addIndicatorRequest, AdminIndicatorController.addIndicator);
+  adminIndicatorRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addIndicatorRequest, AdminIndicatorController.editIndicator);
+  adminIndicatorRoutes.delete('/:id', passport.authenticate('jwt', {session: false}), AdminIndicatorController.deleteIndicator);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
@@ -62,14 +60,10 @@ module.exports = function (app) {
   itemRoutes.get('/:id', ItemController.getItem);
   itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
 
-  // Indicator routes
-  apiRoutes.use('/indicators', indicatorRoutes);
-  indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
-
   // Indicator Record Routes
   apiRoutes.use('/records', indicatorRecordsRoutes);
   indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
-  indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
+  indicatorRecordsRoutes.get('/:indicatorId/dates', IndicatorRecordController.getDates);
 
   // Auth Routes
   apiRoutes.use('/auth', authRoutes)
