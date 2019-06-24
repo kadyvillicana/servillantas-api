@@ -18,7 +18,7 @@ exports.registerUser = (req, res, next) => {
   var verified = false;
 
 
-  User.findOne({ email: email }, function (err, existingUser) {
+  User.findOne({ email: email, deleted: false }, function (err, existingUser) {
     if (err) {
       return next(err);
     }
