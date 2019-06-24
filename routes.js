@@ -16,7 +16,7 @@ const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
 const express                       = require('express');
 const tokenValidator                = require('./tokenValidator');
-const deletedUserValidator          = require('./deletedUserValidator');
+const authenticated          = require('./isAuth');
 
 module.exports = function (app) {
 
@@ -43,9 +43,9 @@ module.exports = function (app) {
   adminRoutes.use('/items', adminItemRoutes);
   adminItemRoutes.get('/', tokenValidator.required, AdminItemController.getItems);
   adminItemRoutes.get('/:id', tokenValidator.required, AdminItemController.getItem);
-  adminItemRoutes.post('/', deletedUserValidator.isDeleted, addItemRequest, AdminItemController.addItem);
+  adminItemRoutes.post('/', authenticated.isDeleted, addItemRequest, AdminItemController.addItem);
   adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
-  adminItemRoutes.put('/:id', deletedUserValidator.isDeleted, addItemRequest, AdminItemController.editItem);
+  adminItemRoutes.put('/:id', authenticated.isDeleted, addItemRequest, AdminItemController.editItem);
   adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
 
   // Admin Indicator routes
@@ -81,7 +81,7 @@ module.exports = function (app) {
   //User Routes
   adminRoutes.use('/users', adminUserRoutes)
   adminUserRoutes.post('/', tokenValidator.required, addUserRequest, UserController.registerUser)
-  adminUserRoutes.get('/', deletedUserValidator.isDeleted, UserController.getUsers)
+  adminUserRoutes.get('/', authenticated.isDeleted, UserController.getUsers)
   adminUserRoutes.get('/:_id', tokenValidator.required, UserController.getUser)
   adminUserRoutes.put('/:_id', tokenValidator.required, addUserRequest, UserController.updateUser);
   adminUserRoutes.delete('/:_id', tokenValidator.required, UserController.deleteUser);
