@@ -54,17 +54,19 @@ exports.addIndicator = async (req, res, next) => {
 
   const { itemId } = req.body;
 
-  const [errItem, item] = await to(Item.findOne({ _id: itemId, deleted: false }));
-  if (errItem) {
-    return next(errItem);
-  }
-
-  if (!item) {
-    return res.status(404).send({ error: 'Item not found' });
-  }
-
-  if (!item.hasIndicators) {
-    return res.status(409).send({ errors: [{ item: 'Item does not accept indicators' }] });
+  if (itemId) {
+    const [errItem, item] = await to(Item.findOne({ _id: itemId, deleted: false }));
+    if (errItem) {
+      return next(errItem);
+    }
+  
+    if (!item) {
+      return res.status(404).send({ error: 'Item not found' });
+    }
+  
+    if (!item.hasIndicators) {
+      return res.status(409).send({ errors: [{ item: 'Item does not accept indicators' }] });
+    }
   }
 
   const { user } = res.locals;
@@ -105,17 +107,19 @@ exports.editIndicator = async (req, res, next) => {
   const { itemId } = req.body;
   const { id } = req.params;
 
-  const [errItem, item] = await to(Item.findOne({ _id: itemId, deleted: false }));
-  if (errItem) {
-    return next(errItem);
-  }
-
-  if (!item) {
-    return res.status(404).send({ error: 'Item not found' });
-  }
-
-  if (!item.hasIndicators) {
-    return res.status(409).send({ errors: [{ item: 'Item does not accept indicators' }] });
+  if (itemId) {
+    const [errItem, item] = await to(Item.findOne({ _id: itemId, deleted: false }));
+    if (errItem) {
+      return next(errItem);
+    }
+  
+    if (!item) {
+      return res.status(404).send({ error: 'Item not found' });
+    }
+  
+    if (!item.hasIndicators) {
+      return res.status(409).send({ errors: [{ item: 'Item does not accept indicators' }] });
+    }
   }
 
   const [errIndicator, indicator] = await to(Indicator.findOne({ _id: id, deleted: false }));

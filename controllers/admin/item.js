@@ -492,7 +492,8 @@ exports.reorderItems = async (req, res, next) => {
  * @returns {Object} Item model.
  */
 exports.deleteItem = (req, res, next) => {
-  const { params: { id }, user } = req;
+  const { params: { id } } = req;
+  const { user } = res.locals;
 
   Item.findOneAndUpdate({ _id: id, deleted: false }, { $set: { deleted: true, updatedBy: user.id } }, (err, item) => {
     if (err) {

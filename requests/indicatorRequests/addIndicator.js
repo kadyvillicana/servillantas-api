@@ -2,7 +2,7 @@ const { body }    = require('express-validator/check');
 
 module.exports = [
   body('itemId')
-    .exists().withMessage('itemId is required')
+    .optional()
     .isString().withMessage('itemId must be a string'),
 
   body('name')
