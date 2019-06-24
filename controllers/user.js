@@ -18,7 +18,7 @@ exports.registerUser = (req, res, next) => {
   var verified = false;
 
 
-  User.findOne({ email: email }, function (err, existingUser) {
+  User.findOne({ email: email, deleted: false }, function (err, existingUser) {
     if (err) {
       return next(err);
     }
@@ -133,13 +133,13 @@ exports.updateUser = (req, res, next) => {
           };
           try {
             var sendMail = await mail(user.email, mailData);
-            res.status(200).send({ message: 'User updated, email with new password has been sent' });
+            res.status(200).send({ message: 'User updated, email with new password has been sent', success: true });
           }
           catch (err) {
             return next(err)
           }
         }
-        res.status(200).send({ message: "User updated" })
+        res.status(200).send({ message: "User updated", success: true })
       })
     }
   });

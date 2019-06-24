@@ -67,7 +67,7 @@ exports.addIndicator = async (req, res, next) => {
     return res.status(409).send({ errors: [{ item: 'Item does not accept indicators' }] });
   }
 
-  const { user } = req;
+  const { user } = res.locals;
   const indicatorObject = getIndicatorObject({ ...req.body, user });
 
   const [err, indicator] = await to(Indicator.create(indicatorObject));
@@ -127,7 +127,7 @@ exports.editIndicator = async (req, res, next) => {
     return res.status(404).send({ error: 'Indicator not found' });
   }
 
-  const { user } = req;
+  const { user } = res.locals;
   const indicatorObject = getIndicatorObject({ ...req.body, user });
 
   // Apply new values
@@ -273,7 +273,8 @@ const getSources = (sources) => {
 
 // Delete an indicator
 exports.deleteIndicator = async (req, res, next) => {
-  const { params: { id }, user } = req;
+  const { user } = res.locals;
+  const { params: { id } } = req;
 
   const [err, indicator] = await to(Indicator.findOneAndUpdate(
     { _id: id, deleted: false }, { $set: { deleted: true, updatedBy: user.id } }
