@@ -101,4 +101,21 @@ IndicatorSchema.path('shortName').validate(async function (value) {
   return true;
 }, ERRORS.DUPLICATE_SHORTNAME);
 
+IndicatorSchema.methods.toJsonResponse = async function() {
+  const indicator = await this
+    .populate('itemId', '_id name shortName')
+    .populate('updatedBy', '_id, name lastName')
+    .execPopulate();
+
+  return {
+    _id: indicator._id,
+    itemId: indicator.itemId,
+    number: indicator.number,
+    name: indicator.name,
+    shortName: indicator.shortName,
+    updatedAt: indicator.updatedAt,
+    updatedBy: indicator.updatedAt,
+  }
+}
+
 module.exports = mongoose.model('Indicator', IndicatorSchema);

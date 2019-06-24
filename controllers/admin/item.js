@@ -326,7 +326,7 @@ exports.editItem = (req, res, next) => {
   }
 
   // Get the item to edit
-  Item.findOne({ _id: req.params.id }, async (err, item) => {
+  Item.findOne({ _id: req.params.id, deleted: false }, async (err, item) => {
     if (err) {
       return next(err);
     }
@@ -492,9 +492,9 @@ exports.reorderItems = async (req, res, next) => {
  * @returns {Object} Item model.
  */
 exports.deleteItem = (req, res, next) => {
-  const { id } = req.params;
+  const { params: { id }, user } = req;
 
-  Item.findOneAndUpdate({ _id: id, deleted: false }, { $set: { deleted: true } }, (err, item) => {
+  Item.findOneAndUpdate({ _id: id, deleted: false }, { $set: { deleted: true, updatedBy: user.id } }, (err, item) => {
     if (err) {
       return next(err);
     }

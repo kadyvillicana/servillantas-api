@@ -8,6 +8,7 @@ const UserController                = require('./controllers/user')
 const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
+const addIndicatorRequest           = require('./requests/indicatorRequests/addIndicator');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
 const addUserRequest                = require('./requests/userRequests/addUser')
@@ -43,12 +44,15 @@ module.exports = function (app) {
   adminItemRoutes.post('/', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.addItem);
   adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
   adminItemRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.editItem);
-  adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
+  adminItemRoutes.delete('/:id', passport.authenticate('jwt', {session: false}), AdminItemController.deleteItem);
 
   // Admin Indicator routes
   adminRoutes.use('/indicators', adminIndicatorRoutes);
   adminIndicatorRoutes.get('/', tokenValidator.required, AdminIndicatorController.getIndicators);
   adminIndicatorRoutes.get('/:id', tokenValidator.required, AdminIndicatorController.getIndicator);
+  adminIndicatorRoutes.post('/', passport.authenticate('jwt', {session: false}), addIndicatorRequest, AdminIndicatorController.addIndicator);
+  adminIndicatorRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addIndicatorRequest, AdminIndicatorController.editIndicator);
+  adminIndicatorRoutes.delete('/:id', passport.authenticate('jwt', {session: false}), AdminIndicatorController.deleteIndicator);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
