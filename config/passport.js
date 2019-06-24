@@ -4,6 +4,16 @@ const crypto              = require('crypto');
 const passport            = require('passport');
 const User                = require('../models/user');
 
+/**
+ * JWTStrategy to set user in request
+ * after authorization is valid.
+ */
+passport.use(new JWTStrategy({
+  jwtFromRequest: ExtractJTW.fromAuthHeaderAsBearerToken(),
+  secretOrKey: 'secret'
+}, function(jwtPayload, cb) {
+  return cb(null, jwtPayload);
+}))
 
 
 
@@ -11,14 +21,14 @@ const User                = require('../models/user');
 passport.use(
   new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
     User.findOne({
-      email: email
+      email: email,
+      deleted: false
     }).then(user => {
       if (!user) {
         return done(null, false, { message: 'email not registered' })
       }
 
       bcryptjs.compare(password, user.password, (err, isMatch) => {
-
         if (err) throw err;
         if (isMatch) {
           if (!user.verified) {
@@ -46,7 +56,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.findById(id, (err, user) => {
-    done(err, user);
-  });
+  User.findById(id).then((user) => {
+    done(null, user);
+  }).catch(done);
 });

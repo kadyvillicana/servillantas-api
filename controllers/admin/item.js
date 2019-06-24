@@ -153,7 +153,13 @@ exports.addItem = (req, res, next) => {
   }
 
   const { name, shortName, hasIndicators, description } = req.body;
-  let itemObject = { name, shortName, hasIndicators, description };
+  let itemObject = {
+    name,
+    shortName,
+    hasIndicators,
+    description,
+    updatedBy: res.locals.user.id,
+  };
 
   // If this item has no indicators
   // add the title, content, coverImage and sliderImages
@@ -258,7 +264,13 @@ exports.editItem = (req, res, next) => {
   }
 
   const { name, shortName, hasIndicators, description } = req.body;
-  let itemObject = { name, shortName, hasIndicators, description };
+  let itemObject = {
+    name,
+    shortName,
+    hasIndicators,
+    description,
+    updatedBy: res.locals.user.id,
+  };
 
   // If this item has no indicators add the title and content
   if (!hasIndicators) {
