@@ -15,8 +15,7 @@ const postUserRequest               = require('./requests/authRequests/postUserR
 const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
 const express                       = require('express');
-const tokenValidator                = require('./tokenValidator');
-const passport                      = require('passport');
+const authenticated                 = require('./isAuth');
 
 module.exports = function (app) {
 
@@ -41,20 +40,20 @@ module.exports = function (app) {
   
   // Admin Item routes
   adminRoutes.use('/items', adminItemRoutes);
-  adminItemRoutes.get('/', tokenValidator.required, AdminItemController.getItems);
-  adminItemRoutes.get('/:id', tokenValidator.required, AdminItemController.getItem);
-  adminItemRoutes.post('/', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.addItem);
-  adminItemRoutes.put('/reorder', tokenValidator.required, reorderItemsRequest, AdminItemController.reorderItems);
-  adminItemRoutes.put('/:id', passport.authenticate('jwt', {session: false}), addItemRequest, AdminItemController.editItem);
-  adminItemRoutes.delete('/:id', tokenValidator.required, AdminItemController.deleteItem);
+  adminItemRoutes.get('/', authenticated.autorize, AdminItemController.getItems);
+  adminItemRoutes.get('/:id', authenticated.autorize, AdminItemController.getItem);
+  adminItemRoutes.post('/', authenticated.authorize, addItemRequest, AdminItemController.addItem);
+  adminItemRoutes.put('/reorder', authenticated.autorize, reorderItemsRequest, AdminItemController.reorderItems);
+  adminItemRoutes.put('/:id', authenticated.authorize, addItemRequest, AdminItemController.editItem);
+  adminItemRoutes.delete('/:id', authenticated.autorize, AdminItemController.deleteItem);
 
   // Admin Indicator routes
   adminRoutes.use('/indicators', adminIndicatorRoutes);
-  adminIndicatorRoutes.get('/', tokenValidator.required, AdminIndicatorController.getIndicators);
-  adminIndicatorRoutes.get('/:id', tokenValidator.required, AdminIndicatorController.getIndicator);
-  adminIndicatorRoutes.post('/', tokenValidator.required, getIndicatorRequest, AdminIndicatorController.createIndicator);
-  adminIndicatorRoutes.put('/:_id', tokenValidator.required, getIndicatorRequest, AdminIndicatorController.updateIndicator);
-  adminIndicatorRoutes.delete('/:_id', tokenValidator.required, AdminIndicatorController.deleteIndicator);
+  adminIndicatorRoutes.get('/', authenticated.autorize, AdminIndicatorController.getIndicators);
+  adminIndicatorRoutes.get('/:id', authenticated.autorize, AdminIndicatorController.getIndicator);
+  adminIndicatorRoutes.post('/', authenticated.autorize, getIndicatorRequest, AdminIndicatorController.createIndicator);
+  adminIndicatorRoutes.put('/:_id', authenticated.autorize, getIndicatorRequest, AdminIndicatorController.updateIndicator);
+  adminIndicatorRoutes.delete('/:_id', authenticated.autorize, AdminIndicatorController.deleteIndicator);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
@@ -80,11 +79,11 @@ module.exports = function (app) {
 
   //User Routes
   adminRoutes.use('/users', adminUserRoutes)
-  adminUserRoutes.post('/', tokenValidator.required, addUserRequest, UserController.registerUser)
-  adminUserRoutes.get('/', tokenValidator.required, UserController.getUsers)
-  adminUserRoutes.get('/:_id', tokenValidator.required, UserController.getUser)
-  adminUserRoutes.put('/:_id', tokenValidator.required, addUserRequest, UserController.updateUser);
-  adminUserRoutes.delete('/:_id', tokenValidator.required, UserController.deleteUser);
+  adminUserRoutes.post('/', authenticated.autorize, addUserRequest, UserController.registerUser)
+  adminUserRoutes.get('/', authenticated.authorize, UserController.getUsers)
+  adminUserRoutes.get('/:_id', authenticated.autorize, UserController.getUser)
+  adminUserRoutes.put('/:_id', authenticated.autorize, addUserRequest, UserController.updateUser);
+  adminUserRoutes.delete('/:_id', authenticated.autorize, UserController.deleteUser);
   
   // Shorten URL routes
   apiRoutes.use('/url', shortURLRoutes);

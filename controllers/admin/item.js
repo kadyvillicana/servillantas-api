@@ -198,7 +198,7 @@ exports.addItem = (req, res, next) => {
     shortName,
     hasIndicators,
     description,
-    updatedBy: req.user.id,
+    updatedBy: res.locals.user.id,
   };
 
   // If this item has no indicators
@@ -311,7 +311,7 @@ exports.editItem = (req, res, next) => {
     shortName,
     hasIndicators,
     description,
-    updatedBy: req.user.id,
+    updatedBy: res.locals.user.id,
   };
 
   // If this item has no indicators add the title and content
