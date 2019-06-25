@@ -5,28 +5,26 @@ const databaseConfig = require('../config/database');
 
 mongoose.connect(databaseConfig().url, databaseConfig().options);
 
-User.deleteMany({}, async (err) => {
-  if (err) {
-    /* eslint-disable no-console */
-    console.error(err);
-    /* eslint-enable no-console */
-    disconnect();
-    return;
-  }
-
-  const promises = [];
+const seed = async () => {
   try {
+    // drop indexes first so in case collation is changed
+    // there won't be an error
+    await User.collection.dropIndexes();
+    await User.deleteMany({});
+
+    const promises = [];
     for (let i = 0; i < users.length; i++) {
       promises.push(asyncMethod(users[i]));
     }
     await Promise.all(promises);
-  } catch (e) {
-    /* eslint-disable no-console */
-    console.error(e);
-    /* eslint-enable no-console */
+
+  } catch (err) {
+    // eslint-disable-next-line no-console
+    console.error(err);
   }
+
   disconnect();
-});
+}
 
 const asyncMethod = async (user) => {
   await User.create(user);
@@ -34,3 +32,6 @@ const asyncMethod = async (user) => {
 }
 
 const disconnect = () => mongoose.disconnect();
+
+// Start the seeder
+seed();

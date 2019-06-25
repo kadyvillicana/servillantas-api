@@ -64,6 +64,7 @@ UserSchema.methods.toAuthJSON = function () {
     email: this.email,
     name: this.name,
     lastName: this.lastName,
+    organization: this.organization,
     role: this.role,
     verified: this.verified,
     lastConnection: this.lastConnection,
