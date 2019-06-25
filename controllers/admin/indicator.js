@@ -32,14 +32,27 @@ exports.getIndicator = (req, res, next) => {
   Indicator.findOne({ _id: id, deleted: false })
     .populate({ path: 'itemId', select: '_id name shortName' })
     .populate({ path: 'updatedBy', select: '_id name lastName' })
-    .exec((err, indicator) => {
+    .exec(async (err, indicator) => {
       if (err) {
         return next(err);
       }
       if (!indicator) {
         return res.status(404).send({ message: "Indicator not found", success: false });
       }
-      return res.status(200).send({ data: indicator, success: true });
+
+      // Check if this indicator has any records
+      const [recErr, record] = await to(Record.findOne({ indicator: ObjectId(indicator._id) }));
+      if (recErr) {
+        return next(recErr);
+      }
+
+      // Transform the indicator to an object
+      const _indicator = {
+        ...indicator.toObject(),
+        hasRecords: !!record,
+      }
+
+      return res.status(200).send({ data: _indicator, success: true });
     });
 
 }
