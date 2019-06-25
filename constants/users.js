@@ -4,6 +4,7 @@ module.exports = [
     "password":"123456",
     "name" : "Jose Adalberto",
     "lastName" : "Moreno",
+    "organization": "LGT",
     "role": "Admin",
     "deleted": false
   },
@@ -12,6 +13,7 @@ module.exports = [
     "password":"123456",
     "name" : "Misael",
     "lastName" : "Chávez",
+    "organization": "LGT",
     "role": "Admin",
     "deleted": false
   },
@@ -20,6 +22,7 @@ module.exports = [
     "password":"123456",
     "name" : "Jesus",
     "lastName" : "Cabrera",
+    "organization": "LGT",
     "role": "Super",
     "deleted": false
   },
@@ -28,6 +31,7 @@ module.exports = [
     "password":"123456",
     "name" : "Misael",
     "lastName" : "Cabrera Chávez",
+    "organization": "LGT",
     "role": "Admin",
     "deleted": false
   },
@@ -36,6 +40,7 @@ module.exports = [
     "password":"123456",
     "name" : "Jesus",
     "lastName" : "Magaña González",
+    "organization": "LGT",
     "role": "Super",
     "deleted": false
   },
