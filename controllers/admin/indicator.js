@@ -40,19 +40,7 @@ exports.getIndicator = (req, res, next) => {
         return res.status(404).send({ message: "Indicator not found", success: false });
       }
 
-      // Check if this indicator has any records
-      const [recErr, record] = await to(Record.findOne({ indicator: ObjectId(indicator._id) }));
-      if (recErr) {
-        return next(recErr);
-      }
-
-      // Transform the indicator to an object
-      const _indicator = {
-        ...indicator.toObject(),
-        hasRecords: !!record,
-      }
-
-      return res.status(200).send({ data: _indicator, success: true });
+      return res.status(200).send({ data: await indicator.toJsonResponse(), success: true });
     });
 
 }

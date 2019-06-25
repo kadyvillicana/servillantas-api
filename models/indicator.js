@@ -1,5 +1,7 @@
 const mongoose            = require('mongoose');
+const ObjectId            = mongoose.Types.ObjectId;
 const ERRORS              = require('../constants/errors');
+const Record              = require('../models/indicatorRecord');
 
 const IndicatorSchema = new mongoose.Schema({
   itemId: {
@@ -107,14 +109,24 @@ IndicatorSchema.methods.toJsonResponse = async function() {
     .populate('updatedBy', '_id, name lastName')
     .execPopulate();
 
+  const record = await Record.findOne({ indicator: ObjectId(indicator._id ) });
+
   return {
     _id: indicator._id,
     itemId: indicator.itemId,
     number: indicator.number,
     name: indicator.name,
     shortName: indicator.shortName,
+    definition: indicator.definition,
+    calculationMethod: indicator.calculationMethod,
+    measurementFrequency: indicator.measurementFrequency,
+    geographicBreakdown: indicator.geographicBreakdown,
+    specialTreatment: indicator.specialTreatment,
+    indicatorWeaknesses: indicator.indicatorWeaknesses,
+    sources: indicator.sources,
     updatedAt: indicator.updatedAt,
     updatedBy: indicator.updatedAt,
+    hasRecords: !!record,
   }
 }
 
