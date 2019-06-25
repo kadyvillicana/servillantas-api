@@ -65,7 +65,7 @@ exports.registerUser = (req, res, next) => {
 }
 
 exports.getUsers = (req, res, next) => {
-  User.find({deleted: false}, ['_id', 'email', 'name', 'lastName', 'role','lastConnection'], { sort: { createdAt: 1 } }, (err, users) => {
+  User.find({deleted: false}, ['_id', 'email', 'name', 'lastName', 'role','lastConnection','organization'], { sort: { createdAt: 1 } }, (err, users) => {
     if (err) {
       return next(err);
     }
