@@ -12,7 +12,7 @@ exports.getIndicators = (req, res, next) => {
   Indicator
     .find({ deleted: false }, ['_id', 'name', 'shortName', 'updatedAt', 'updatedBy', 'number'])
     .sort({ number: 1 })
-    .populate({ path: 'itemId', select: '_id name shortName' })
+    .populate({ path: 'itemId', select: '_id name shortName', match: { deleted: false } })
     .populate({ path: 'updatedBy', select: '_id name lastName' })
     .exec((err, indicators) => {
       if (err) {
@@ -30,7 +30,7 @@ exports.getIndicator = (req, res, next) => {
   const { id } = req.params;
 
   Indicator.findOne({ _id: id, deleted: false })
-    .populate({ path: 'itemId', select: '_id name shortName' })
+    .populate({ path: 'itemId', select: '_id name shortName', match: { deleted: false } })
     .populate({ path: 'updatedBy', select: '_id name lastName' })
     .exec(async (err, indicator) => {
       if (err) {

@@ -59,6 +59,7 @@ module.exports = function (app) {
   // Admin Indicator Records routes
   adminRoutes.use('/records', adminRecordsRoutes);
   adminRecordsRoutes.put('/:id', authenticated.authorize, addRecordsRequest, AdminRecordsController.editRecords);
+  adminRecordsRoutes.delete('/:id', authenticated.authorize, AdminRecordsController.deleteRecords);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
