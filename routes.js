@@ -2,6 +2,7 @@ const IndicatorRecordController     = require('./controllers/indicatorRecord');
 const ItemController                = require('./controllers/item');
 const AdminItemController           = require('./controllers/admin/item');
 const AdminIndicatorController      = require('./controllers/admin/indicator');
+const AdminRecordsController        = require('./controllers/admin/indicatorRecord');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
 const UserController                = require('./controllers/user')
@@ -9,6 +10,7 @@ const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
 const addIndicatorRequest           = require('./requests/indicatorRequests/addIndicator');
+const addRecordsRequest             = require('./requests/indicatorRecordRequests/addIndicatorRecords');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
 const addUserRequest                = require('./requests/userRequests/addUser')
@@ -26,6 +28,7 @@ module.exports = function (app) {
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
   const adminIndicatorRoutes        = express.Router();
+  const adminRecordsRoutes          = express.Router();
   const adminUserRoutes             = express.Router();
 
   // Default routes
@@ -52,6 +55,10 @@ module.exports = function (app) {
   adminIndicatorRoutes.post('/', authenticated.authorize, addIndicatorRequest, AdminIndicatorController.addIndicator);
   adminIndicatorRoutes.put('/:id', authenticated.authorize, addIndicatorRequest, AdminIndicatorController.editIndicator);
   adminIndicatorRoutes.delete('/:id', authenticated.authorize, AdminIndicatorController.deleteIndicator);
+
+  // Admin Indicator Records routes
+  adminRoutes.use('/records', adminRecordsRoutes);
+  adminRecordsRoutes.put('/:id', authenticated.authorize, addRecordsRequest, AdminRecordsController.editRecords);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);

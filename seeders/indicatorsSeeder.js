@@ -85,6 +85,7 @@ const addIndicator = async (_item, indicatorFromItem) => {
 // Add data to this indicator
 const addDataToIndicator = async (indicator) => {
   const places = await Place.find({}).exec();
+  const hash = `${indicator._id}-${new Date().getTime()}`;
 
   const momentDate = moment().utcOffset(0);
   // Ignore time and set 1st day of the month
@@ -131,6 +132,7 @@ const addDataToIndicator = async (indicator) => {
           complaint.state = place;
           complaint.amount = value;
           complaint.date = momentDate.year(date.year).month(date.month || 0).format('YYYY-MM-DD HH:mm:ss');
+          complaint.hash = hash;
           complaintsToSave = [
             ...complaintsToSave,
             new IndicatorRecord(complaint)
