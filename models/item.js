@@ -88,7 +88,7 @@ function sliderImagesMaxLength (val) {
 ItemSchema.pre('save', async function(next) {
   if (this.isNew) {
     const item = this;
-    const totalItems = await mongoose.model('Item', ItemSchema).countDocuments();
+    const totalItems = await mongoose.model('Item', ItemSchema).countDocuments({ deleted: false });
     const number = totalItems + 1;
     item.number = number;
     item.position = number * 10;
