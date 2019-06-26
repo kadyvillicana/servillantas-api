@@ -62,7 +62,7 @@ IndicatorSchema.index({ shortName: -1}, { collation: { locale: 'es', strength: 1
 IndicatorSchema.pre('save', async function(next) {
   if (this.isNew) {
     const indicator = this;
-    const total = await mongoose.model('Indicator', IndicatorSchema).countDocuments();
+    const total = await mongoose.model('Indicator', IndicatorSchema).countDocuments({ deleted: false });
     const number = total + 1;
     indicator.number = number;
   }
