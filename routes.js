@@ -2,15 +2,16 @@ const IndicatorRecordController     = require('./controllers/indicatorRecord');
 const ItemController                = require('./controllers/item');
 const AdminItemController           = require('./controllers/admin/item');
 const AdminIndicatorController      = require('./controllers/admin/indicator');
+const AdminRecordsController        = require('./controllers/admin/indicatorRecord');
 const IndicatorController           = require('./controllers/indicator');
 const AuthController                = require('./controllers/auth');
 const UserController                = require('./controllers/user')
 const ShortURLController            = require('./controllers/shortURL');
 const addItemRequest                = require('./requests/itemRequests/addItem');
 const reorderItemsRequest           = require('./requests/itemRequests/reorderItems');
-const getIndicatorRequest           = require('./requests/indicatorRequests/getIndicator');
+const addIndicatorRequest           = require('./requests/indicatorRequests/addIndicator');
+const addRecordsRequest             = require('./requests/indicatorRecordRequests/addIndicatorRecords');
 const getIndicatorRecordsRequest    = require('./requests/indicatorRecordRequests/getIndicatorRecord');
-const getIndicatorDates             = require('./requests/indicatorRecordRequests/getIndicatorDates');
 const postUserRequest               = require('./requests/authRequests/postUserRequest');
 const addUserRequest                = require('./requests/userRequests/addUser')
 const recoverPassRequest            = require('./requests/authRequests/recoverPassRequest');
@@ -21,13 +22,13 @@ module.exports = function (app) {
 
   const apiRoutes                   = express.Router();
   const itemRoutes                  = express.Router();
-  const indicatorRoutes             = express.Router({ mergeParams: true });
   const indicatorRecordsRoutes      = express.Router();
   const authRoutes                  = express.Router();
   const shortURLRoutes              = express.Router();
   const adminRoutes                 = express.Router();
   const adminItemRoutes             = express.Router();
   const adminIndicatorRoutes        = express.Router();
+  const adminRecordsRoutes          = express.Router();
   const adminUserRoutes             = express.Router();
 
   // Default routes
@@ -40,7 +41,7 @@ module.exports = function (app) {
   
   // Admin Item routes
   adminRoutes.use('/items', adminItemRoutes);
-  adminItemRoutes.get('/',authenticated.authorize , AdminItemController.getItems);
+  adminItemRoutes.get('/', authenticated.authorize, AdminItemController.getItems);
   adminItemRoutes.get('/:id', authenticated.authorize, AdminItemController.getItem);
   adminItemRoutes.post('/', authenticated.authorize, addItemRequest, AdminItemController.addItem);
   adminItemRoutes.put('/reorder', authenticated.authorize, reorderItemsRequest, AdminItemController.reorderItems);
@@ -51,9 +52,14 @@ module.exports = function (app) {
   adminRoutes.use('/indicators', adminIndicatorRoutes);
   adminIndicatorRoutes.get('/', authenticated.authorize, AdminIndicatorController.getIndicators);
   adminIndicatorRoutes.get('/:id', authenticated.authorize, AdminIndicatorController.getIndicator);
-  adminIndicatorRoutes.post('/', authenticated.authorize, getIndicatorRequest, AdminIndicatorController.createIndicator);
-  adminIndicatorRoutes.put('/:_id', authenticated.authorize, getIndicatorRequest, AdminIndicatorController.updateIndicator);
-  adminIndicatorRoutes.delete('/:_id', authenticated.authorize, AdminIndicatorController.deleteIndicator);
+  adminIndicatorRoutes.post('/', authenticated.authorize, addIndicatorRequest, AdminIndicatorController.addIndicator);
+  adminIndicatorRoutes.put('/:id', authenticated.authorize, addIndicatorRequest, AdminIndicatorController.editIndicator);
+  adminIndicatorRoutes.delete('/:id', authenticated.authorize, AdminIndicatorController.deleteIndicator);
+
+  // Admin Indicator Records routes
+  adminRoutes.use('/records', adminRecordsRoutes);
+  adminRecordsRoutes.put('/:id', authenticated.authorize, addRecordsRequest, AdminRecordsController.editRecords);
+  adminRecordsRoutes.delete('/:id', authenticated.authorize, AdminRecordsController.deleteRecords);
 
   // Item routes
   apiRoutes.use('/items', itemRoutes);
@@ -61,14 +67,10 @@ module.exports = function (app) {
   itemRoutes.get('/:id', ItemController.getItem);
   itemRoutes.get('/:itemId/indicators', IndicatorController.getIndicators);
 
-  // Indicator routes
-  apiRoutes.use('/indicators', indicatorRoutes);
-  indicatorRoutes.get('/:_id', IndicatorController.getIndicatorByIdentifier);
-
   // Indicator Record Routes
   apiRoutes.use('/records', indicatorRecordsRoutes);
   indicatorRecordsRoutes.get('/:indicatorId', getIndicatorRecordsRequest, IndicatorRecordController.get);
-  indicatorRecordsRoutes.get('/:indicatorId/dates', getIndicatorDates, IndicatorRecordController.getDates);
+  indicatorRecordsRoutes.get('/:indicatorId/dates', IndicatorRecordController.getDates);
 
   // Auth Routes
   apiRoutes.use('/auth', authRoutes)

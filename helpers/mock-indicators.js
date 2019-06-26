@@ -16,10 +16,9 @@ const indicatorData = Object.freeze({
   "geographicBreakdown": {
     "federal": true,
     "state": true,
-    "municipal": true,
-    "national": true
+    "municipal": true
   },
-  "source": ["www.senado.gob.mx","https://www.hchr.org.mx/"],
+  "sources": ["www.senado.gob.mx","https://www.hchr.org.mx/"],
   "specialTreatment": "El dato de denuncias de extorsión se obtiene a partir de junio 2017 con la publicación de la Ley General sobre la Tortura y Otros Maltratos. El delito es clasificado como fuero federal, la Ciudad de México como fuero común según Artículo 1° de Ley General.",
   "indicatorWeaknesses": "El número real de delitos de tortura es mayor a aquellos denunciados"
 });
@@ -29,27 +28,27 @@ module.exports = {
     indicators: [
       {
         ...indicatorData,
-        indicatorName: 'Número de denuncias por tortura o TPCID',
+        name: 'Número de denuncias por tortura o TPCID',
         shortName: 'No. Denuncias',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes iniciados por tortura',
+        name: 'Número de expedientes iniciados por tortura',
         shortName: 'No. Expedientes por tortura',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes actualmente en trámite en FEIDT',
+        name: 'Número de expedientes actualmente en trámite en FEIDT',
         shortName: 'No. Expedientes en trámite',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes consignados por FEIDT',
+        name: 'Número de expedientes consignados por FEIDT',
         shortName: 'No. Expedientes consignados',
       },
       {
         ...indicatorData,
-        indicatorName: 'Número de expedientes en no ejercicio de acción penal, FEIDT',
+        name: 'Número de expedientes en no ejercicio de acción penal, FEIDT',
         shortName: 'No. Expedientes en no ejercicio de acción penal',
       },
     ]
@@ -58,27 +57,27 @@ module.exports = {
     indicators: [
       {
         ...indicatorData,
-        indicatorName: 'Número de sentencias por tortura',
+        name: 'Número de sentencias por tortura',
         shortName: 'No. Sentencias por tortura',
       },
       {
         ...indicatorData,
-        indicatorName: 'Procesos penales iniciados por delito de tortura (Sistema Tradicional)',
+        name: 'Procesos penales iniciados por delito de tortura (Sistema Tradicional)',
         shortName: 'Procesos penales (Sistemas Tradicional)',
       },
       {
         ...indicatorData,
-        indicatorName: 'Procesos penales iniciados por delito de tortura (Juzgados de Control)',
+        name: 'Procesos penales iniciados por delito de tortura (Juzgados de Control)',
         shortName: 'Procesos penales (Juzgados de Control)',
       },
       {
         ...indicatorData,
-        indicatorName: 'Procesos penales iniciados por delito de tortura (Sistema Penal Acusatorio)',
+        name: 'Procesos penales iniciados por delito de tortura (Sistema Penal Acusatorio)',
         shortName: 'Procesos penales (Sistema Penal Acusatorio)',
       },
       {
         ...indicatorData,
-        indicatorName: 'Sentencias por delito de tortura (total de juzgados)',
+        name: 'Sentencias por delito de tortura (total de juzgados)',
         shortName: 'Sentencias por tortura',
       },
     ]

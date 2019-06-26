@@ -18,6 +18,10 @@ const indicatorRecordSchema = new mongoose.Schema(
       type: Number,
       default: 0
     },
+    hash: {
+      type: String,
+      required: true
+    },
     condemnatory:{
       type: Number,
       default: 0
