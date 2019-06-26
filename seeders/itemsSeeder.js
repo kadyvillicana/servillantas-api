@@ -17,6 +17,7 @@ const seed = async () => {
 
     // delete items
     await Item.deleteMany({});
+    await ItemImage.deleteMany({});
 
     // wait for each item to be added so the position and number
     // can be set properly
@@ -38,7 +39,6 @@ const addItem = async (item, index) => {
 
   if (index === 5) {
     const images = imagesArray(_item._id);
-    await ItemImage.deleteMany({});
     const _images = await ItemImage.insertMany(images);
     _item.coverImage = _images.find(i => i.type === 'cover');
     _item.sliderImages = _images.filter(i => i.type === 'slider');

@@ -55,7 +55,7 @@ const indicatorsLookup = () => {
     $lookup: {
       from: "indicators",
       localField: "_id",
-      foreignField: "item",
+      foreignField: "itemId",
       as: "indicators"
     }
   }
@@ -194,10 +194,10 @@ exports.addItem = (req, res, next) => {
 
   const { name, shortName, hasIndicators, description } = req.body;
   let itemObject = {
-    name,
-    shortName,
+    name: name.trim(),
+    shortName: shortName.trim(),
     hasIndicators,
-    description,
+    description: description && description.trim(),
     updatedBy: res.locals.user.id,
   };
 
@@ -208,8 +208,8 @@ exports.addItem = (req, res, next) => {
 
     itemObject = {
       ...itemObject,
-      title,
-      content,
+      title: title.trim(),
+      content: content.trim(),
     }
   }
 
@@ -307,10 +307,10 @@ exports.editItem = (req, res, next) => {
 
   const { name, shortName, hasIndicators, description } = req.body;
   let itemObject = {
-    name,
-    shortName,
+    name: name.trim(),
+    shortName: shortName.trim(),
     hasIndicators,
-    description,
+    description: description ? description.trim() : '',
     updatedBy: res.locals.user.id,
   };
 
@@ -320,13 +320,13 @@ exports.editItem = (req, res, next) => {
 
     itemObject = {
       ...itemObject,
-      title,
-      content
+      title: title.trim(),
+      content: content.trim()
     }
   }
 
   // Get the item to edit
-  Item.findOne({ _id: req.params.id }, async (err, item) => {
+  Item.findOne({ _id: req.params.id, deleted: false }, async (err, item) => {
     if (err) {
       return next(err);
     }
@@ -339,6 +339,7 @@ exports.editItem = (req, res, next) => {
 
     item.name = itemObject.name;
     item.shortName = itemObject.shortName;
+    item.description = itemObject.description;
     item.hasIndicators = itemObject.hasIndicators;
     item.updatedBy = itemObject.updatedBy,
     // Clear the title and content
@@ -375,7 +376,7 @@ exports.editItem = (req, res, next) => {
     // update the reference of those indicators
     if (!itemObject.hasIndicators && currentlyHasIndicators) {
       try {
-        await Indicator.updateMany({ item: item._id }, {$set: { item: undefined }});
+        await Indicator.updateMany({ itemId: item._id }, {$set: { itemId: undefined }});
       } catch (err) {
         return res.status(500).json({ error: 'Error updating indicators' });
       }
@@ -491,9 +492,10 @@ exports.reorderItems = async (req, res, next) => {
  * @returns {Object} Item model.
  */
 exports.deleteItem = (req, res, next) => {
-  const { id } = req.params;
+  const { params: { id } } = req;
+  const { user } = res.locals;
 
-  Item.findOneAndUpdate({ _id: id, deleted: false }, { $set: { deleted: true } }, (err, item) => {
+  Item.findOneAndUpdate({ _id: id, deleted: false }, { $set: { deleted: true, updatedBy: user.id } }, (err, item) => {
     if (err) {
       return next(err);
     }
@@ -502,7 +504,7 @@ exports.deleteItem = (req, res, next) => {
       return res.status(404).send({ error: 'Item not found' });
     }
 
-    Indicator.updateMany({ item: item._id }, {$set: { item: undefined }}, (err) => {
+    Indicator.updateMany({ itemId: item._id }, {$set: { itemId: undefined }}, (err) => {
       if (err) {
         return res.status(200).send({ data: item, success: false, message: "Error updating indicators" });
       }

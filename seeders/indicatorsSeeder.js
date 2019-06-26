@@ -30,14 +30,10 @@ const seed = async () => {
     // Delete all records
     await IndicatorRecord.deleteMany({}).exec();
 
-    const itemPromises = [];
-
     // Iterate through items
     for (let i = 0; i < items.length; i++) {
-      itemPromises.push(findItem(items[i]));
+      await findItem(items[i]);
     }
-
-    await Promise.all(itemPromises);
 
   } catch (e) {
     /* eslint-disable no-console */
@@ -59,13 +55,19 @@ const findItem = async (item) => {
   // If the item has indicators
   if (itemData && itemData.indicators) {
 
-    const indicatorPromises = [];
+    const indicators = [];
     // Iterate through the indicators for creation
     for (let j = 0; j < itemData.indicators.length; j++) {
-      indicatorPromises.push(addIndicator(_item, itemData.indicators[j]));
+      indicators.push(await addIndicator(_item, itemData.indicators[j]));
     }
 
-    await Promise.all(indicatorPromises);
+    // Add data to each indicator
+    const dataPromises = [];
+    for (let k = 0; k < indicators.length; k++) {
+      dataPromises.push(addDataToIndicator(indicators[k]));
+    }
+
+    await Promise.all(dataPromises);
   }
 
   return Promise.resolve();
@@ -73,12 +75,17 @@ const findItem = async (item) => {
 
 /** Add indicator and its records. */
 const addIndicator = async (_item, indicatorFromItem) => {
-
   // Add the item reference to the indicator before saving
-  const indicatorToSave = { ...indicatorFromItem, item: _item };
-  const _indicator = await Indicator.create(indicatorToSave);
+  const indicatorToSave = { ...indicatorFromItem, itemId: _item };
+  const indicator = await Indicator.create(indicatorToSave);
 
+  return indicator;
+}
+
+// Add data to this indicator
+const addDataToIndicator = async (indicator) => {
   const places = await Place.find({}).exec();
+  const hash = `${indicator._id}-${new Date().getTime()}`;
 
   const momentDate = moment().utcOffset(0);
   // Ignore time and set 1st day of the month
@@ -90,7 +97,7 @@ const addIndicator = async (_item, indicatorFromItem) => {
   for (let i = 0; i < dataSet.length; i++) {
 
     // Object to save in db
-    let complaint = { indicator: _indicator };
+    let complaint = { indicator: indicator };
     // Object to save year and month
     let date = {};
 
@@ -125,6 +132,7 @@ const addIndicator = async (_item, indicatorFromItem) => {
           complaint.state = place;
           complaint.amount = value;
           complaint.date = momentDate.year(date.year).month(date.month || 0).format('YYYY-MM-DD HH:mm:ss');
+          complaint.hash = hash;
           complaintsToSave = [
             ...complaintsToSave,
             new IndicatorRecord(complaint)

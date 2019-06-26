@@ -72,6 +72,7 @@ const ItemSchema = new mongoose.Schema(
 // Add index to speed search of duplicated names
 // use 'es' collation and strngth 1 to ignore sensitive case and diacritics
 ItemSchema.index({ name: -1}, { collation: { locale: 'es', strength: 1 }});
+ItemSchema.index({ shortName: -1}, { collation: { locale: 'es', strength: 1 }});
 
 
 /**
