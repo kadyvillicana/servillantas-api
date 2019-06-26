@@ -19,7 +19,7 @@ exports.login = (req, res, next) => {
       const user = passportUser;
       const token = passportUser.generateJWT();
       try{
-        const _user = await User.findOneAndUpdate({ email: user.email }, { $set: { lastConnection: Date.now() }});
+        const _user = await User.findOneAndUpdate({ email: user.email, deleted: false }, { $set: { lastConnection: Date.now() }});
         return res.json({ user: _user.toAuthJSON(), token });
       } catch (err){
         return next(err)
@@ -41,7 +41,7 @@ exports.forgotPassword = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  User.findOne({ email: req.body.email }, (err, user) => {
+  User.findOne({ email: req.body.email, deleted: false }, (err, user) => {
     if (err) {
       return next(err)
     }
@@ -86,7 +86,7 @@ exports.updatePasswordByEmail = (req, res, next) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  User.findOne({ resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
+  User.findOne({ deleted:false, resetPasswordToken: req.params.token, resetPasswordExpires: { $gt: Date.now() } }, (err, user) => {
     if (err) {
       return next(err);
     }
