@@ -60,7 +60,7 @@ module.exports = [
 
   body('problems')
     .optional()
-    .isString().withMessage('problemst must be a string')
+    .isString().withMessage('problems must be a string')
     .trim()
     .isLength({ max: 1024 }).withMessage('problems must not be longer than 1024 characters'),
 
