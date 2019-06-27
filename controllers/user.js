@@ -28,12 +28,12 @@ exports.registerUser = (req, res, next) => {
     }
 
     var user = new User({
-      email: email,
-      password: password,
-      organization: organization,
-      name: name,
-      lastName: lastName,
-      role: role,
+      email: email.trim(),
+      password: password.trim(),
+      organization: organization.trim(),
+      name: name.trim(),
+      lastName: lastName.trim(),
+      role: role.trim(),
       verified: verified,
       deleted: false,
     });
@@ -115,11 +115,11 @@ exports.updateUser = (req, res, next) => {
         sendPassword = true;
       }
 
-      user.name = name;
-      user.lastName = lastName;
-      user.email = email;
-      user.organization = organization;
-      user.role = role;
+      user.name = name.trim();
+      user.lastName = lastName.trim();
+      user.email = email.trim();
+      user.organization = organization.trim();
+      user.role = role.trim();
 
       user.save(async (err) => {
         if (err) {
