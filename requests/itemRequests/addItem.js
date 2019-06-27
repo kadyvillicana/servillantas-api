@@ -18,7 +18,7 @@ module.exports = [
     .optional()
     .isString().withMessage('description must be a string')
     .trim()
-    .isLength({ min: 1, max: 1024 }).withMessage('description must be between 1 and 64 characters'),
+    .isLength({ max: 1024 }).withMessage('description must not be longer than 64 characters'),
 
   body('hasIndicators')
     .exists().withMessage('hasIndicators is required')

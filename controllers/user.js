@@ -53,7 +53,7 @@ exports.registerUser = (req, res, next) => {
         "LGT México"
       };
       try {
-        var sendMail = await mail(user.email, mailData);
+        await mail(user.email, mailData);
         res.status(200).send({ message: 'User registered successfully, default password email has been sent' });
       }
       catch (err) {
@@ -137,7 +137,7 @@ exports.updateUser = (req, res, next) => {
               "LGT México"
           };
           try {
-            var sendMail = await mail(user.email, mailData);
+            await mail(user.email, mailData);
             res.status(200).send({ message: 'User updated, email with new password has been sent', success: true });
           }
           catch (err) {

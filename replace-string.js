@@ -21,17 +21,15 @@ validateKeys(map);
 
 fs.readFile('.env', 'utf8', function (err,data) {
   if (err) {
-    /* eslint-disable no-console */
+    // eslint-disable-next-line no-console
     return console.log(err);
-    /* eslint-enable no-console */
   }
 
   var result = replaceAll(data, map);
 
   fs.writeFile('.env', result, 'utf8', function (err) {
-    /* eslint-disable no-console */
+    // eslint-disable-next-line no-console
     if (err) return console.log(err);
-    /* eslint-enable no-console */
   });
 
 });
