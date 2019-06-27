@@ -12,7 +12,7 @@ const User                = require('../models/user');
  */
 passport.use(new JWTStrategy({
   jwtFromRequest: ExtractJTW.fromAuthHeaderAsBearerToken(),
-  secretOrKey: 'secret'
+  secretOrKey: process.env.PASSPORT_SECRET
 }, function(jwtPayload, cb) {
   return cb(null, jwtPayload);
 }))
