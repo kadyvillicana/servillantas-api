@@ -6,7 +6,7 @@ module.exports = [
     .exists().withMessage('name is required')
     .isString().withMessage('name must be a string')
     .trim()
-    .isLength({ min: 1, max: 255 }).withMessage('name must  255 characters'),
+    .isLength({ min: 1, max: 255 }).withMessage('name must be between 1 and 255 characters'),
 
   body('shortName')
     .exists().withMessage('shortName is required')
