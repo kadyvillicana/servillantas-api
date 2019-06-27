@@ -22,9 +22,8 @@ before((done) => {
 beforeEach((done) => {
   for (var collection in mongoose.connection.collections) {
     mongoose.connection.collections[collection].drop()
-    /* eslint-disable no-console */
+      // eslint-disable-next-line no-console
       .catch(() => console.warn('Error dropping collection. It may not exist.'));
-    /* eslint-enable no-console */
   }
 
   done();

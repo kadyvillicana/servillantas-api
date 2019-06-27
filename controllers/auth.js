@@ -70,7 +70,7 @@ exports.forgotPassword = (req, res, next) => {
       };
 
       try {
-        var sendMail = await mail(user.email, mailData);
+        await mail(user.email, mailData);
         res.status(200).send({ message: 'Recover Password email has been sent' });
       }
       catch (err) {

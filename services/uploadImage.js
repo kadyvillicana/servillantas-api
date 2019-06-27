@@ -1,6 +1,7 @@
 const AWS         = require('aws-sdk');
 const awsConfig   = require('../config/aws');
 const shortId     = require('shortid');
+const to          = require('await-to-js').default;
 
 AWS.config.update(awsConfig.keys);
 
@@ -19,12 +20,12 @@ module.exports = async (image) => {
     ContentType: `image/${extension}`
   }
 
-  try {
-    const response = await s3.upload(params).promise();
-    return response.Location;
-  } catch (err) {
+  const [err, response] = await to(s3.upload(params).promise());
+  if (err) {
     throw err;
   }
+
+  return response.Location;
 }
 
 /**

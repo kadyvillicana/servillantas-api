@@ -36,9 +36,8 @@ const seed = async () => {
     }
 
   } catch (e) {
-    /* eslint-disable no-console */
+    // eslint-disable-next-line no-console
     console.error('Error seeding', e);
-    /* eslint-enable no-console */
   }
   disconnect();
 }
