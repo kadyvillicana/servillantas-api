@@ -8,6 +8,7 @@ const uploadImage          = require('../../services/uploadImage');
 const isBase64             = require('is-base64');
 const strToObjectId        = require('../../helpers/stringToObjectId');
 const ObjectId             = require('mongoose').Types.ObjectId;
+const to                   = require('await-to-js').default;
 
 /**
  * Return object with stages common to getItems
@@ -352,32 +353,30 @@ exports.editItem = (req, res, next) => {
     }
 
     // Before saving the images, validate that the name is not already taken
-    try {
-      await item.save();
-    } catch (err) {
+    const [itemErr] = await to(item.save());
+    if (itemErr) {
       let errors = [];
       // If this item's name is duplicated, return the error
-      if (err.errors && err.errors.name) {
+      if (itemErr.errors && itemErr.errors.name) {
         errors.push({ name: ERRORS.DUPLICATE_NAME })
       }
-
+  
       // If this item's shortName is duplicated, return the error
-      if (err.errors && err.errors.shortName) {
+      if (itemErr.errors && itemErr.errors.shortName) {
         errors.push({ shortName: ERRORS.DUPLICATE_SHORTNAME })
       }
       
       if (errors.length) {
         return res.status(409).json({ errors });
       }
-      return next(err);
+      return next(itemErr);
     }
 
     // If the item used to have indicators and is updated to not have anymore
     // update the reference of those indicators
     if (!itemObject.hasIndicators && currentlyHasIndicators) {
-      try {
-        await Indicator.updateMany({ itemId: item._id }, {$set: { itemId: undefined }});
-      } catch (err) {
+      const [updateErr] = await to(Indicator.updateMany({ itemId: item._id }, {$set: { itemId: undefined }}));
+      if (updateErr) {
         return res.status(500).json({ error: 'Error updating indicators' });
       }
     }
