@@ -18,7 +18,10 @@ var UserSchema = new mongoose.Schema({
   lastConnection: Date,
   resetPasswordToken: String,
   resetPasswordExpires: Date,
-  deleted: Boolean
+  deleted: {
+    type: Boolean,
+    default: false,
+  }
 }, {
   timestamps: true
 });

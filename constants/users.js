@@ -5,8 +5,7 @@ module.exports = [
     "name" : "Jose Adalberto",
     "lastName" : "Moreno",
     "organization": "LGT",
-    "role": "Admin",
-    "deleted": false
+    "role": "Admin"
   },
   {
     "email":"mchavez@sciodev.com",
@@ -14,8 +13,7 @@ module.exports = [
     "name" : "Misael",
     "lastName" : "Chávez",
     "organization": "LGT",
-    "role": "Admin",
-    "deleted": false
+    "role": "Admin"
   },
   {
     "email":"jcabrera@sciodev.com",
@@ -23,8 +21,7 @@ module.exports = [
     "name" : "Jesus",
     "lastName" : "Cabrera",
     "organization": "LGT",
-    "role": "Super",
-    "deleted": false
+    "role": "Super"
   },
   {
     "email":"mcabrera@sciodev.com",
@@ -32,8 +29,7 @@ module.exports = [
     "name" : "Misael",
     "lastName" : "Cabrera Chávez",
     "organization": "LGT",
-    "role": "Admin",
-    "deleted": false
+    "role": "Admin"
   },
   {
     "email":"jmagana@sciodev.com",
@@ -41,7 +37,6 @@ module.exports = [
     "name" : "Jesus",
     "lastName" : "Magaña González",
     "organization": "LGT",
-    "role": "Super",
-    "deleted": false
+    "role": "Super"
   },
 ]
