@@ -5,7 +5,7 @@ const { validationResult } = require('express-validator/check');
 const _async               = require('async');
 const ERRORS               = require('../../constants/errors');
 const uploadImage          = require('../../services/uploadImage');
-const isBase64             = require('is-base64');
+const isBase64             = require('../../helpers/is-base64');
 const strToObjectId        = require('../../helpers/stringToObjectId');
 const ObjectId             = require('mongoose').Types.ObjectId;
 const to                   = require('await-to-js').default;
@@ -241,7 +241,7 @@ exports.addItem = (req, res, next) => {
         let addedImages = false;
   
         // If a cover is set, upload, crete record and save the reference in the item
-        if (cover &&  isBase64(cover.data, { mime: true })) {
+        if (cover &&  isBase64(cover.data)) {
           const coverImage = await uploadImageAndCreateRecord(item._id, cover.data, 'cover');
           item.coverImage = coverImage;
           addedImages = true;
@@ -401,7 +401,7 @@ exports.editItem = (req, res, next) => {
           }
 
           // If a new cover picture was selected, save it
-          if (isBase64(cover.data, { mime: true })) {
+          if (isBase64(cover.data)) {
             const coverImage = await uploadImageAndCreateRecord(item, cover.data, 'cover');
             // Indicate this id should not be deleted
             idsToSave.push(strToObjectId(coverImage._id));
