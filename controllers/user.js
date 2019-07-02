@@ -102,12 +102,12 @@ exports.updateUser = (req, res, next) => {
   var sendPassword = false;
   var newPassword = ''
 
-  User.findOne({ email: email, deleted: false }, async (err, existingMail) => {
+  User.findOne({ email: email, deleted: false },(err, existingMail) => {
     if (err) {
-      return await next(err);
+      return next(err);
     }
     if (existingMail) {
-      return await res.status(409).send({ error: 'That email address is already in use' });
+      return res.status(409).send({ error: 'That email address is already in use' });
     }
     else {
       User.findOne({ _id: _id, deleted: false }, (err, user) => {
