@@ -1,5 +1,5 @@
 const { body }    = require('express-validator/check');
-const isBase64    = require('is-base64');
+const isBase64    = require('../../helpers/is-base64');
 
 module.exports = [
   body('name')
@@ -72,7 +72,7 @@ module.exports = [
       }
 
       // Validate that data is base64
-      if (value.data && !isBase64(value.data, { mime: true })) {
+      if (value.data && !isBase64(value.data)) {
         throw new Error('cover.data must be valid base64');  
       }
 
@@ -122,7 +122,7 @@ const validateImageField = (field) => {
   const { data, removed } = field;
 
   // Validate that data is base64
-  if (data && !isBase64(data, { mime: true })) {
+  if (data && !isBase64(data)) {
     throw new Error('cover.data must be valid base64');  
   }
 
