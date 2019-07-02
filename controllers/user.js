@@ -67,7 +67,6 @@ exports.registerUser = (req, res, next) => {
 }
 
 exports.getUsers = (req, res, next) => {
-
   User.find({ deleted: false }, ['_id', 'email', 'name', 'lastName', 'role', 'lastConnection', 'organization'], { sort: { createdAt: 1 } }, (err, users) => {
     if (err) {
       return next(err);
@@ -112,6 +111,10 @@ exports.updateUser = (req, res, next) => {
     User.findOne({ _id: _id, deleted: false }, (err, user) => {
       if (err) {
         return next(err);
+      }
+      
+      if (!user) {
+        return res.status(404).send({ message: "User not found" });
       }
 
       if (user) {
