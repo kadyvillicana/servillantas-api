@@ -45,12 +45,12 @@ exports.registerUser = (req, res, next) => {
       const mailData = {
         "subject": 'Bienvenido al Portal de Administración LGT',
         "text": "Tu usuario del Panel de Aministración de LGT se creó correctamente..\n\n" +
-        "Utiliza tu correo electrónico y contraseña incluida en este correo para ingresar al Portal LGT en el siguiente enlace:\n\n"+
-        "Panel de administración LGT: "+ process.env.APP_URL+"lgt-admin"+"\n\n"+
-        "Tu contraseña es: " + password + "\n\n" +
-        "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
-        "Portal de administración\n" +
-        "LGT México"
+          "Utiliza tu correo electrónico y contraseña incluida en este correo para ingresar al Portal LGT en el siguiente enlace:\n\n" +
+          "Panel de administración LGT: " + process.env.APP_URL + "lgt-admin" + "\n\n" +
+          "Tu contraseña es: " + password + "\n\n" +
+          "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
+          "Portal de administración\n" +
+          "LGT México"
       };
       try {
         await mail(user.email, mailData);
@@ -67,8 +67,8 @@ exports.registerUser = (req, res, next) => {
 }
 
 exports.getUsers = (req, res, next) => {
-  
-  User.find({deleted: false,  _id: { $nin: [res.locals.user.id] } }, ['_id', 'email', 'name', 'lastName', 'role','lastConnection','organization'], { sort: { createdAt: 1 } }, (err, users) => {
+
+  User.find({ deleted: false }, ['_id', 'email', 'name', 'lastName', 'role', 'lastConnection', 'organization'], { sort: { createdAt: 1 } }, (err, users) => {
     if (err) {
       return next(err);
     }
@@ -102,55 +102,66 @@ exports.updateUser = (req, res, next) => {
   var sendPassword = false;
   var newPassword = ''
 
-  User.findOne({ _id: _id }, (err, user) => {
+  User.findOne({ email: email, deleted: false }, async (err, existingMail) => {
     if (err) {
-      return next(err);
+      return await next(err);
     }
-
-    if (user) {
-      if (user.email != email) {
-        user.password = randomPassword(6);
-        user.verified = false;
-        newPassword = user.password;
-        sendPassword = true;
-      }
-
-      user.name = name.trim();
-      user.lastName = lastName.trim();
-      user.email = email.trim();
-      user.organization = organization.trim();
-      user.role = role.trim();
-
-      user.save(async (err) => {
+    if (existingMail) {
+      return await res.status(409).send({ error: 'That email address is already in use' });
+    }
+    else {
+      User.findOne({ _id: _id, deleted: false }, (err, user) => {
         if (err) {
           return next(err);
         }
-        if (sendPassword) {
-          const mailData = {
-            "subject": 'Bienvenido al Portal de Administración LGT',
-            "text": "Tu usuario del Panel de Aministración de LGT se editó correctamente..\n\n" +
-              "Utiliza tu correo electrónico y contraseña incluida en este correo para ingresar al Portal LGT en el siguiente enlace:\n\n"+
-              "Panel de administración LGT: "+ process.env.APP_URL+"lgt-admin"+"\n\n"+
-              "Tu contraseña es: " + newPassword + "\n\n" +
-              "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
-              "Portal de administración\n" +
-              "LGT México"
-          };
-          try {
-            await mail(user.email, mailData);
-            res.status(200).send({ message: 'User updated, email with new password has been sent', success: true });
+
+        if (user) {
+          if (user.email != email) {
+            user.password = randomPassword(6);
+            user.verified = false;
+            newPassword = user.password;
+            sendPassword = true;
           }
-          catch (err) {
-            return next(err)
-          }
+
+          user.name = name.trim();
+          user.lastName = lastName.trim();
+          user.email = email.trim();
+          user.organization = organization.trim();
+          user.role = role.trim();
+
+          user.save(async (err) => {
+            if (err) {
+              return next(err);
+            }
+            if (sendPassword) {
+              const mailData = {
+                "subject": 'Bienvenido al Portal de Administración LGT',
+                "text": "Tu usuario del Panel de Aministración de LGT se editó correctamente..\n\n" +
+                  "Utiliza tu correo electrónico y contraseña incluida en este correo para ingresar al Portal LGT en el siguiente enlace:\n\n" +
+                  "Panel de administración LGT: " + process.env.APP_URL + "lgt-admin" + "\n\n" +
+                  "Tu contraseña es: " + newPassword + "\n\n" +
+                  "Una vez que ingreses al portal se te pedira cambiar tu contraseña por defecto por una personal\n\n" +
+                  "Portal de administración\n" +
+                  "LGT México"
+              };
+              try {
+                await mail(user.email, mailData);
+                res.status(200).send({ message: 'User updated, email with new password has been sent', success: true });
+              }
+              catch (err) {
+                return next(err)
+              }
+            }
+            res.status(200).send({ message: "User updated", success: true })
+          })
         }
-        res.status(200).send({ message: "User updated", success: true })
-      })
+      });
     }
   });
 }
 
-exports.deleteUser = (req, res,next) => {
+
+exports.deleteUser = (req, res, next) => {
   User.findOneAndUpdate({ _id: req.params._id }, { $set: { deleted: true } }, (err, user) => {
     if (err) {
       return next(err);
