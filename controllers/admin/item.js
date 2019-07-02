@@ -402,7 +402,7 @@ exports.editItem = (req, res, next) => {
 
           // If a new cover picture was selected, save it
           if (isBase64(cover.data)) {
-            const coverImage = await uploadImageAndCreateRecord(item, cover.data, 'cover');
+            const coverImage = await uploadImageAndCreateRecord(item._id, cover.data, 'cover');
             // Indicate this id should not be deleted
             idsToSave.push(strToObjectId(coverImage._id));
             item.coverImage = coverImage;
