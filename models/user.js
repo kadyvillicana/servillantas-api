@@ -1,6 +1,7 @@
 const mongoose   = require('mongoose');
 const bcryptjs   = require('bcryptjs');
 const jwt        = require('jsonwebtoken');
+const ERRORS     = require('../constants/errors');
 
 
 var UserSchema = new mongoose.Schema({
@@ -26,6 +27,15 @@ var UserSchema = new mongoose.Schema({
   timestamps: true
 });
 
+UserSchema.path('email').validate(async function (value) {
+  const user = await mongoose.model('User', UserSchema)
+    .findOne({ email: value, deleted: false })
+    .collation({ locale: 'es', strength: 1 });
+  if (user && user._id.toString() !== this._id.toString()) {
+    return false;
+  }
+  return true;
+}, ERRORS.DUPLICATE_EMAIL);
 
 UserSchema.pre('save', function (next) {
   var user = this;
