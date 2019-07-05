@@ -1,6 +1,6 @@
-const User = require('../models/user');
+const Friend = require('../models/friend');
 const mongoose = require('mongoose');
-const users = require('./../constants/users')
+const users = require('../constants/friends')
 const databaseConfig = require('../config/database');
 
 mongoose.connect(databaseConfig().url, databaseConfig().options);
@@ -9,8 +9,8 @@ const seed = async () => {
   try {
     // drop indexes first so in case collation is changed
     // there won't be an error
-    await User.collection.dropIndexes();
-    await User.deleteMany({});
+    await Friend.collection.dropIndexes();
+    await Friend.deleteMany({});
 
     const promises = [];
     for (let i = 0; i < users.length; i++) {
@@ -27,7 +27,7 @@ const seed = async () => {
 }
 
 const asyncMethod = async (user) => {
-  await User.create(user);
+  await Friend.create(user);
   return Promise.resolve();
 }
 

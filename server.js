@@ -8,7 +8,8 @@ const cors              = require('cors');
 const databaseConfig    = require('./config/database');
 const router            = require('./routes');
 const passport          = require('passport');
-require('./config/passport');
+const cron              = require('node-cron');
+const { sendReminder, setNextBeerDate } = require('./controllers/friend');
 
 mongoose.set('useFindAndModify', false);
 mongoose.connect(databaseConfig().url, databaseConfig().options);
@@ -32,5 +33,15 @@ app.use(cors());
 // Passport init
 app.use(passport.initialize());
 app.use(passport.session());
+
+// Cron to update next beer date
+cron.schedule("0 12 * * 5", function() {
+  setNextBeerDate();
+});
+
+// Cron to send remainder
+cron.schedule("0 12 * * 3", function() {
+  sendReminder();
+});
 
 router(app);

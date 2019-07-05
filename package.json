@@ -4,11 +4,6 @@
   "private": true,
   "scripts": {
     "start": "node server.js",
-    "seedPlaces": "node ./seeders/placesSeeder.js",
-    "seedItems": "node ./seeders/itemsSeeder.js",
-    "seedIndicators": "node ./seeders/indicatorsSeeder.js",
-    "seedDefaultAdmin": "node ./seeders/adminSeeder.js",
-    "seedUsers": "node ./seeders/usersSeeder.js",
     "test": "mocha --timeout 60000 --recursive tests",
     "lint": "eslint **/*.js --ignore-path .gitignore"
   },
@@ -31,6 +26,7 @@
     "mongodb": "3.2.3",
     "mongoose": "5.5.5",
     "morgan": "~1.9.1",
+    "node-cron": "^2.0.3",
     "nodemailer": "6.2.1",
     "passport": "0.4.0",
     "passport-jwt": "4.0.0",
