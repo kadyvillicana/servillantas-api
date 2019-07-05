@@ -1,11 +1,12 @@
 const LocalStrategy       = require('passport-local').Strategy;
-const bcryptjs            = require('bcryptjs');
-const crypto              = require('crypto');
 const passport            = require('passport');
 const passportJWT         = require('passport-jwt');
 const JWTStrategy         = passportJWT.Strategy;
 const ExtractJTW          = passportJWT.ExtractJwt;
-const User                = require('../models/user');
+const Friend              = require('../models/friend');
+const ActiveDirectory     = require('activedirectory');
+const adCondig            = require('../config/activedirectory');
+const AD                  = new ActiveDirectory(adCondig.config);
 
 /**
  * JWTStrategy to validate if the request has a valid token
@@ -19,35 +20,31 @@ passport.use(new JWTStrategy({
 
 //Passport middleware to verify if data received is on DB
 passport.use(
-  new LocalStrategy({ usernameField: 'email' }, (email, password, done) => {
-    User.findOne({
-      email: email,
-      deleted: false
-    }).then(user => {
-      if (!user) {
-        return done(null, false, { message: 'email not registered' })
-      }
+  new LocalStrategy({ usernameField: 'username' }, (username, password, callback) => {
 
-      bcryptjs.compare(password, user.password, (err, isMatch) => {
-        if (err) throw err;
-        if (isMatch) {
-          if (!user.verified) {
-            const token = crypto.randomBytes(20).toString('hex');
-            user.updateOne({
-              resetPasswordToken: token,
-              resetPasswordExpires: Date.now() + 3600000,
-            }, (err) => {
-              if (err) {
-                return done(null, false, { message: 'Something Went Wrong' })
-              }})
-            return done(null, false, { message: 'Change default password', token: token })
-          }
-          return done(null, user);
-        } else {
-          return done(null, false, { message: 'Password incorrect' })
+    AD.authenticate("SCIO\\" + username, password, function(err, auth) {
+      if (err || !auth) {
+        return callback(err, false, {message: 'Error during authentication' });
+      }
+      AD.findUser(username, function(err, user) {
+        if (err || !user) {
+          return callback(err, false, {message: 'Incorrect email or password' });
         }
-      })
-    })
+
+        Friend.findOne({
+          username,
+          deleted: false
+        })
+          .then(friend => {
+            if (!friend) {
+              return callback(null, false, { message: 'Friend not invited to party' });
+            }
+            return callback(null, friend, { message: "Logged in Successfully" });
+          })
+          .catch(err => callback(err));
+
+      });
+    });
   })
 );
 
@@ -56,7 +53,7 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser((id, done) => {
-  User.findById(id).then((user) => {
+  Friend.findById(id).then((user) => {
     done(null, user);
   }).catch(done);
 });

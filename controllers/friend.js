@@ -1,4 +1,4 @@
-const Friend            = require('../models/Friend');
+const Friend            = require('../models/friend');
 const mail              = require('../services/mail');
 
 /**

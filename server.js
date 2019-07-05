@@ -10,6 +10,7 @@ const router            = require('./routes');
 const passport          = require('passport');
 const cron              = require('node-cron');
 const { sendReminder, setNextBeerDate } = require('./controllers/friend');
+require('./config/passport');
 
 mongoose.set('useFindAndModify', false);
 mongoose.connect(databaseConfig().url, databaseConfig().options);

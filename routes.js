@@ -1,9 +1,13 @@
 const FriendController              = require('./controllers/friend')
-  , express                         = require('express');
+  , AuthController                  = require('./controllers/auth')
+  , express                         = require('express')
+  , authHelper                      = require('./helpers/auth');
 
 module.exports = function (app) {
 
   const apiRoutes                   = express.Router()
+    , authRoutes                    = express.Router()
+    , userRoutes                    = express.Router()
     , friendRoutes                  = express.Router();
 
   // Default routes
@@ -11,7 +15,14 @@ module.exports = function (app) {
     res.send('Im the home page!')
   });
 
-  // Item routes
+  // Auth routes
+  apiRoutes.use('/auth', authRoutes);
+  authRoutes.post('/', AuthController.login);
+
+  apiRoutes.use('/users', userRoutes);
+  userRoutes.get('/', authHelper.authorize, FriendController.getItems);
+
+  // Friends routes
   apiRoutes.use('/friends', friendRoutes);
   friendRoutes.get('/', FriendController.getItems);
   friendRoutes.get('/last', FriendController.getLastFriendInRow);

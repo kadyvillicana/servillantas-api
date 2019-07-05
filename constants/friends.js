@@ -1,6 +1,7 @@
 module.exports = [
   {
     "email": "acruz@sciodev.com",
+    "username": "acruz",
     "favoriteBeer": "Stella",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/adolfo.jpg",
     "name": "Adolfo Cruz",
@@ -8,6 +9,7 @@ module.exports = [
   },
   {
     "email": "cestrada@sciodev.com",
+    "username": "cestrada",
     "favoriteBeer": "Any Black Beer",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/towi.jpg",
     "name": "Carlos Estrada",
@@ -15,6 +17,7 @@ module.exports = [
   },
   {
     "email": "cvillicana@sciodev.com",
+    "username": "cvillicana",
     "favoriteBeer": "Negra Modelo",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/kady.jpg",
     "name": "Kady Villicaña",
@@ -22,6 +25,7 @@ module.exports = [
   },
   {
     "email": "gcastrejon@sciodev.com",
+    "username": "gcastrejon",
     "favoriteBeer": "Guinness",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/gabo.jpg",
     "name": "Gabriel Castrejon",
@@ -29,6 +33,7 @@ module.exports = [
   },
   {
     "email": "harroniz@sciodev.com",
+    "username": "harroniz",
     "favoriteBeer": "Negra Modelo",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/helen.jpg",
     "name": "Helen Arroniz",
@@ -36,6 +41,7 @@ module.exports = [
   },
   {
     "email": "ihernandez@sciodev.com",
+    "username": "ihernandez",
     "favoriteBeer": "Any Black Beer",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/isleen.jpg",
     "name": "Isleen Hernandez",
@@ -43,6 +49,7 @@ module.exports = [
   },
   {
     "email": "jmagana@sciodev.com",
+    "username": "jmagana",
     "favoriteBeer": "Any Black Beer",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/chuz.jpg",
     "name": "Chuz Magaña",
@@ -50,6 +57,7 @@ module.exports = [
   },
   {
     "email": "jpaneda@sciodev.com",
+    "username": "jpaneda",
     "favoriteBeer": "Heineken",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/george.jpg",
     "name": "Jorge Pañeda",
@@ -57,6 +65,7 @@ module.exports = [
   },
   {
     "email": "laburto@sciodev.com",
+    "username": "laburto",
     "favoriteBeer": "Corona",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/luisa.jpg",
     "name": "Luis Aburto",
@@ -64,6 +73,7 @@ module.exports = [
   },
   {
     "email": "lrodriguez@sciodev.com",
+    "username": "lrodriguez",
     "favoriteBeer": "Negra Modelo",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/luismanuel.jpg",
     "name": "Luis Rodriguez",
@@ -71,6 +81,7 @@ module.exports = [
   },
   {
     "email": "maguilar@sciodev.com",
+    "username": "maguilar",
     "favoriteBeer": "Corona",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/miguel.jpg",
     "name": "Miguel Aguilar",
@@ -78,6 +89,7 @@ module.exports = [
   },
   {
     "email": "martin@sciodev.com",
+    "username": "martin",
     "favoriteBeer": "Modelo Especial",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/martin.jpg",
     "name": "Martin Ruiz",
@@ -85,6 +97,7 @@ module.exports = [
   },
   {
     "email": "mbcorona@sciodev.com",
+    "username": "mbcorona",
     "favoriteBeer": "Minerva BS",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/bruno.jpg",
     "name": "Bruno Corona",
@@ -92,6 +105,7 @@ module.exports = [
   },
   {
     "email": "mrubio@sciodev.com",
+    "username": "mrubio",
     "favoriteBeer": "Modelo Especial",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/marcorubio.jpg",
     "name": "Marco Rubio",
@@ -99,6 +113,7 @@ module.exports = [
   },
   {
     "email": "pfernandez@sciodev.com",
+    "username": "pfernandez",
     "favoriteBeer": "Negra Modelo",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/paola.jpg",
     "name": "Paola Fernandez",
