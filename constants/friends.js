@@ -45,7 +45,7 @@ module.exports = [
     "favoriteBeer": "Any Black Beer",
     "profileImage": "https://s3.amazonaws.com/tours-bucket/friends/isleen.jpg",
     "name": "Isleen Hernandez",
-    "nextBeerDate": 219
+    "nextBeerDate": 369
   },
   {
     "email": "jmagana@sciodev.com",
