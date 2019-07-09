@@ -15,7 +15,11 @@ const map = {
   '%aws_secret_access_key%': process.env['aws_secret_access_key'],
   '%aws_bucket%': process.env['aws_bucket'],
   '%aws_region%': process.env['aws_region'],
-  '%passport_secret%': process.env['passport_secret']
+  '%passport_secret%': process.env['passport_secret'],
+  '%active_directory_url%': process.env['active_directory_url'],
+  '%active_directory_username%': process.env['active_directory_username'],
+  '%active_directory_password%': process.env['active_directory_password'],
+  '%base_dn%': process.env['base_dn'],
 };
 
 validateKeys(map);
