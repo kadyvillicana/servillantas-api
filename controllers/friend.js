@@ -61,7 +61,7 @@ exports.sendReminder = () => {
 
     const mailData = {
       subject: 'Friendly Reminder',
-      text: `Ya casi es el día de las chelas y le tocan a ${items[0].name}`
+      text: `This week our host is ${items[0].name}. Do not forget to bring beers next thursday.`
     };
     
     let emails = items.map(i => {return i.email}).join();

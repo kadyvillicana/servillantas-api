@@ -1,6 +1,4 @@
 const passport                  = require('passport');
-// const crypto                  = require('crypto');
-// const mail                    = require('../services/mail');
 
 exports.login = (req, res) => {
   const { username, password } = req.body;
