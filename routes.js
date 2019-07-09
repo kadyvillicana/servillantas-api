@@ -24,8 +24,8 @@ module.exports = function (app) {
 
   // Friends routes
   apiRoutes.use('/friends', friendRoutes);
-  friendRoutes.get('/', FriendController.getItems);
-  friendRoutes.get('/last', FriendController.getLastFriendInRow);
+  friendRoutes.get('/', authHelper.authorize, FriendController.getItems);
+  friendRoutes.get('/last', authHelper.authorize, FriendController.getLastFriendInRow);
 
   //Not found route
   apiRoutes.use((req, res) => {
