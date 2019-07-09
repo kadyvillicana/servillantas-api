@@ -29,7 +29,7 @@ module.exports = function (app) {
 
   //Not found route
   apiRoutes.use((req, res) => {
-    res.status(404).send("Not found");
+    res.status(404).send("Route not found");
   });
 
   // Set up routes
