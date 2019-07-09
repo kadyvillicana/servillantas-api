@@ -24,10 +24,14 @@ passport.use(
 
     AD.authenticate("SCIO\\" + username, password, function(err, auth) {
       if (err || !auth) {
+        console.log(err);
+        console.log(auth);
         return callback(err, false, {message: 'Error during authentication' });
       }
       AD.findUser(username, function(err, user) {
         if (err || !user) {
+          console.log(err);
+          console.log(user);
           return callback(err, false, {message: 'Incorrect email or password' });
         }
 
