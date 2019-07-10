@@ -60,7 +60,7 @@ exports.getFriendInfo = (req, res, next) => {
 }
 
 exports.sendReminder = () => {
-  Friend.find({ deleted: false }, ['email'], { sort: { nextBeerDate: 1 } }, async(err, items) => {
+  Friend.find({ deleted: false }, ['email', 'name'], { sort: { nextBeerDate: 1 } }, async(err, items) => {
     if (err) {
       throw err
     }
@@ -70,7 +70,7 @@ exports.sendReminder = () => {
     }
 
     const mailData = {
-      subject: 'Friendly Reminder',
+      subject: 'Beers Friendly Reminder',
       text: `This week our host is ${items[0].name}. Do not forget to bring beers next thursday.`
     };
     

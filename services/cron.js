@@ -8,7 +8,7 @@ module.exports.start = () => {
   });
   
   // Cron to send remainder
-  cron.schedule("0 12 * * 3", function() {
+  cron.schedule("15 12 * * 3", function() {
     sendReminder();
   });
 }
