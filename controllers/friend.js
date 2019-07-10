@@ -49,6 +49,16 @@ exports.getLastFriendInRow = (req, res, next) => {
   });
 }
 
+exports.getFriendInfo = (req, res, next) => {
+
+  Friend.findOne({_id: res.locals.user.id}, ['email', 'favoriteBeer', 'profileImage', 'name'], (err, user) => {
+    if(err) {
+      return next(err);
+    }
+    res.status(200).send(user);
+  });
+}
+
 exports.sendReminder = () => {
   Friend.find({ deleted: false }, ['email'], { sort: { nextBeerDate: 1 } }, async(err, items) => {
     if (err) {

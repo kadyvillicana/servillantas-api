@@ -20,7 +20,7 @@ module.exports = function (app) {
   authRoutes.post('/', AuthController.login);
 
   apiRoutes.use('/users', userRoutes);
-  userRoutes.get('/', authHelper.authorize, FriendController.getItems);
+  userRoutes.get('/', authHelper.authorize, FriendController.getFriendInfo);
 
   // Friends routes
   apiRoutes.use('/friends', friendRoutes);
