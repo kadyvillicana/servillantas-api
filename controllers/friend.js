@@ -51,11 +51,11 @@ exports.getLastFriendInRow = (req, res, next) => {
 
 exports.getFriendInfo = (req, res, next) => {
 
-  Friend.findOne({_id: res.locals.user.id}, ['email', 'favoriteBeer', 'profileImage', 'name'], (err, user) => {
+  Friend.findOne({_id: res.locals.user.id}, ['email', 'favoriteBeer', 'profileImage', 'name'], (err, friend) => {
     if(err) {
       return next(err);
     }
-    res.status(200).send(user);
+    res.status(200).send({ data: friend, success: true });
   });
 }
 
