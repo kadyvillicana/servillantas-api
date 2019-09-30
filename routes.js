@@ -22,6 +22,6 @@ module.exports = function (app) {
   });
 
   // Set up routes
-  app.use('/api', apiRoutes);
+  app.use('/', apiRoutes);
 
 }
