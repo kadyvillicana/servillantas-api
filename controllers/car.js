@@ -2,6 +2,7 @@ require('dotenv').config();
 const axios             = require('axios');
 const Cars              = require('../models/car');
 const { asyncForEach }  = require('../helpers/async');
+const mongoose = require('mongoose');
 
 /**
  * Function to get all the items available.
@@ -22,7 +23,18 @@ exports.getCars = (req, res, next) => {
   });
 }
 
-exports.getFromMercadoLibre = async (req, res, next) => {
+exports.getCar = (req, res, next) => {
+  const { id } = req.params; 
+  Cars.findOne({_id: new mongoose.Types.ObjectId(id) }, (err, car) => {
+    if(err || !car) {
+      return res.status(404).send({ message: 'not found'});
+    }
+
+    return res.status(200).send({data: car, success: true});
+  })
+}
+
+exports.getFromMercadoLibre = async () => {
   const {results} = await getItems();
   if(!results || results.length === 0) {
     return;
