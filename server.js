@@ -7,9 +7,9 @@ const bodyParser        = require('body-parser');
 const cors              = require('cors');
 const databaseConfig    = require('./config/database');
 const router            = require('./routes');
-const passport          = require('passport');
-const cron              = require('./services/cron');
-require('./config/passport');
+// const passport          = require('passport');
+// const cron              = require('./services/cron');
+// require('./config/passport');
 
 mongoose.set('useFindAndModify', false);
 mongoose.connect(databaseConfig().url, databaseConfig().options);
@@ -30,11 +30,7 @@ app.use(bodyParser.json({ limit: '60mb' })); // Limit for requests are 60 MB
 app.use(logger('dev'));
 app.use(cors());
 
-// Passport init
-app.use(passport.initialize());
-app.use(passport.session());
-
 router(app);
 
 //Start Cron
-cron.start();
+// cron.start();

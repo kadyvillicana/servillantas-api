@@ -1,31 +1,20 @@
-const FriendController              = require('./controllers/friend')
-  , AuthController                  = require('./controllers/auth')
-  , express                         = require('express')
-  , authHelper                      = require('./helpers/auth');
+const CarController                 = require('./controllers/car')
+  , express                         = require('express');
 
 module.exports = function (app) {
 
   const apiRoutes                   = express.Router()
-    , authRoutes                    = express.Router()
-    , userRoutes                    = express.Router()
-    , friendRoutes                  = express.Router();
+    , carRoutes                     = express.Router();
 
   // Default routes
   apiRoutes.get('/', (req, res) => {
     res.send('Im the home page!')
   });
 
-  // Auth routes
-  apiRoutes.use('/auth', authRoutes);
-  authRoutes.post('/', AuthController.login);
-
-  apiRoutes.use('/users', userRoutes);
-  userRoutes.get('/', authHelper.authorize, FriendController.getFriendInfo);
 
   // Friends routes
-  apiRoutes.use('/friends', friendRoutes);
-  friendRoutes.get('/', FriendController.getItems);
-  friendRoutes.get('/last', FriendController.getLastFriendInRow);
+  apiRoutes.use('/cars', carRoutes);
+  carRoutes.get('/', CarController.getCars);
 
   //Not found route
   apiRoutes.use((req, res) => {
