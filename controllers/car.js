@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
  * @returns {Array} Model Item
  */
 exports.getCars = (req, res, next) => {
-  Cars.find({ status: 'active' }, (err, items) => {
+  Cars.find({ status: 'active' }, [], { sort: { price: 1 }}, (err, items) => {
     if (err) {
       return next(err);
     }
@@ -23,7 +23,7 @@ exports.getCars = (req, res, next) => {
   });
 }
 
-exports.getCar = (req, res, next) => {
+exports.getCar = (req, res) => {
   const { id } = req.params; 
   Cars.findOne({_id: new mongoose.Types.ObjectId(id) }, (err, car) => {
     if(err || !car) {
