@@ -10,7 +10,7 @@ const mongoose = require('mongoose');
  * @returns {Array} Model Item
  */
 exports.getCars = (req, res, next) => {
-  Cars.find({ status: 'active' }, [], { sort: { price: 1 }}, (err, items) => {
+  Cars.find({ status: 'active' }, [], { sort: { price: -1 }}, (err, items) => {
     if (err) {
       return next(err);
     }
