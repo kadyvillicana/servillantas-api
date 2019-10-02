@@ -23,6 +23,20 @@ exports.getCars = (req, res, next) => {
   });
 }
 
+exports.getCarsTop = (req, res, next) => {
+  Cars.find({ status: 'active' }, [], { sort: { price: -1 }}, (err, items) => {
+    if (err) {
+      return next(err);
+    }
+
+    if (!items.length) {
+      return res.status(200).send({ message: "There are no cars", success: false });
+    }
+
+    return res.status(200).send({ data: items.slice(0, 3), success: true });
+  });
+}
+
 exports.getCar = (req, res) => {
   const { id } = req.params; 
   Cars.findOne({_id: new mongoose.Types.ObjectId(id) }, (err, car) => {

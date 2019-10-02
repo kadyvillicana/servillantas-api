@@ -15,6 +15,7 @@ module.exports = function (app) {
   // Friends routes
   apiRoutes.use('/cars', carRoutes);
   carRoutes.get('/', CarController.getCars);
+  carRoutes.get('/top', CarController.getCarsTop);
   carRoutes.get('/:id', CarController.getCar);
 
   //Not found route
